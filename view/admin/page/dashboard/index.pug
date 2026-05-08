@@ -1,0 +1,105 @@
+extends ../../layout/default.pug
+
+block content
+
+    .top-grid
+
+        .big-card
+
+        .ranking-card
+
+            .ranking-item
+                h1 3
+
+                .ranking-info
+                    h3 FC
+                    p 28 lượt / tháng
+
+                .progress
+                    .progress-bar(style="width:70%")
+
+                h2 11.4M
+
+            .ranking-item
+                h1 4
+
+                .ranking-info
+                    h3 Hai Bà Trưng
+                    p 22 lượt / tháng
+
+                .progress
+                    .progress-bar(style="width:50%")
+
+                h2 8.1M
+
+    .bottom-grid
+
+        .activity-card
+
+            h2 Hoạt động gần đây
+            hr
+            .activity-list
+
+                .activity-item
+                    .icon.success
+                        i.fa-solid.fa-check
+
+                    .text
+                        h3 Nguyễn Văn A đặt Sân Cầu Giấy FC — 18:00–19:00
+                        p 2 phút trước
+
+                .activity-item
+                    .icon.cancel
+                        i.fa-solid.fa-xmark
+
+                    .text
+                        h3 Lê Minh C hủy đặt sân #BK-089
+                        p 18 phút trước
+
+                .activity-item
+                    .icon.user
+                        i.fa-solid.fa-user
+
+                    .text
+                        h3 Trần Thị B đăng ký tài khoản mới
+                        p 45 phút trước
+
+        .right-column
+
+            .chart-card
+
+                h2 Phân bố loại sân
+
+                .chart-content
+
+                    .fake-donut
+
+                    .chart-info
+
+                        .legend
+                            span.green
+                            p Sân 5 người
+
+                        .legend
+                            span.blue
+                            p Sân 7 người
+
+                        .legend
+                            span.yellow
+                            p Sân 11 người
+
+            .calendar-card
+
+                .calendar-header
+
+                    h2 Tháng 5 2026
+
+                    .calendar-buttons
+
+                        button <
+                        button >
+
+                .calendar-grid
+
+                    each day in ['T2','T3','T4','T5','T6','T7','CN']
+                        div.day= day

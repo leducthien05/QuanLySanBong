@@ -1,0 +1,70 @@
+aside.sidebar
+
+    .logo
+        h1 GreenField
+
+        span.admin-tag Admin Panel
+
+    hr
+
+    .menu-section
+
+        p.menu-title TỔNG QUAN
+
+        ul.menu
+            li.active
+                a(href=`${prefixAdmin}/dashboard`)
+                    i.fa-solid.fa-table-columns
+                    span Dashboard
+
+            p.menu-title QUẢN LÝ
+
+            li
+                a(href=`${prefixAdmin}/bookings`)
+                    i.fa-regular.fa-calendar
+                    span Đặt sân
+            li
+                a(href=`${prefixAdmin}/fields`)
+                    i.fa-regular.fa-futbol
+                    span Sân bóng
+            li
+                a(href=`${prefixAdmin}/services`)
+                    i.fa-solid.fa-gears
+                    span Dịch vụ
+            li
+                a(href=`${prefixAdmin}/users`)
+                    i.fa-regular.fa-user
+                    span Người dùng
+            li
+                a(href=`${prefixAdmin}/settings`)
+                    i.fa-solid.fa-dollar-sign
+                    span Doanh thu
+            p.menu-title Tài khoản & Phân quyền
+            li
+                a(href=`${prefixAdmin}/accounts`)
+                    i(class="fa fa-user-shield")
+                    span Tài khoản
+            li
+                a(href=`${prefixAdmin}/roles`)
+                    i(class="fa fa-users-cog")
+                    span Nhóm quyền
+            li
+                a(
+                    href=`${prefixAdmin}/roles/permission`
+                    class="permission-sidebar"
+                )
+                    i(class="fa fa-key")
+                    span Phân quyền
+            p.menu-title HỆ THỐNG
+            li
+                a(href=`${prefixAdmin}/settings`)
+                    i.fa-solid.fa-gear
+                    span Cài đặt
+    hr
+
+    .admin-profile
+        .avatar AD
+        .info
+            h4 Admin
+            p Super Admin
+    script(src="/admin/JS/sidebar.js") 
