@@ -1,0 +1,34 @@
+extends ../../layout/default.pug
+
+block content
+
+    div(class="field-header")
+        div
+            h2 Quản lý sân bóng
+            p 6 sân đang hoạt động
+        button(class="add-btn") + Thêm sân mới
+    div(class="field-table")
+        table
+            thead
+                tr
+                    th TÊN SÂN
+                    th ĐỊA ĐIỂM
+                    th LOẠI SÂN
+                    th GIÁ / GIỜ
+                    th ĐÁNH GIÁ
+                    th TRẠNG THÁI
+                    th THAO TÁC
+            tbody
+                tr
+                    td Sân Cầu Giấy FC
+                    td Cầu Giấy, Hà Nội
+                    td
+                        span(class="type blue") Sân 5
+                    td(class="price") 150.000đ
+                    td ⭐ 4.9
+                    td
+                        span(class="status open") ● Mở cửa
+                    td
+                        button(class="action-btn") Sửa
+                        button(class="action-btn") Xóa
+                    
