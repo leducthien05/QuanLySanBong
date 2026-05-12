@@ -1,0 +1,190 @@
+extends ../../layout/default.pug
+
+block content
+    .create-field-page
+        .add-field-wrapper
+
+            // Header
+            .page-header
+                p Điền đầy đủ thông tin để hiển thị sân trên hệ thống
+
+            // Stepper
+            .stepper
+                div(
+                    class="step active"
+                    number-step = "step1"
+                )
+                    .step-number 1
+                    .step-text
+                        .step-title Thông tin cơ bản
+
+                div(
+                    class="step"
+                    number-step = "step2"
+                )
+                    .step-number 2
+                    .step-text
+                        .step-title Hình ảnh & Tiện ích
+
+            .main-content
+                .info-card
+                    .card-header
+                        img(
+                            src="https://img.icons8.com/ios-filled/50/9fff57/stadium.png"
+                            width="28"
+                            alt=""
+                        )
+                        div
+                            h5 Thông tin cơ bản
+                            small Tên, địa chỉ và mô tả sân bóng
+
+                    .card-body
+                        form(
+                            id="form-step1"
+                            enctype="multipart/form-data"
+                            method="POST"
+                            aciton=`${prefixAdmin}/fields/create`
+                        )
+                            .div-step1
+                                .form-group
+                                    label
+                                        | TÊN SÂN BÓNG
+                                        span.required *
+                                    input(
+                                        type="text"
+                                        id="tenSan"
+                                        placeholder="Ví dụ: Sân Cầu Giấy FC"
+                                        required
+                                    )
+
+                                .row.g-3
+                                    .col-md-6
+                                        .form-group
+                                            label
+                                                | LOẠI SÂN
+                                                span.required *
+                                            select(id="loaiSan" required)
+                                                option(value="" disabled selected) Chọn loại sân
+                                                option(value="5") Sân 5 người
+                                                option(value="7") Sân 7 người
+                                                option(value="11") Sân 11 người
+
+                                    .col-md-6
+                                        .form-group
+                                            label GIÁ THUÊ / GIỜ (VND)
+                                            input(
+                                                type="number"
+                                                id="giaThue"
+                                                placeholder="350000"
+                                            )
+
+                                .form-group
+                                    label
+                                        | ĐỊA CHỈ CHI TIẾT
+                                        span.required *
+                                    input(
+                                        type="text"
+                                        name="titleAddress"
+                                        placeholder="123 Đường ABC, Phường X, Quận Y"
+                                        required
+                                    )
+                                .form-group
+                                    label
+                                        | ĐƯỜNG DẪN BẢN ĐỒ
+                                        span.required *
+                                    input(
+                                        type="text"
+                                        id="diaChi"
+                                        name="googleMapUrl"
+                                        placeholder="123 Đường ABC, Phường X, Quận Y"
+                                        required
+                                    )
+
+                                .row.g-3
+                                    .col-md-6
+                                        .form-group
+                                            label TỈNH / THÀNH PHỐ
+                                            select(id="tinhThanh")
+                                                option(value="" disabled selected) Chọn tỉnh / thành
+                                                option(value="hcm") TP. Hồ Chí Minh
+                                                option(value="hn") Hà Nội
+
+                                    .col-md-6
+                                        .form-group
+                                            label QUẬN / HUYỆN
+                                            input(
+                                                type="text"
+                                                id="quanHuyen"
+                                                placeholder="Quận / Huyện"
+                                            )
+
+                                .form-group
+                                    label MÔ TẢ SÂN
+                                    textarea(
+                                        id="moTa"
+                                        rows="4"
+                                        placeholder="Mô tả thêm về sân..."
+                                    )
+                            .div-step2
+                                .row.g-4
+                                    // upload image - 6 phần
+                                    .col-lg-7
+                                        .upload-card
+                                            .upload-header
+                                                .upload-icon
+                                                    i(class="fa fa-camera")
+                                                .upload-info
+                                                    h3 Hình ảnh sân bóng
+                                                    p Tối đa 8 ảnh, định dạng JPG/PNG, tối đa 5MB/ảnh
+
+                                            .upload-body
+                                                label.upload-box(for="images")
+                                                    i(class="fa fa-image upload-main-icon")
+                                                    h4 Kéo thả hoặc click để tải ảnh lên
+                                                    p JPG, PNG, WEBP · Tối đa 5MB mỗi ảnh · Khuyến nghị 1200×800px
+                                                    input(
+                                                        type="file"
+                                                        id="images"
+                                                        multiple
+                                                        accept="image/png,image/jpeg,image/webp"
+                                                        hidden
+                                                    )
+
+                                    // trạng thái - 4 phần
+                                    .col-lg-5
+                                        .publish-card
+                                            .publish-header
+                                                .publish-icon
+                                                    i(class="fa fa-traffic-light")
+                                                h3 Trạng thái đăng
+
+                                            .publish-body
+                                                label.status-option.active
+                                                    .status-left
+                                                        span.dot.green
+                                                        .status-info
+                                                            h4 Mở cửa ngay
+                                                            p Nhận đặt sân ngay sau khi đăng
+                                                    input(type="radio" name="status" checked)
+
+                                                label.status-option
+                                                    .status-left
+                                                        span.dot.yellow
+                                                        .status-info
+                                                            h4 Đang chuẩn bị
+                                                            p Hiển thị nhưng chưa nhận đặt
+                                                    input(type="radio" name="status")
+
+                                                label.status-option
+                                                    .status-left
+                                                        span.dot.gray
+                                                        .status-info
+                                                            h4 Lưu nháp
+                                                            p Chưa hiển thị với khách hàng
+                                                    input(type="radio" name="status")
+
+                            // footer submit
+                            .form-footer
+                                button(type="button" class="btn-back") Quay lại
+                                button(type="submit" class="btn-submit") Tạo sân bóng
+    script(src="/admin/JS/script.js") 

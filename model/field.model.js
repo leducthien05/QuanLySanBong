@@ -12,7 +12,7 @@ const fieldSchema = new mongoose.Schema({
     type: string,
     description: String,
     address: {
-        title: String,
+        titleAddress: String,
         // quan trọng để mở Google Maps
         lat: Number,
         lng: Number,
