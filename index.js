@@ -1,6 +1,11 @@
 const express = require("express");
 const app = express();
-const port = 3000;
+const dotenv = require("dotenv");
+dotenv.config();
+const port = process.env.PORT;
+// database
+const database = require('./config/database');
+database.connect();
 // prefixAdmin
 const systemConfig = require("./config/system");
 app.locals.prefixAdmin = systemConfig.systemConfig.prefixAdmin;

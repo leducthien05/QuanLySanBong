@@ -5,7 +5,7 @@ const slotSchema = new mongoose.Schema({
     field_id: String,
     slot_date: Date,
     start_time: Date,
-    and_time: Date,
+    end_time: Date,
     status: {
         type: String,
         default: "active"

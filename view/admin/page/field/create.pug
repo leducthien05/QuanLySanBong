@@ -25,20 +25,18 @@ block content
                     .step-number 2
                     .step-text
                         .step-title Hình ảnh & Tiện ích
+                div(
+                    class="step"
+                    number-step = "step3"
+                )
+                    .step-number 3
+                    .step-text
+                        .step-title Lịch hoạt động
 
             .main-content
                 .info-card
-                    .card-header
-                        img(
-                            src="https://img.icons8.com/ios-filled/50/9fff57/stadium.png"
-                            width="28"
-                            alt=""
-                        )
-                        div
-                            h5 Thông tin cơ bản
-                            small Tên, địa chỉ và mô tả sân bóng
-
                     .card-body
+                        
                         form(
                             id="form-step1"
                             enctype="multipart/form-data"
@@ -46,6 +44,15 @@ block content
                             aciton=`${prefixAdmin}/fields/create`
                         )
                             .div-step1
+                                .card-header
+                                    img(
+                                        src="https://img.icons8.com/ios-filled/50/9fff57/stadium.png"
+                                        width="28"
+                                        alt=""
+                                    )
+                                    div
+                                        h5 Thông tin cơ bản
+                                        small Tên, địa chỉ và mô tả sân bóng
                                 .form-group
                                     label
                                         | TÊN SÂN BÓNG
@@ -53,6 +60,7 @@ block content
                                     input(
                                         type="text"
                                         id="tenSan"
+                                        name="name"
                                         placeholder="Ví dụ: Sân Cầu Giấy FC"
                                         required
                                     )
@@ -63,7 +71,7 @@ block content
                                             label
                                                 | LOẠI SÂN
                                                 span.required *
-                                            select(id="loaiSan" required)
+                                            select(id="loaiSan" required name="type")
                                                 option(value="" disabled selected) Chọn loại sân
                                                 option(value="5") Sân 5 người
                                                 option(value="7") Sân 7 người
@@ -75,6 +83,7 @@ block content
                                             input(
                                                 type="number"
                                                 id="giaThue"
+                                                name="price"
                                                 placeholder="350000"
                                             )
 
@@ -99,30 +108,12 @@ block content
                                         placeholder="123 Đường ABC, Phường X, Quận Y"
                                         required
                                     )
-
-                                .row.g-3
-                                    .col-md-6
-                                        .form-group
-                                            label TỈNH / THÀNH PHỐ
-                                            select(id="tinhThanh")
-                                                option(value="" disabled selected) Chọn tỉnh / thành
-                                                option(value="hcm") TP. Hồ Chí Minh
-                                                option(value="hn") Hà Nội
-
-                                    .col-md-6
-                                        .form-group
-                                            label QUẬN / HUYỆN
-                                            input(
-                                                type="text"
-                                                id="quanHuyen"
-                                                placeholder="Quận / Huyện"
-                                            )
-
                                 .form-group
                                     label MÔ TẢ SÂN
                                     textarea(
                                         id="moTa"
                                         rows="4"
+                                        name="description"
                                         placeholder="Mô tả thêm về sân..."
                                     )
                             .div-step2
@@ -138,15 +129,13 @@ block content
                                                     p Tối đa 8 ảnh, định dạng JPG/PNG, tối đa 5MB/ảnh
 
                                             .upload-body
-                                                label.upload-box(for="images")
+                                                label.upload-box(for="image")
                                                     i(class="fa fa-image upload-main-icon")
-                                                    h4 Kéo thả hoặc click để tải ảnh lên
-                                                    p JPG, PNG, WEBP · Tối đa 5MB mỗi ảnh · Khuyến nghị 1200×800px
                                                     input(
                                                         type="file"
-                                                        id="images"
+                                                        id="image"
                                                         multiple
-                                                        accept="image/png,image/jpeg,image/webp"
+                                                        name="image"
                                                         hidden
                                                     )
 
@@ -165,7 +154,7 @@ block content
                                                         .status-info
                                                             h4 Mở cửa ngay
                                                             p Nhận đặt sân ngay sau khi đăng
-                                                    input(type="radio" name="status" checked)
+                                                    input(type="radio" name="status" value="active" checked)
 
                                                 label.status-option
                                                     .status-left
@@ -173,16 +162,44 @@ block content
                                                         .status-info
                                                             h4 Đang chuẩn bị
                                                             p Hiển thị nhưng chưa nhận đặt
-                                                    input(type="radio" name="status")
+                                                    input(type="radio" name="status" value="inactive")
+                            .div-step3
+                                .schedule-card
+                                    .schedule-header
+                                        .schedule-icon
+                                            i.fa.fa-calendar
+                                        .schedule-info
+                                            h3 Lịch hoạt động
+                                            p Chọn khung giờ khách có thể đặt sân
 
-                                                label.status-option
-                                                    .status-left
-                                                        span.dot.gray
-                                                        .status-info
-                                                            h4 Lưu nháp
-                                                            p Chưa hiển thị với khách hàng
-                                                    input(type="radio" name="status")
+                                    .schedule-body
+                                        table.schedule-table
+                                            thead
+                                                tr
+                                                    th Giờ
+                                                    th T2
+                                                    th T3
+                                                    th T4
+                                                    th T5
+                                                    th T6
+                                                    th T7
+                                                    th CN
 
+                                            tbody
+                                                each time in ['06:00','07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00']
+                                                    tr
+                                                        td(class="time-label") #{time}
+
+                                                        each day in ['mon','tue','wed','thu','fri','sat','sun']
+                                                            td
+                                                                label(class="slot-item")
+                                                                    input(
+                                                                        type="checkbox"
+                                                                        name="schedule"
+                                                                        value=`${day}-${time}`
+                                                                        hidden
+                                                                    )
+                                                                    span(class="slot-box")
                             // footer submit
                             .form-footer
                                 button(type="button" class="btn-back") Quay lại

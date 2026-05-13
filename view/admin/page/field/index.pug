@@ -1,11 +1,19 @@
 extends ../../layout/default.pug
+include ../../mixin/pagination.pug
+include ../../mixin/search.pug
 
 block content
-
+    .card.mb-3
+        .card-header Bộ lọc và Tìm kiếm
+            .card-body
+                .row
+                    //- if(role.permission.includes("products_edit"))
+                    //-     .col-6
+                            //- +buttonStatus(filterStatus)
+                    .col-6 
+                        +search(keyword)
     div(class="field-header")
         div
-            h2 Quản lý sân bóng
-            p 6 sân đang hoạt động
         a(
             href=`${prefixAdmin}/fields/create`
             class="add-btn"
@@ -22,16 +30,20 @@ block content
                     th TRẠNG THÁI
                     th THAO TÁC
             tbody
-                tr
-                    td Sân Cầu Giấy FC
-                    td Cầu Giấy, Hà Nội
-                    td
-                        span(class="type blue") Sân 5
-                    td(class="price") 150.000đ
-                    td ⭐ 4.9
-                    td
-                        span(class="status open") ● Mở cửa
-                    td
-                        button(class="action-btn") Sửa
-                        button(class="action-btn") Xóa
-                    
+                each item in field
+                    tr
+                        td #{item.name}
+                        td #{item.address.titleAddress}
+                        td
+                            span(class="type blue") Sân #{item.type}
+                        td(class="price") 150.000đ
+                        td ⭐ 
+                        td
+                            if(item.status == "active")
+                                span(class="status open") ● Mở cửa
+                            else 
+                                span(class="status") ● Đóng cửa
+                        td
+                            button(class="action-btn") Sửa
+                            button(class="action-btn") Xóa
+            +pagination(pagination)       

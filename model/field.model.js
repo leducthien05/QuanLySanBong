@@ -9,7 +9,7 @@ const fieldSchema = new mongoose.Schema({
         slug: "name",
         unique: true
     },
-    type: string,
+    type: String,
     description: String,
     address: {
         titleAddress: String,
@@ -23,7 +23,7 @@ const fieldSchema = new mongoose.Schema({
     rating: Number,
     discountPercentage: Number,
     category_id: String,
-    image: array,
+    image: String,
     featured: {
         type: String,
         default: "0"
