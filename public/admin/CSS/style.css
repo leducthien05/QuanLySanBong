@@ -18,7 +18,7 @@ body {
 /* SIDEBAR */
 
 .sidebar {
-    width: 300px;
+    width: 260px;
     background: #07150f;
     border-right: 1px solid rgba(155, 255, 100, 0.1);
     display: flex;
@@ -52,7 +52,6 @@ hr {
 }
 
 .menu-section {
-    padding: 0 20px;
     margin-bottom: 30px;
 }
 
@@ -449,7 +448,7 @@ td {
 .type {
     padding: 4px 7px;
     border-radius: 15px;
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 600;
     display: inline-block;
 }
@@ -1113,6 +1112,7 @@ td {
 
 .card.mb-3 {
     background-color: #0b1a11;
+    height: auto;
 }
 .card.mb-3 input{
     background-color: #012e13;

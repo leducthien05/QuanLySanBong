@@ -3,6 +3,7 @@ include ../../mixin/pagination.pug
 include ../../mixin/search.pug
 include ../../mixin/buttonStatus.pug
 include ../../mixin/sort.pug
+include ../../mixin/change-multi.pug
 
 block content
     .card.mb-3
@@ -20,18 +21,36 @@ block content
                 .row
                     .col-6
                         +sort
-    div(class="field-header")
-        div
-        a(
-            href=`${prefixAdmin}/fields/create`
-            class="add-btn"
-        ) + Thêm sân mới
+    
+    .card.mb-3
+        .card-header Hành động
+            .card-body 
+                .row
+                    //- if(role.permission.includes("products_edit")) 
+                    .col-8 
+                        +change(`${prefixAdmin}/fields/change-multi-status?_method=PATCH`)
+                    //- if(role.permission.includes("products_create"))
+                    .col-4
+                        div(class="field-header")
+                            div
+                            a(
+                                href=`${prefixAdmin}/fields/create`
+                                class="add-btn"
+                            ) + Thêm sân mới
     div(class="field-table")
-        table
+        table(
+            checkbox-multi
+        )
             thead
                 tr
+                    th 
+                        input(
+                            type="checkbox"
+                            checkbox-all
+                        )
                     th TÊN SÂN
                     th ĐỊA ĐIỂM
+                    th VỊ TRÍ
                     th LOẠI SÂN
                     th GIÁ / GIỜ
                     th ĐÁNH GIÁ
@@ -40,8 +59,23 @@ block content
             tbody
                 each item in field
                     tr
+                        td 
+                            input(
+                                type="checkbox"
+                                value = item.id 
+                                checkbox-status
+                                name = "id"
+                            )
                         td #{item.name}
                         td #{item.address.titleAddress}
+                        td 
+                            input(
+                                type="number"
+                                value = item.position 
+                                style="width: 60px"
+                                min = "1"
+                                name = "position"
+                            )
                         td
                             span(class="type blue") Sân #{item.type}
                         td(class="price") #{`${item.price}đ-${item.priceVip}đ`}

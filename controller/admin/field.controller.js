@@ -33,7 +33,7 @@ module.exports.index = async (req, res) => {
     const objectPagination = await paginationHelper.pagination(req.query, countField);
     const field = await Field.find(find).sort(sort).skip(objectPagination.skipRecord).limit(objectPagination.limit);
     res.render("admin/page/field/index", {
-        titlePage: "Sân",
+        titlePage: "Quản lý sân",
         field: field,
         pagination: objectPagination,
         keyword: objectSearch.keyword,
@@ -96,13 +96,13 @@ module.exports.createPost = async (req, res) => {
     await Pricing.insertMany(listPricing);
     res.redirect(`${systemConfig.systemConfig.prefixAdmin}/fields`);
 }
-// [GET] /admin/fields/change-status/:status/:id
+// [PATCH] /admin/fields/change-status/:status/:id
 module.exports.changeStatus = async (req, res) => {
     const status = req.params.status;
     const id = req.params.id;
     try {
         switch (status) {
-            case "active": 
+            case "active":
                 await Field.updateOne({
                     _id: id,
                     deleted: false
@@ -116,7 +116,7 @@ module.exports.changeStatus = async (req, res) => {
                     status: "inactive"
                 });
                 break;
-            case "inactive": 
+            case "inactive":
                 await Field.updateOne({
                     _id: id,
                     deleted: false
@@ -130,7 +130,7 @@ module.exports.changeStatus = async (req, res) => {
                     status: "active"
                 });
                 break;
-            default: 
+            default:
                 break;
         }
 
@@ -140,4 +140,50 @@ module.exports.changeStatus = async (req, res) => {
         });
     }
 
+}
+// [PATCH] /admin/fields/change-multi-status
+module.exports.changeMultiStatus = async (req, res) => {
+    const ids = req.body.ids.split(", ");
+    const status = req.body.status;
+
+    try {
+        switch (status) {
+            case "active":
+                await Field.updateMany({
+                    _id: ids
+                }, { status: "active" });
+                // req.flash("success", `Thay đổi trạng thái ${ids.length} sản phẩm thành công thành công!`);
+
+                break;
+            case "inactive":
+                await Field.updateMany({
+                    _id: ids
+                }, { status: "inactive" });
+                // req.flash("success", `Thay đổi trạng thái ${ids.length} sản phẩm thành công thành công!`);
+                break;
+            case "delete-all":
+                await Field.updateMany({
+                    _id: ids
+                }, { deleted: true });
+                // req.flash("success", `Xóa thành công ${ids.length} sản phẩm thành công thành công!`);
+                break;
+            case "position":
+                for (const item of ids) {
+                    let [id, newposition] = item.split("-");
+                    newposition = parseInt(newposition);
+                    await Field.updateOne({
+                        _id: id
+                    }, { position: newposition });
+                    // req.flash("success", `Thay đổi vị trí ${ids.length} sản phẩm thành công thành công!`);
+                }
+
+                break;
+            default:
+                break;
+        }
+    } catch (error) {
+        console.log(error);
+    }
+
+    res.redirect(req.get("referer") || "/");
 }

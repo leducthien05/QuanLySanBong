@@ -99,17 +99,62 @@ if (btnChangeStatus.length > 0) {
                 //     "Content-Type": "application/json"
                 // }
             })
-                .then(res =>res.json())
-                .then(data =>{
+                .then(res => res.json())
+                .then(data => {
                     btn.setAttribute("status", data.status);
-                    if(data.status == "active"){
+                    if (data.status == "active") {
                         btn.textContent = "● Mở cửa";
                         btn.classList.add("open");
-                    }else if(data.status == "inactive"){
+                    } else if (data.status == "inactive") {
                         btn.textContent = "● Đóng cửa";
                         btn.classList.remove("open");
                     }
                 });
         });
+    });
+}
+
+// Thay đổi nhiều sân
+const checkMulti = document.querySelector("[checkbox-multi]");
+if (checkMulti) {
+    const checkboxItem = checkMulti.querySelectorAll("[checkbox-status]");
+    const checkboxAll = checkMulti.querySelector("[checkbox-all]");
+    checkboxAll.addEventListener("click", () => {
+        checkboxItem.forEach(item => {
+            item.checked = checkboxAll.checked;
+        });
+    });
+    checkboxItem.forEach(item => {
+        item.addEventListener("click", () => {
+            const countchecked = checkMulti.querySelectorAll("input[name = 'id']:checked").length;
+            if (countchecked == checkboxItem.length) {
+                checkboxAll.checked = true;
+            } else {
+                checkboxAll.checked = false;
+            }
+        });
+    });
+}
+const formChangeMulti = document.querySelector("[form-change-multi]");
+if (formChangeMulti) {
+    formChangeMulti.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const inputChecked = checkMulti.querySelectorAll("input[name='id']:checked");
+        const typechange = formChangeMulti.querySelector("select[name='status']").value;
+        if (inputChecked.length > 0) {
+            const inputIDs = formChangeMulti.querySelector("input[name = 'ids']");
+            let ids = [];
+            inputChecked.forEach(item => {
+                const id = item.value;
+                if (typechange == "position") {
+                    const position = item.closest("tr").querySelector("input[name = 'position']").value;
+                    ids.push(`${id}-${position}`);
+                } else {
+                    ids.push(id);
+                }
+            });
+            inputIDs.value = ids.join(", ");
+            formChangeMulti.submit();
+        }
     });
 }
