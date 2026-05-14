@@ -4,34 +4,40 @@ const Pricing = require("../../model/pricing.model");
 const systemConfig = require("../../config/system");
 const paginationHelper = require("../../helper/pagination.helper");
 const searchHelper = require("../../helper/search.helper");
+const filterStatusHelper = require("../../helper/filterStatus.helper");
 
 // [GET] /admin/fields
 module.exports.index = async (req, res) => {
     const find = {
         deleted: false
     }
+    // Lọc theo trạng thái
+    const filter = filterStatusHelper.filterStatus(req.query);
+    if (req.query.status) {
+        find.status = req.query.status;
+    }
+    //Sắp xếp sản phẩm theo tiêu chí
+    const sort = {}
+    if (req.query.sortKey && req.query.sortValue) {
+        sort[req.query.sortKey] = req.query.sortValue;
+    } else {
+        sort.price = "desc";
+    }
+    // Tìm kiếm sân
     const objectSearch = searchHelper.search(req.query);
-    if(objectSearch.regex){
+    if (objectSearch.regex) {
         find.name = objectSearch.regex;
     }
+    // Phân trang
     const countField = await Field.countDocuments(find);
     const objectPagination = await paginationHelper.pagination(req.query, countField);
-    const field = await Field.find(find).skip(objectPagination.skipRecord).limit(objectPagination.limit);
-    const price = await Pricing.findOne({
-        deleted: false,
-        feature: "0"
-    });
-    const priceVip = await Pricing.findOne({
-        deleted: false,
-        feature: "1"
-    });
+    const field = await Field.find(find).sort(sort).skip(objectPagination.skipRecord).limit(objectPagination.limit);
     res.render("admin/page/field/index", {
         titlePage: "Sân",
         field: field,
-        priceVip: priceVip,
-        price: price,
         pagination: objectPagination,
-        keyword: objectSearch.keyword
+        keyword: objectSearch.keyword,
+        filterStatus: filter
     });
 }
 // [GET] /admin/fields/create
@@ -46,12 +52,20 @@ module.exports.createPost = async (req, res) => {
         name: req.body.name,
         type: req.body.type,
         description: req.body.description,
+        price: req.body.price,
+        priceVip: req.body.priceVip,
         address: {
             titleAddress: req.body.titleAddress,
             googleMapUrl: req.body.googleMapUrl
         },
         image: req.body.image,
         status: req.body.status
+    }
+    if (req.body.position) {
+        dataField.position = parseInt(req.body.position);
+    } else {
+        const count = await Field.countDocuments({ deleted: false });
+        dataField.position = count + 1;
     }
     const field = new Field(dataField);
     await field.save();
@@ -62,20 +76,68 @@ module.exports.createPost = async (req, res) => {
         const hour = parseInt(time.split(":")[0]);
         const endHour = `${String(hour + 1).padStart(2, "0")}:00`;
         let price = parseInt(req.body.price);
+        let priceVip = parseInt(req.body.priceVip);
         const schedule = {
             field_id: field.id,
             day_of_week: day,
             start_time: time,
             end_time: endHour,
-            price: price,
             feature: "0"
         }
-        if(hour > 19 && hour < 23){
-            schedule.price += 100000;
+        if (hour > 19 && hour < 23) {
             schedule.feature = "1"
+            schedule.price = priceVip
+        } else {
+            schedule.feature = "0"
+            schedule.price = price
         }
         listPricing.push(schedule);
     });
     await Pricing.insertMany(listPricing);
     res.redirect(`${systemConfig.systemConfig.prefixAdmin}/fields`);
+}
+// [GET] /admin/fields/change-status/:status/:id
+module.exports.changeStatus = async (req, res) => {
+    const status = req.params.status;
+    const id = req.params.id;
+    try {
+        switch (status) {
+            case "active": 
+                await Field.updateOne({
+                    _id: id,
+                    deleted: false
+                }, {
+                    $set: {
+                        status: "inactive"
+                    }
+                });
+                res.json({
+                    code: 200,
+                    status: "inactive"
+                });
+                break;
+            case "inactive": 
+                await Field.updateOne({
+                    _id: id,
+                    deleted: false
+                }, {
+                    $set: {
+                        status: "active"
+                    }
+                });
+                res.json({
+                    code: 200,
+                    status: "active"
+                });
+                break;
+            default: 
+                break;
+        }
+
+    } catch (error) {
+        res.json({
+            code: 201
+        });
+    }
+
 }

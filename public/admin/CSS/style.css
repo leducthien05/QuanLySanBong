@@ -1104,7 +1104,7 @@ td {
 
 .pagination {
     position: fixed; /* hoặc absolute tùy nhu cầu */
-    bottom: 20px;
+    bottom: 0px;
     left: 250px; /* bằng width sidebar */
     right: 0;
     display: flex;
@@ -1118,9 +1118,20 @@ td {
     background-color: #012e13;
     color: #c0f3c8;
 }
+.card.mb-3 select{
+    background-color: #012e13;
+    color: #c0f3c8;
+}
 .card.mb-3 input::placeholder{
     color: #c0f3c8;
 }
 .card-header {
     color: #c0f3c8;
+}
+.sort-select {
+    display: flex;
+}
+.sort-select button {
+    margin-top: 0 !important; /* bỏ mt-2 */
+    white-space: nowrap;
 }

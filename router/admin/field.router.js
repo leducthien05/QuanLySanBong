@@ -14,6 +14,8 @@ router.post(
     upload.single("image"),
     uploadImage.uploadCloudinary,
     validate.create,
-    controller.createPost);
+    controller.createPost
+);
+router.patch("/change-status/:status/:id", controller.changeStatus);
 
 module.exports = router

@@ -1,6 +1,8 @@
 extends ../../layout/default.pug
 include ../../mixin/pagination.pug
 include ../../mixin/search.pug
+include ../../mixin/buttonStatus.pug
+include ../../mixin/sort.pug
 
 block content
     .card.mb-3
@@ -8,10 +10,16 @@ block content
             .card-body
                 .row
                     //- if(role.permission.includes("products_edit"))
-                    //-     .col-6
-                            //- +buttonStatus(filterStatus)
+                    .col-6
+                        +buttonStatus(filterStatus)
                     .col-6 
                         +search(keyword)
+    .card.mb-3
+        .card-header Sắp xếp
+            .card-body
+                .row
+                    .col-6
+                        +sort
     div(class="field-header")
         div
         a(
@@ -36,14 +44,28 @@ block content
                         td #{item.address.titleAddress}
                         td
                             span(class="type blue") Sân #{item.type}
-                        td(class="price") 150.000đ
+                        td(class="price") #{`${item.price}đ-${item.priceVip}đ`}
                         td ⭐ 
                         td
                             if(item.status == "active")
-                                span(class="status open") ● Mở cửa
+                                span(
+                                    status = item.status
+                                    data-status = item._id
+                                    class="status open"
+                                    ) ● Mở cửa
                             else 
-                                span(class="status") ● Đóng cửa
+                                span(
+                                    status = item.status
+                                    data-status = item._id
+                                    class="status"
+                                    ) ● Đóng cửa
                         td
                             button(class="action-btn") Sửa
                             button(class="action-btn") Xóa
-            +pagination(pagination)       
+            +pagination(pagination) 
+
+    form(
+        action = `${prefixAdmin}/fields`
+        form-change-status
+    )      
+    script(src="/admin/JS/script.js") 

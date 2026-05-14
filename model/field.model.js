@@ -10,6 +10,8 @@ const fieldSchema = new mongoose.Schema({
         unique: true
     },
     type: String,
+    price: Number,
+    priceVip: Number,
     description: String,
     address: {
         titleAddress: String,
