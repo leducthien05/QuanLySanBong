@@ -9,9 +9,18 @@ const fieldSchema = new mongoose.Schema({
         slug: "name",
         unique: true
     },
+    size: String,
+    grasstype: String,
+    timeactive: {
+        openTime: String,
+        closeTime: String,
+        slotDuration: Number
+    },
     type: String,
-    price: Number,
-    priceVip: Number,
+    price: {
+        price: Number,
+        priceVip: Number
+    },
     description: String,
     address: {
         titleAddress: String,
@@ -22,14 +31,10 @@ const fieldSchema = new mongoose.Schema({
         // link sẵn (optional)
         googleMapUrl: String
     },
+    service: Array,
     rating: Number,
-    discountPercentage: Number,
     category_id: String,
     image: String,
-    featured: {
-        type: String,
-        default: "0"
-    },
     status: {
         type: String,
         default: 'active'

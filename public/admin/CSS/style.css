@@ -499,6 +499,7 @@ td {
 }
 
 .action-btn {
+    text-decoration: none; /* bỏ gạch chân */
     background: transparent;
     border: 1px solid rgba(163, 255, 77, 0.1);
     color: #7d9584;
@@ -510,6 +511,7 @@ td {
 }
 
 .action-btn:hover {
+    text-decoration: none; /* bỏ gạch chân */
     border-color: #9fff57;
     color: #9fff57;
 }
@@ -827,7 +829,71 @@ td {
 .div-step2.active {
     display: block;
 }
+.service-box {
+    background: linear-gradient(135deg, #0b1f0b, #0d2b0d);
+    border: 1px solid rgba(118, 255, 118, 0.15);
+    border-radius: 28px;
+    padding: 30px;
+    color: #fff;
+    max-width: 760px;
+    margin: 20px auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
 
+.service-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.service-icon {
+    width: 54px;
+    height: 54px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.service-header h2 {
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.service-header p {
+    margin: 6px 0 0;
+    color: #7f9b7f;
+    font-size: 20px;
+}
+
+.service-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.service-item {
+    padding: 14px 24px;
+    border-radius: 999px;
+    border: 1px solid rgba(146, 255, 146, 0.15);
+    background: rgba(255, 255, 255, 0.03);
+    color: #9cc89c;
+    font-size: 18px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.service-item:hover {
+    background: rgba(146, 255, 146, 0.08);
+    border-color: rgba(146, 255, 146, 0.35);
+    transform: translateY(-2px);
+}
 /* ================= PUBLISH STATUS ================= */
 
 .publish-card {
@@ -1006,9 +1072,15 @@ td {
 .schedule-header {
     padding: 18px 22px;
     display: flex;
+    justify-content: space-between; /* đẩy 2 bên */
+    align-items: center;
+    border-bottom: 1px solid rgba(159, 255, 87, 0.08);
+}
+
+.schedule-left {
+    display: flex;
     align-items: center;
     gap: 14px;
-    border-bottom: 1px solid rgba(159, 255, 87, 0.08);
 }
 
 .schedule-info h3 {

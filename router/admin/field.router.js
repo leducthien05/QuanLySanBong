@@ -18,5 +18,13 @@ router.post(
 );
 router.patch("/change-status/:status/:id", controller.changeStatus);
 router.patch("/change-multi-status", controller.changeMultiStatus);
-
+router.delete("/delete/:id", controller.deleteField);
+router.get("/edit/:id", controller.edit);
+router.patch(
+    "/edit/:id",
+    upload.single("image"),
+    uploadImage.uploadCloudinary,
+    validate.create,
+    controller.editPatch
+);
 module.exports = router

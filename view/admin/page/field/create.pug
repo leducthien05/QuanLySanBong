@@ -95,7 +95,33 @@ block content
                                                 name="priceVip"
                                                 placeholder="400000"
                                             )
-
+                                    .col-md-6
+                                        .form-group
+                                            label KÍCH THƯỚC
+                                            input(
+                                                type="texxt"
+                                                id="giaThue"
+                                                name="size"
+                                                placeholder="50X60"
+                                            )
+                                    .col-md-6
+                                        .form-group
+                                            label LOẠI CỎ
+                                            input(
+                                                type="text"
+                                                id="giaThue"
+                                                name="grasstype"
+                                                placeholder="Nhân tạo/ Tự nhiên"
+                                            )
+                                    .col-md-6
+                                        .form-group
+                                            label GIỜ HOẠT ĐỘNG
+                                            input(
+                                                type="text"
+                                                id="giaThue"
+                                                name="timeactive"
+                                                placeholder="06:00-22:00"
+                                            )
                                 .form-group
                                     label
                                         | ĐỊA CHỈ CHI TIẾT
@@ -125,7 +151,7 @@ block content
                                         name="description"
                                         placeholder="Mô tả thêm về sân..."
                                     )
-                                 .form-group
+                                .form-group
                                     label
                                         | VỊ TRÍ
                                     input(
@@ -181,14 +207,30 @@ block content
                                                             h4 Đang chuẩn bị
                                                             p Hiển thị nhưng chưa nhận đặt
                                                     input(type="radio" name="status" value="inactive")
+                                .service-box
+                                    .service-header
+                                        .service-icon ✨
+                                        div
+                                            h2 Tiện ích & Dịch vụ
+                                            p Chọn các tiện ích có tại sân
+
+                                    .service-list
+                                        each item in ["💡 Đèn cao áp","🏠 Có mái che","🧥 Phòng thay đồ","🚗 Bãi giữ xe","☕ Căng tin","📹 Camera an ninh","⚽ Cho thuê bóng","👟 Cho thuê giày","🛁 Phòng tắm","📶 Wi-Fi miễn phí","🩹 Tủ thuốc sơ cứu","🎵 Loa âm thanh"]
+                                            label.service-item
+                                                input(type="checkbox" name="service" value=item)
+                                                span #{item}
                             .div-step3
                                 .schedule-card
                                     .schedule-header
-                                        .schedule-icon
-                                            i.fa.fa-calendar
-                                        .schedule-info
-                                            h3 Lịch hoạt động
-                                            p Chọn khung giờ khách có thể đặt sân
+                                        .schedule-left
+                                            .schedule-icon
+                                                i.fa.fa-calendar
+                                            .schedule-info
+                                                h3 Lịch hoạt động
+                                                p Chọn khung giờ khách có thể đặt sân
+                                        label.switch
+                                            input(type="checkbox" name="scheduleStatus")
+                                            span.slider Chọn tất cả
 
                                     .schedule-body
                                         table.schedule-table
@@ -204,11 +246,11 @@ block content
                                                     th CN
 
                                             tbody
-                                                each time in ['06:00','07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00']
+                                                each time in timeactive
                                                     tr
                                                         td(class="time-label") #{time}
 
-                                                        each day in ['mon','tue','wed','thu','fri','sat','sun']
+                                                        each day in days
                                                             td
                                                                 label(class="slot-item")
                                                                     input(

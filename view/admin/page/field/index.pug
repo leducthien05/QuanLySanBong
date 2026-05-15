@@ -39,6 +39,7 @@ block content
                             ) + Thêm sân mới
     div(class="field-table")
         table(
+            table-view
             checkbox-multi
         )
             thead
@@ -78,7 +79,7 @@ block content
                             )
                         td
                             span(class="type blue") Sân #{item.type}
-                        td(class="price") #{`${item.price}đ-${item.priceVip}đ`}
+                        td(class="price") #{`${item.price.price}đ-${item.price.priceVip}đ`}
                         td ⭐ 
                         td
                             if(item.status == "active")
@@ -94,12 +95,27 @@ block content
                                     class="status"
                                     ) ● Đóng cửa
                         td
-                            button(class="action-btn") Sửa
-                            button(class="action-btn") Xóa
+                            a(
+                                class="action-btn"
+                                href=`${prefixAdmin}/fields/edit/${item._id}`
+                            ) Sửa
+                            button(
+                                btn-delete
+                                data-id = item._id
+                                class="action-btn"
+                            ) Xóa
+                            a(
+                                href=`${prefixAdmin}/fields/detail/${item._id}`
+                                class="action-btn"
+                            ) Chi tiết
             +pagination(pagination) 
 
     form(
         action = `${prefixAdmin}/fields`
         form-change-status
+    )  
+    form(
+        action = `${prefixAdmin}/fields/delete`
+        form-delete
     )      
     script(src="/admin/JS/script.js") 

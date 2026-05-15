@@ -158,3 +158,51 @@ if (formChangeMulti) {
         }
     });
 }
+
+// Xóa 
+const btnDelete = document.querySelectorAll("[btn-delete]");
+if(btnDelete.length > 0){
+    const formDelete = document.querySelector("[form-delete]");
+    const action = formDelete.action;
+    btnDelete.forEach(btn =>{
+        btn.addEventListener("click", (e)=>{
+            const id = btn.getAttribute("data-id");
+            const link = `${action}/${id}`;
+            fetch(link, {
+                method: "DELETE",
+            })
+                .then(res => res.json())
+                .then(data =>{
+                    const record = btn.closest("tr");
+                    record.remove();
+                });
+        });
+    });
+}
+
+// Giờ hoạt động
+const checkboxAllTimeactive = document.querySelector("input[name='scheduleStatus']");
+if(checkboxAllTimeactive){
+    const checkbox = document.querySelectorAll("input[name='schedule']");
+    const checkall = document.querySelectorAll("input[name='schedule']:checked").length;
+    if(checkbox.length == checkall){
+        checkboxAllTimeactive.checked = true;
+    }
+    checkboxAllTimeactive.addEventListener("click", (e)=>{
+        if(checkboxAllTimeactive.checked == true){
+            checkbox.forEach(item =>{
+                item.checked = true;
+            });
+        }
+    });
+    checkbox.forEach(item => {
+        item.addEventListener("click", () => {
+            const countchecked = document.querySelectorAll("input[name='schedule']:checked").length;
+            if (countchecked == checkbox.length) {
+                checkboxAllTimeactive.checked = true;
+            } else {
+                checkboxAllTimeactive.checked = false;
+            }
+        });
+    });
+}
