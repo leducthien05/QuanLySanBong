@@ -13,7 +13,9 @@ app.locals.prefixAdmin = systemConfig.systemConfig.prefixAdmin;
 const methodOverride = require("method-override"); 
 app.use(methodOverride('_method'));
 // req.body
-app.use(express.urlencoded({ extended: true }));
+// app.use(express.urlencoded({ extended: true }));
+const bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({ extended: true }));
 // View
 app.set("views", `${__dirname}/view`);
 app.set("view engine", "pug");

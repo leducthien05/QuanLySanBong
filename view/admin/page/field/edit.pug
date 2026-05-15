@@ -125,7 +125,7 @@ block content
                                                 type="text"
                                                 id="giaThue"
                                                 name="timeactive"
-                                                value=`${pricing.openTime}-${field.timeactive.closeTime}`
+                                                value=field.timeactive
                                                 placeholder="06:00-22:00"
                                             )
                                 .form-group
@@ -157,9 +157,8 @@ block content
                                         id="moTa"
                                         rows="4"
                                         name="description"
-                                        value=field.description
                                         placeholder="Mô tả thêm về sân..."
-                                    )
+                                    ) #{field.description}
                                 .form-group
                                     label
                                         | VỊ TRÍ

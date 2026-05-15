@@ -86,8 +86,13 @@ module.exports.createPost = async (req, res) => {
     const field = new Field(dataField);
     await field.save();
     // Lưu pricing
+    let schedules = req.body.schedule || [];
+
+    if (!Array.isArray(schedules)) {
+        schedules = [schedules];
+    }
     const listPricing = [];
-    req.body.schedule.forEach(item => {
+    schedules.forEach(item => {
         const [day, time] = item.split("-");
 
         const hour = parseInt(time.split(":")[0]);
@@ -252,6 +257,10 @@ module.exports.editPatch = async (req, res) => {
         req.body.price = {
             price: req.body.price,
             priceVip: req.body.priceVip
+        }
+        req.body.address = {
+            titleAddress: req.body.titleAddress,
+            googleMapUrl: req.body.googleMapUrl
         }
         const field = await Field.findOneAndUpdate({
             _id: req.params.id,
