@@ -1,0 +1,61 @@
+extends ../../layout/default.pug
+
+block content
+    .field-detail-page
+        .field-detail-container
+            h1.field-detail-title Chi tiết sân bóng
+
+            .field-detail-card
+                .field-detail-top
+
+                    .field-detail-image
+                        img(src="https://images.unsplash.com/photo-1574629810360-7efbbe195018")
+
+                    .field-detail-info
+                        h2.field-detail-name #{field.name}
+                        .field-detail-item
+                            span.field-detail-label Giá:
+                            span #{field.price.price} VNĐ / giờ
+                        .field-detail-item
+                            span.field-detail-label Giá cao điểm:
+                            span #{field.price.priceVip} VNĐ / giờ
+                        .field-detail-item
+                            span.field-detail-label Trạng thái:
+                            if(field.status == "active")
+                                span.field-detail-status.field-detail-status-active Hoạt động
+                            else if(field.status == "inactive")
+                                span.field-detail-status.field-detail-status-inactive Tạm nghỉ
+                .field-detail-section
+                    h3.field-detail-section-title Thông tin cơ bản
+                    .field-detail-info
+                        .field-detail-item
+                            span.detail-label Kích thước: 
+                            span #{field.size}
+
+                        .field-detail-item
+                            span.detail-label Loại cỏ: 
+                            span #{field.grasstype}
+                        .field-detail-item
+                            span.detail-label Địa điểm chi tiết: 
+                            a(
+                                target = "_blank"
+                                href= field.address.googleMapUrl
+                                readonly
+                            ) #{field.address.titleAddress}
+                .field-detail-section
+                    h3.field-detail-section-title Tiện ích
+
+                    .field-detail-utilities
+                        span.field-detail-utility-tag Wifi
+                        span.field-detail-utility-tag Bãi xe
+                        span.field-detail-utility-tag Đèn LED
+
+                .field-detail-section
+                    h3.field-detail-section-title Mô tả
+
+                    .field-detail-description
+                        | #{field.description}
+
+                .field-detail-actions
+                    a.field-detail-btn.field-detail-btn-edit(href="#") Chỉnh sửa
+                    a.field-detail-btn.field-detail-btn-back(href="#") Quay lại

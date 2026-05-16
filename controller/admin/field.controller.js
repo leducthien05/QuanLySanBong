@@ -308,3 +308,14 @@ module.exports.editPatch = async (req, res) => {
         res.redirect(req.get("referer") || "/");
     }
 }
+// [GET] /admin/fields/detail/:id
+module.exports.detail = async (req, res) => {
+    const field = await Field.findOne({
+        _id: req.params.id,
+        deleted: false
+    });
+    res.render("admin/page/field/detail", {
+        titlePage: field.name,
+        field: field
+    });
+}

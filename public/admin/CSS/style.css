@@ -1207,3 +1207,152 @@ td {
     margin-top: 0 !important; /* bỏ mt-2 */
     white-space: nowrap;
 }
+
+/* Chi tiết */
+.field-detail-page {
+    background: #001a12;
+    min-height: 100vh;
+    padding: 30px;
+    color: white;
+}
+
+.field-detail-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.field-detail-title {
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 30px;
+}
+
+.field-detail-card {
+    background: #002417;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.field-detail-top {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.field-detail-image {
+    width: 450px;
+    height: 280px;
+    border-radius: 20px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.field-detail-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.field-detail-info {
+    flex: 1;
+}
+
+.field-detail-name {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 25px;
+}
+
+.field-detail-item {
+    margin-bottom: 18px;
+    font-size: 20px;
+}
+
+.field-detail-label {
+    color: #7fffd4;
+    font-weight: 700;
+    margin-right: 8px;
+}
+
+.field-detail-status {
+    display: inline-block;
+    padding: 8px 18px;
+    border-radius: 30px;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.field-detail-status-active {
+    background: #1ec773;
+    color: white;
+}
+
+.field-detail-status-inactive {
+    background: #ff4d4d;
+    color: white;
+}
+
+.field-detail-section {
+    margin-top: 30px;
+}
+
+.field-detail-section-title {
+    font-size: 24px;
+    color: #7fffd4;
+    margin-bottom: 15px;
+}
+
+.field-detail-utilities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.field-detail-utility-tag {
+    background: #004b2d;
+    padding: 10px 18px;
+    border-radius: 30px;
+    font-size: 15px;
+}
+
+.field-detail-description {
+    background: #00351f;
+    padding: 20px;
+    border-radius: 15px;
+    line-height: 1.8;
+    font-size: 17px;
+}
+
+.field-detail-actions {
+    margin-top: 35px;
+    display: flex;
+    gap: 20px;
+}
+
+.field-detail-btn {
+    padding: 14px 28px;
+    border-radius: 14px;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 700;
+    transition: 0.3s;
+    display: inline-block;
+}
+
+.field-detail-btn-edit {
+    background: #8ef542;
+    color: black;
+}
+
+.field-detail-btn-back {
+    background: #1ec773;
+    color: white;
+}
+
+.field-detail-btn:hover {
+    opacity: 0.9;
+}
+.detail-label {
+    font-size: 20px;
+}
