@@ -9,7 +9,7 @@ block content
                 .field-detail-top
 
                     .field-detail-image
-                        img(src="https://images.unsplash.com/photo-1574629810360-7efbbe195018")
+                        img(src=field.image)
 
                     .field-detail-info
                         h2.field-detail-name #{field.name}
@@ -57,5 +57,5 @@ block content
                         | #{field.description}
 
                 .field-detail-actions
-                    a.field-detail-btn.field-detail-btn-edit(href="#") Chỉnh sửa
-                    a.field-detail-btn.field-detail-btn-back(href="#") Quay lại
+                    a.field-detail-btn.field-detail-btn-edit(href=`${prefixAdmin}/fields/edit/${field._id}`) Chỉnh sửa
+                    a.field-detail-btn.field-detail-btn-back(href=`${prefixAdmin}/fields`) Quay lại

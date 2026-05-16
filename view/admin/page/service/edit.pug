@@ -1,0 +1,147 @@
+extends ../../layout/default.pug
+
+block content
+    .create-field-page
+        .add-field-wrapper
+
+            // Header
+            .page-header
+                p Điền đầy đủ thông tin để hiển thị sân trên hệ thống
+
+            .main-content
+                .info-card
+                    .card-body
+                        
+                        form(
+                            id="form-step1"
+                            enctype="multipart/form-data"
+                            method="POST"
+                            action=`${prefixAdmin}/services/edit/${service._id}?_method=PATCH`
+                        )
+                            .div-step1.active
+                                .card-header
+                                    img(
+                                        src="https://cdn-icons-png.flaticon.com/512/1828/1828919.png"
+                                        width="28"
+                                        alt=""
+                                    )
+                                    div
+                                        h5 Thông tin cơ bản
+                                        small Tên, loại và giá cả
+                                .form-group
+                                    label
+                                        | TÊN
+                                        span.required *
+                                    input(
+                                        type="text"
+                                        id="tenSan"
+                                        name="name"
+                                        value=service.name
+                                        placeholder="Ví dụ: Áo, bóng,...."
+                                        required
+                                    )
+
+                                .row.g-3
+                                    .col-md-6
+                                        .form-group
+                                            label GIÁ (VND)
+                                            input(
+                                                type="number"
+                                                id="giaThue"
+                                                name="price"
+                                                value=service.price
+                                                placeholder="350000"
+                                            )
+                                    .col-md-6
+                                        .form-group
+                                            label SỐ LƯỢNG
+                                            input(
+                                                type="number"
+                                                id="giaThue"
+                                                name="stock"
+                                                value=service.stock
+                                                placeholder="10"
+                                            )
+                                .form-group
+                                    label MÔ TẢ
+                                    textarea(
+                                        id="moTa"
+                                        rows="4"
+                                        name="description"
+                                        placeholder="Mô tả thêm về sân..."
+                                    ) #{service.description}
+                                .row.g-4
+                                    // upload image - 6 phần
+                                    .col-lg-7
+                                        .upload-card
+                                            .upload-header
+                                                .upload-icon
+                                                    i(class="fa fa-camera")
+                                                .upload-info
+                                                    h3 Hình ảnh 
+
+                                            .upload-body
+                                                label.upload-box(for="image")
+                                                    i(class="fa fa-image upload-main-icon")
+                                                    input(
+                                                        type="file"
+                                                        id="image"
+                                                        multiple
+                                                        name="image"
+                                                        hidden
+                                                    )
+                                                    img(
+                                                        src=service.image 
+                                                        width="200"
+                                                    )
+
+                                    // trạng thái - 4 phần
+                                    .col-lg-5
+                                        .publish-card
+                                            .publish-header
+                                                .publish-icon
+                                                    i(class="fa fa-traffic-light")
+                                                h3 Trạng thái đăng
+
+                                            .publish-body
+                                                label.status-option.active
+                                                    .status-left
+                                                        span.dot.green
+                                                        .status-info
+                                                            h4 Mở cửa ngay
+                                                            p Nhận đặt sân ngay sau khi đăng
+                                                    input(
+                                                        type="radio" 
+                                                        name="status" 
+                                                        value="active" 
+                                                        checked = (service.status == "actice" ? true : false)
+                                                    )
+
+                                                label.status-option
+                                                    .status-left
+                                                        span.dot.yellow
+                                                        .status-info
+                                                            h4 Đang chuẩn bị
+                                                            p Hiển thị nhưng chưa nhận đặt
+                                                    input(
+                                                        type="radio" 
+                                                        name="status" 
+                                                        value="inactive"
+                                                        checked = (service.status == "inactice" ? true : false)
+                                                    )
+                                .form-group
+                                    label
+                                        | VỊ TRÍ
+                                    input(
+                                        type="text"
+                                        id="viTri"
+                                        name="position"
+                                        min = 1
+                                        value=service.position
+                                        placeholder="1"
+                                    )
+                            // footer submit
+                            .form-footer
+                                button(type="button" class="btn-back") Quay lại
+                                button(type="submit" class="btn-submit") Sửa tiện ích
+    script(src="/admin/JS/script.js") 

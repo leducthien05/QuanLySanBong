@@ -5,10 +5,13 @@ const serviceSchema = new mongoose.Schema({
     name: String,
     stock: Number,
     type: String,
+    image: String,
     status: {
         type: String,
         default: "active"
     },
+    position: Number,
+    description: String,
     price: Number,
     createdAt: Date, 
     updatedAt: Date,

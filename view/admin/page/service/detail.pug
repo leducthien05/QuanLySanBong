@@ -1,0 +1,34 @@
+extends ../../layout/default.pug
+
+block content
+    .field-detail-page
+        .field-detail-container
+            h1.field-detail-title Chi tiết sân bóng
+
+            .field-detail-card
+                .field-detail-top
+                    .field-detail-image
+                        img(src=service.image)
+                    .field-detail-info
+                        h2.field-detail-name #{service.name}
+                        .field-detail-item
+                            span.field-detail-label Giá:
+                            span #{service.price} VNĐ / giờ
+                        .field-detail-item
+                            span.field-detail-label Số lượng:
+                            span #{service.stock}
+                        .field-detail-item
+                            span.field-detail-label Trạng thái:
+                            if(service.status == "active")
+                                span.field-detail-status.field-detail-status-active Hoạt động
+                            else if(service.status == "inactive")
+                                span.field-detail-status.field-detail-status-inactive Tạm nghỉ
+                .field-detail-section
+                    h3.field-detail-section-title Mô tả
+
+                    .field-detail-description
+                        | #{service.description}
+
+                .field-detail-actions
+                    a.field-detail-btn.field-detail-btn-edit(href=`${prefixAdmin}/services/edit/${service._id}`) Chỉnh sửa
+                    a.field-detail-btn.field-detail-btn-back(href=`${prefixAdmin}/services`) Quay lại

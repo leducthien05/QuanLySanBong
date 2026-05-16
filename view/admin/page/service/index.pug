@@ -1,0 +1,130 @@
+extends ../../layout/default.pug
+include ../../mixin/pagination.pug
+include ../../mixin/search.pug
+include ../../mixin/buttonStatus.pug
+include ../../mixin/sort.pug
+include ../../mixin/change-multi.pug
+
+block content
+    .card.mb-3
+        .card-header Bộ lọc và Tìm kiếm
+            .card-body
+                .row
+                    //- if(role.permission.includes("products_edit"))
+                    .col-6
+                        +buttonStatus(filterStatus)
+                    .col-6 
+                        +search(keyword)
+    .card.mb-3
+        .card-header Sắp xếp
+            .card-body
+                .row
+                    .col-6
+                        +sort
+    
+    .card.mb-3
+        .card-header Hành động
+            .card-body 
+                .row
+                    //- if(role.permission.includes("products_edit")) 
+                    .col-8 
+                        +change(`${prefixAdmin}/services/change-multi-status?_method=PATCH`)
+                    //- if(role.permission.includes("products_create"))
+                    .col-4
+                        div(class="field-header")
+                            div
+                            a(
+                                href=`${prefixAdmin}/services/create`
+                                class="add-btn"
+                            ) + Thêm mới
+    div(class="field-table")
+        table(
+            table-view
+            checkbox-multi
+        )
+            thead
+                tr
+                    th 
+                        input(
+                            type="checkbox"
+                            checkbox-all
+                        )
+                    th TÊN
+                    th ẢNH
+                    th SỐ LƯỢNG
+                    th VỊ TRÍ
+                    th GIÁ
+                    th TRẠNG THÁI
+                    th THAO TÁC
+            tbody
+                each item in service
+                    tr
+                        td 
+                            input(
+                                type="checkbox"
+                                value = item._id 
+                                checkbox-status
+                                name = "id"
+                            )
+                        td #{item.name}
+                        td 
+                            img(
+                                src= item.image 
+                                style="border-radius: 28px; border: 2px solid green;"
+                                width="50"
+                            )
+                        td 
+                            input(
+                                type="number"
+                                value = item.stock
+                                style="width: 60px"
+                                min = "1"
+                                name = "stock"
+                            )
+                        td 
+                            input(
+                                type="number"
+                                value = item.position 
+                                style="width: 60px"
+                                min = "1"
+                                name = "position"
+                            )
+                        td(class="price") #{item.price}
+                        td
+                            if(item.status == "active")
+                                span(
+                                    status = item.status
+                                    data-status = item._id
+                                    class="status open"
+                                    ) ● Mở cửa
+                            else 
+                                span(
+                                    status = item.status
+                                    data-status = item._id
+                                    class="status"
+                                    ) ● Đóng cửa
+                        td
+                            a(
+                                class="action-btn"
+                                href=`${prefixAdmin}/services/edit/${item._id}`
+                            ) Sửa
+                            button(
+                                btn-delete
+                                data-id = item._id
+                                class="action-btn"
+                            ) Xóa
+                            a(
+                                href=`${prefixAdmin}/services/detail/${item._id}`
+                                class="action-btn"
+                            ) Chi tiết
+            +pagination(pagination) 
+
+    form(
+        action = `${prefixAdmin}/services`
+        form-change-status
+    )  
+    form(
+        action = `${prefixAdmin}/services/delete`
+        form-delete
+    )      
+    script(src="/admin/JS/script.js") 

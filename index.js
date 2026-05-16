@@ -10,12 +10,26 @@ database.connect();
 const systemConfig = require("./config/system");
 app.locals.prefixAdmin = systemConfig.systemConfig.prefixAdmin;
 // method-override
-const methodOverride = require("method-override"); 
+const methodOverride = require("method-override");
 app.use(methodOverride('_method'));
 // req.body
 // app.use(express.urlencoded({ extended: true }));
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
+// express-session
+const session = require('express-session');
+app.use(session({
+  secret: 'Thienle',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    secure: false,  // local dùng HTTP nên phải để false
+    maxAge: 60000
+  }
+}));
+// flash
+const flash = require('express-flash');
+app.use(flash());
 // View
 app.set("views", `${__dirname}/view`);
 app.set("view engine", "pug");

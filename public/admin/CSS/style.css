@@ -823,7 +823,9 @@ td {
 .div-step2 {
     display: none;
 }
-
+.div-step {
+    display: block;
+}
 .div-step1.active,
 .div-step3.active,
 .div-step2.active {

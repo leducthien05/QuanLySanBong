@@ -4,9 +4,9 @@ const router = express.Router();
 const multer = require("multer");
 const upload = multer();
 
-const controller = require("../../controller/admin/field.controller");
+const controller = require("../../controller/admin/service.controller");
 const uploadImage = require("../../middleware/admin/uploadImage.middleware");
-const validate = require("../../validator/admin/field.validate");
+const validate = require("../../validator/admin/service.validate");
 router.get("/", controller.index);
 router.get("/create", controller.create);
 router.post(
@@ -18,7 +18,7 @@ router.post(
 );
 router.patch("/change-status/:status/:id", controller.changeStatus);
 router.patch("/change-multi-status", controller.changeMultiStatus);
-router.delete("/delete/:id", controller.deleteField);
+router.delete("/delete/:id", controller.deleteService);
 router.get("/edit/:id", controller.edit);
 router.patch(
     "/edit/:id",
