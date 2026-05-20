@@ -19,11 +19,19 @@ body {
 
 .sidebar {
     width: 260px;
+    height: 100vh;
     background: #07150f;
     border-right: 1px solid rgba(155, 255, 100, 0.1);
+
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    z-index: 1000;
 }
 
 .logo {
@@ -119,11 +127,101 @@ hr {
     color: #a3ff4d;
     font-weight: bold;
 }
+/* Hover menu item */
+.menu li a {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    text-decoration: none;
+    color: #8aa292;
+    border-radius: 22px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Hover effect */
+.menu li a:hover {
+    background: rgba(163, 255, 77, 0.08);
+    color: #a3ff4d;
+    transform: translateX(6px);
+    box-shadow: 0 0 12px rgba(163, 255, 77, 0.12);
+}
+
+/* Thanh sáng bên trái khi hover */
+.menu li a::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 15%;
+    width: 4px;
+    height: 70%;
+    background: #a3ff4d;
+    border-radius: 10px;
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+}
+
+.menu li a:hover::before {
+    transform: scaleY(1);
+}
+
+/* Hover cho badge */
+.badge {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.menu li:hover .badge {
+    transform: scale(1.1);
+    box-shadow: 0 0 12px rgba(255, 109, 109, 0.5);
+}
+
+/* Hover avatar admin */
+.avatar {
+    transition: all 0.3s ease;
+}
+
+.avatar:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 15px rgba(163, 255, 77, 0.25);
+}
+/* Scrollbar sidebar mini */
+.sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: #153b01;
+    border-radius: 999px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: #1e3c02;
+}
+
+/* Firefox */
+.sidebar {
+    scrollbar-width: thin;
+    scrollbar-color: #133501 transparent;
+}
 
 /* MAIN */
-
 .main {
     flex: 1;
+    margin-left: 260px;
+    width: calc(100% - 260px);
+    height: 100vh;
+    overflow-y: auto;
+
+    /* Ẩn scrollbar nhưng vẫn scroll */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 .header {
@@ -1054,11 +1152,6 @@ td {
     cursor: pointer;
 }
 
-/* tránh nội dung bị footer che */
-.create-field-page {
-    padding-bottom: 120px;
-}
-
 /* lịch sân */
 /* STEP 3 */
 /* STEP 3 COMPACT */
@@ -1357,4 +1450,322 @@ td {
 }
 .detail-label {
     font-size: 20px;
+}
+
+/* =========================================================
+   PERMISSION PAGE
+========================================================= */
+
+.permission-page {
+    padding: 10px 12px;
+    background: #020f08;
+    min-height: 100vh;
+}
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.permission-card {
+    background: linear-gradient(
+        180deg,
+        rgba(5, 32, 18, 0.98) 0%,
+        rgba(2, 18, 10, 0.98) 100%
+    );
+
+    border: 1px solid rgba(119, 255, 91, 0.1);
+    border-radius: 18px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 0 0 1px rgba(122, 255, 92, 0.03),
+        0 12px 30px rgba(0, 0, 0, 0.35);
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.permission-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 16px 18px;
+
+    border-bottom: 1px solid rgba(119, 255, 91, 0.08);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-icon {
+    width: 40px;
+    height: 40px;
+
+    border-radius: 12px;
+
+    background: linear-gradient(
+        180deg,
+        rgba(154, 255, 83, 0.22),
+        rgba(85, 255, 111, 0.08)
+    );
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #ffe28a;
+    font-size: 16px;
+}
+
+.header-content h2 {
+    margin: 0;
+
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+/* =========================================================
+   SELECT
+========================================================= */
+
+.role-filter {
+    height: 40px;
+    padding: 0 14px;
+
+    border-radius: 12px;
+    border: 1px solid rgba(133, 255, 90, 0.12);
+
+    background: rgba(1, 37, 7, 0);
+
+    color: #ffffff;
+    font-size: 14px;
+
+    outline: none;
+}
+.role-filter option {
+    background: #041b0f;
+    color: #ffffff;
+    border-radius: 12px;
+}
+/* =========================================================
+   BUTTON
+========================================================= */
+
+.save-btn {
+    border: none;
+    background: transparent;
+
+    color: #8dff5d;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.save-btn:hover {
+    color: #b7ff92;
+}
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.permission-table-wrapper {
+    overflow-x: auto;
+}
+
+.permission-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* =========================================================
+   TABLE HEAD
+========================================================= */
+
+.permission-table thead th {
+    padding: 18px 12px 14px;
+
+    text-align: center;
+
+    color: rgba(197, 255, 188, 0.55);
+
+    font-size: 13px;
+    font-weight: 500;
+
+    border-bottom: 1px solid rgba(119, 255, 91, 0.08);
+}
+
+.permission-table thead th:first-child {
+    text-align: left;
+    min-width: 240px;
+}
+
+.permission-col {
+    color: rgba(197, 255, 188, 0.4) !important;
+    letter-spacing: 1px;
+}
+
+.role-head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.role-head i {
+    font-size: 14px;
+}
+
+.role-head span {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* =========================================================
+   TABLE BODY
+========================================================= */
+
+.permission-table tbody tr {
+    border-bottom: 1px solid rgba(119, 255, 91, 0.05);
+}
+
+.permission-table tbody td {
+    padding: 12px;
+    text-align: center;
+}
+
+.permission-name {
+    text-align: left !important;
+
+    color: #ffffff;
+
+    font-size: 15px;
+    font-weight: 500;
+}
+
+/* =========================================================
+   GROUP ROW
+========================================================= */
+
+.group-row td {
+    padding: 12px;
+
+    background: rgba(130, 255, 72, 0.03);
+}
+
+.group-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    color: #98ff59;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    letter-spacing: 0.3px;
+}
+
+/* =========================================================
+   CHECKBOX
+========================================================= */
+
+.checkbox-custom {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.checkbox-custom input {
+    display: none;
+}
+
+.checkmark {
+    width: 24px;
+    height: 24px;
+
+    border-radius: 7px;
+    border: 1px solid rgba(127, 255, 80, 0.14);
+
+    background: rgba(255, 255, 255, 0.02);
+
+    transition: 0.2s;
+    position: relative;
+}
+
+.checkbox-custom input:checked + .checkmark {
+    border-color: rgba(138, 255, 82, 0.4);
+
+    background: rgba(140, 255, 94, 0.08);
+}
+
+.checkbox-custom input:checked + .checkmark::after {
+    content: "✓";
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    color: #99ff59;
+
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.checkbox-custom input:disabled + .checkmark {
+    opacity: 0.4;
+}
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+.permission-table-wrapper::-webkit-scrollbar {
+    height: 6px;
+}
+
+.permission-table-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(133, 255, 90, 0.2);
+    border-radius: 999px;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 992px) {
+    .permission-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .header-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .permission-name {
+        font-size: 14px;
+    }
 }

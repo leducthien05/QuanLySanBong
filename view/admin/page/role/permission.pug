@@ -1,0 +1,469 @@
+extends ../../layout/default.pug
+
+block content
+    .permission-page
+        form.permission-form(
+            method="POST"
+            action=`${prefixAdmin}/roles/permission?_method=PATCH`
+            form-permission
+
+        )
+            div(
+                class="form-group d-none"
+                data-role-all = roles
+            )
+                input(
+                    type="text"
+                    class="form-control"
+                    input-permission-form
+                    name = "permission"
+                )
+            .permission-card
+
+                //- Header
+                .permission-header
+                    .header-left
+                        .header-icon
+                            i.fa-solid.fa-user-shield
+                        .header-content
+                            h2 Ma trận quyền truy cập
+
+                    .header-right
+                        select(class="role-filter")
+                            option Tất cả vai trò
+                            each item in roles 
+                                option(value = item._id) #{item.name}
+
+                        button(
+                            class="save-btn"
+                            type="submit"
+                        )
+                            | Lưu thay đổi
+
+                //- Table
+                .permission-table-wrapper
+                    table(class="permission-table")
+
+                        thead
+                            tr
+                                th.permission-col QUYỀN HẠN  
+                                each item in roles
+                                    th
+                                        .role-head
+                                            span #{item.name}
+                        tbody
+                            tr(
+                                data-role = "id"
+                                class = "d-none"
+                            ) 
+                                    
+                                each item in roles
+                                    td(class="text-center")
+                                        input(
+                                           
+                                            name="id"
+                                            type="text"
+                                            value = item.id
+                                        )
+                            //- Group title
+                            tr.group-row
+                                td(colspan="6")
+                                    .group-title
+                                        i.fa-regular.fa-futbol
+                                        span QUẢN LÝ SÂN BÓNG
+
+                            //- Row 1
+                            tr(data-role="fields_view")
+                                td.permission-name Xem danh sách sân
+                                each item in roles
+                                    td("fields_view")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+
+                            //- Row 2
+                            tr(data-role="fields_create")
+                                td.permission-name Thêm sân mới
+
+                                each item in roles
+                                    td("fields_create")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+
+                            //- Row 3
+                            tr(data-role="fields_edit")
+                                td.permission-name Chỉnh sửa thông tin sân
+
+                                each item in roles
+                                    td("fields_edit")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+
+                            //- Row 4
+                            tr(data-role="fields_delete")
+                                td.permission-name Xóa sân
+
+                                each item in roles
+                                    td("fields_delete")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+
+                            //- Row 5
+                            tr(data-role="fields_status")
+                                td.permission-name Đổi trạng thái sân
+
+                                each item in roles
+                                    td("fields_status")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+                            //- Group title
+                            tr.group-row
+                                td(colspan="6")
+                                    .group-title
+                                        i.fa-regular.fa-futbol
+                                        span QUẢN LÝ LỊCH ĐẶT
+
+                            //- Row 1
+                            tr(data-role="bookings_view")
+                                td.permission-name Xem danh sách lịch đặt
+                                each item in roles
+                                    td("bookings_view")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+
+                            //- Row 2
+                            tr(data-role="bookings_create")
+                                td.permission-name Tạo lịch đặt
+
+                                each item in roles
+                                    td("bookings_create")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+
+                            //- Row 3
+                            tr(data-role="bookings_edit")
+                                td.permission-name Chỉnh sửa lịch đặt
+
+                                each item in roles
+                                    td("bookings_edit")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+
+                            //- Row 4
+                            tr(data-role="bookings_delete")
+                                td.permission-name Hủy lịch đặt
+
+                                each item in roles
+                                    td("bookings_delete")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+                            //- Group title
+                            tr.group-row
+                                td(colspan="6")
+                                    .group-title
+                                        i.fa-regular.fa-futbol
+                                        span QUẢN LÝ DỊCH VỤ
+
+                            //- Row 1
+                            tr(data-role="services_view")
+                                td.permission-name Xem danh sách dịch vụ
+                                each item in roles
+                                    td("services_view")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+
+                            //- Row 2
+                            tr(data-role="services_create")
+                                td.permission-name Thêm mới dịch vụ
+
+                                each item in roles
+                                    td("services_create")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+
+                            //- Row 3
+                            tr(data-role="services_edit")
+                                td.permission-name Chỉnh sửa thông tin dịch vụ
+
+                                each item in roles
+                                    td("services_edit")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+
+                            //- Row 4
+                            tr(data-role="service_delete")
+                                td.permission-name Xóa dịch vụ
+
+                                each item in roles
+                                    td("service_delete")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+                            //- Group title
+                            tr.group-row
+                                td(colspan="6")
+                                    .group-title
+                                        i.fa-regular.fa-futbol
+                                        span QUẢN LÝ NGƯỜI DÙNG
+
+                            //- Row 1
+                            tr(data-role="users_view")
+                                td.permission-name Xem danh người dùng
+                                each item in roles
+                                    td("users_view")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+
+                            //- Row 2
+                            tr(data-role="users_create")
+                                td.permission-name Thêm người dùng mới
+
+                                each item in roles
+                                    td("users_create")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+
+                            //- Row 3
+                            tr(data-role="users_edit")
+                                td.permission-name Chỉnh sửa thông tin người dùng
+
+                                each item in roles
+                                    td("users_edit")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+
+                            //- Row 4
+                            tr(data-role="users_delete")
+                                td.permission-name Xóa người dùng
+
+                                each item in roles
+                                    td("users_delete")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+
+                            //- Row 5
+                            tr(data-role="users_status")
+                                td.permission-name Đổi trạng thái người dùng
+
+                                each item in roles
+                                    td("users_status")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+                            //- Group title
+                            tr.group-row
+                                td(colspan="6")
+                                    .group-title
+                                        i.fa-regular.fa-futbol
+                                        span QUẢN LÝ TÀI KHOẢN
+
+                            //- Row 1
+                            tr(data-role="accounts_view")
+                                td.permission-name Xem danh sách tài khoản
+                                each item in roles
+                                    td("accounts_view")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+
+                            //- Row 2
+                            tr(data-role="accounts_create")
+                                td.permission-name Thêm tài khoản mới mới
+
+                                each item in roles
+                                    td("accounts_create")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+
+                            //- Row 3
+                            tr(data-role="accounts_edit")
+                                td.permission-name Chỉnh sửa thông tin tài khoản
+
+                                each item in roles
+                                    td("accounts_edit")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+
+                            //- Row 4
+                            tr(data-role="accounts_delete")
+                                td.permission-name Xóa tài khoản
+
+                                each item in roles
+                                    td("accounts_delete")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+
+                            //- Row 5
+                            tr(data-role="accounts_status")
+                                td.permission-name Đổi trạng thái tài khoản
+
+                                each item in roles
+                                    td("accounts_status")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+                            //- Group title
+                            tr.group-row
+                                td(colspan="6")
+                                    .group-title
+                                        i.fa-regular.fa-futbol
+                                        span Báo cáo
+
+                            //- Row 1
+                            tr(data-role="reports_revenue")
+                                td.permission-name Báo cáo doanh thu
+                                each item in roles
+                                    td("reports_revenue")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+
+                            //- Row 2
+                            tr(data-role="reports_field")
+                                td.permission-name Báo cáo sân
+
+                                each item in roles
+                                    td("reports_field")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+
+                            //- Row 3
+                            tr(data-role="reports_customer")
+                                td.permission-name Báo cáo khách hàng
+
+                                each item in roles
+                                    td("reports_customer")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+
+                            //- Row 4
+                            tr(data-role="reports_booking")
+                                td.permission-name Báo cáo đặt sân
+
+                                each item in roles
+                                    td("reports_booking")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+
+                            //- Row 5
+                            tr(data-role="reports_overview")
+                                td.permission-name Báo cáo tổng quan
+
+                                each item in roles
+                                    td("reports_overview")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+                            //- Group title
+                            tr.group-row
+                                td(colspan="6")
+                                    .group-title
+                                        i.fa-regular.fa-futbol
+                                        span PHÂN QUYỀN
+
+                            //- Row 1
+                            tr(data-role="permission")
+                                td.permission-name Phân quyền tài khoản
+                                each item in roles
+                                    td("permission")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+
+                            //- Group title
+                            tr.group-row
+                                td(colspan="6")
+                                    .group-title
+                                        i.fa-regular.fa-futbol
+                                        span CÀI ĐẶT CHUNG
+
+                            //- Row 1
+                            tr(data-role="settings")
+                                td.permission-name Cài đặt hệt thống
+                                each item in roles
+                                    td("settings")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+    script(src="/admin/JS/permission.js")

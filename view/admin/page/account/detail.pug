@@ -1,0 +1,39 @@
+extends ../../layout/default.pug
+
+block content
+    .field-detail-page
+        .field-detail-container
+            h1.field-detail-title Chi tiết tài khoản
+
+            .field-detail-card
+                .field-detail-top
+                    .field-detail-image
+                        if account.avatar
+                            img(src=account.avatar)
+                        else
+                            img(src="https://cdn-icons-png.flaticon.com/512/847/847969.png")
+                    .field-detail-info
+                        h2.field-detail-name #{account.fullName}
+                        .field-detail-item
+                            span.field-detail-label Email:
+                            span #{account.email}
+                        .field-detail-item
+                            span.field-detail-label Vai trò:
+                            span #{roleName || "Chưa gán"}
+                        .field-detail-item
+                            span.field-detail-label Trạng thái:
+                            if(account.status == "active")
+                                span.field-detail-status.field-detail-status-active Hoạt động
+                            else if(account.status == "inactive")
+                                span.field-detail-status.field-detail-status-inactive Tạm nghỉ
+                .field-detail-section
+                    h3.field-detail-section-title Thông tin thêm
+
+                    .field-detail-description
+                        | ID: #{account._id}
+                        br
+                        | Token: #{account.token}
+
+                .field-detail-actions
+                    a.field-detail-btn.field-detail-btn-edit(href=`${prefixAdmin}/accounts/edit/${account._id}`) Chỉnh sửa
+                    a.field-detail-btn.field-detail-btn-back(href=`${prefixAdmin}/accounts`) Quay lại

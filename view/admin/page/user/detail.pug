@@ -1,0 +1,39 @@
+extends ../../layout/default.pug
+
+block content
+    .field-detail-page
+        .field-detail-container
+            h1.field-detail-title Chi tiết người dùng
+
+            .field-detail-card
+                .field-detail-top
+                    .field-detail-image
+                        if user.avatar
+                            img(src=user.avatar)
+                        else
+                            img(src="https://cdn-icons-png.flaticon.com/512/847/847969.png")
+                    .field-detail-info
+                        h2.field-detail-name #{user.userName}
+                        .field-detail-item
+                            span.field-detail-label Email:
+                            span #{user.email}
+                        .field-detail-item
+                            span.field-detail-label Số điện thoại:
+                            span #{user.phone || "Chưa cập nhật"}
+                        .field-detail-item
+                            span.field-detail-label Trạng thái:
+                            if(user.status == "active")
+                                span.field-detail-status.field-detail-status-active Hoạt động
+                            else if(user.status == "inactive")
+                                span.field-detail-status.field-detail-status-inactive Tạm nghỉ
+                .field-detail-section
+                    h3.field-detail-section-title Thông tin thêm
+
+                    .field-detail-description
+                        | ID: #{user._id}
+                        br
+                        | Token: #{user.tokenUser}
+
+                .field-detail-actions
+                    a.field-detail-btn.field-detail-btn-edit(href=`${prefixAdmin}/users/edit/${user._id}`) Chỉnh sửa
+                    a.field-detail-btn.field-detail-btn-back(href=`${prefixAdmin}/users`) Quay lại

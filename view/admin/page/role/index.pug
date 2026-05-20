@@ -1,0 +1,102 @@
+extends ../../layout/default.pug
+include ../../mixin/pagination.pug
+include ../../mixin/search.pug
+include ../../mixin/buttonStatus.pug
+include ../../mixin/sort.pug
+include ../../mixin/change-multi.pug
+
+block content
+    .card.mb-3
+        .card-header Bộ lọc và Tìm kiếm
+            .card-body
+                .row
+                    .col-6
+                        +buttonStatus(filterStatus)
+                    .col-6 
+                        +search(keyword)
+    .card.mb-3
+        .card-header Sắp xếp
+            .card-body
+                .row
+                    .col-6
+                        +sortRole
+    
+    .card.mb-3
+        .card-header Hành động
+            .card-body 
+                .row
+                    .col-8 
+                        +change(`${prefixAdmin}/roles/change-multi-status?_method=PATCH`)
+                    .col-4
+                        div(class="field-header")
+                            div
+                            a(
+                                href=`${prefixAdmin}/roles/create`
+                                class="add-btn"
+                            ) + Thêm mới
+    div(class="field-table")
+        table(
+            table-view
+            checkbox-multi
+        )
+            thead
+                tr
+                    th 
+                        input(
+                            type="checkbox"
+                            checkbox-all
+                        )
+                    th TÊN
+                    th MÔ TẢ
+                    th TRẠNG THÁI
+                    th THAO TÁC
+            tbody
+                each item in role
+                    tr
+                        td 
+                            input(
+                                type="checkbox"
+                                value = item._id 
+                                checkbox-status
+                                name = "id"
+                            )
+                        td #{item.name}
+                        td #{item.description ? item.description : 'N/A'}
+                        td
+                            if(item.status == "active")
+                                span(
+                                    status = item.status
+                                    data-status = item._id
+                                    class="status open"
+                                ) ● Hoạt động
+                            else 
+                                span(
+                                    status = item.status
+                                    data-status = item._id
+                                    class="status"
+                                ) ● Vô hiệu
+                        td
+                            a(
+                                class="action-btn"
+                                href=`${prefixAdmin}/roles/edit/${item._id}`
+                            ) Sửa
+                            button(
+                                btn-delete
+                                data-id = item._id
+                                class="action-btn"
+                            ) Xóa
+                            a(
+                                href=`${prefixAdmin}/roles/detail/${item._id}`
+                                class="action-btn"
+                            ) Chi tiết
+            +pagination(pagination)
+
+    form(
+        action = `${prefixAdmin}/roles`
+        form-change-status
+    )  
+    form(
+        action = `${prefixAdmin}/roles/delete`
+        form-delete
+    )      
+    script(src="/admin/JS/script.js")

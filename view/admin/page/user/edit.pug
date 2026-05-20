@@ -1,0 +1,110 @@
+extends ../../layout/default.pug
+
+block content
+    .create-field-page
+        .add-field-wrapper
+
+            .page-header
+                p Cập nhật thông tin người dùng
+
+            .main-content
+                .info-card
+                    .card-body
+                        form(
+                            id="form-step1"
+                            enctype="multipart/form-data"
+                            method="POST"
+                            action=`${prefixAdmin}/users/edit/${user._id}?_method=PATCH`
+                        )
+                            .div-step1.active
+                                .card-header
+                                    img(
+                                        src="https://cdn-icons-png.flaticon.com/512/1828/1828919.png"
+                                        width="28"
+                                        alt=""
+                                    )
+                                    div
+                                        h5 Thông tin cơ bản
+                                        small Sửa tên, email và số điện thoại
+                                .form-group
+                                    label
+                                        | TÊN NGƯỜI DÙNG
+                                        span.required *
+                                    input(
+                                        type="text"
+                                        name="userName"
+                                        value=user.userName
+                                        required
+                                    )
+                                .row.g-3
+                                    .col-md-6
+                                        .form-group
+                                            label EMAIL
+                                            input(
+                                                type="email"
+                                                name="email"
+                                                value=user.email
+                                            )
+                                    .col-md-6
+                                        .form-group
+                                            label MẬT KHẨU
+                                            input(
+                                                type="password"
+                                                name="password"
+                                                placeholder="Để trống nếu không đổi"
+                                            )
+                                .form-group
+                                    label SỐ ĐIỆN THOẠI
+                                    input(
+                                        type="tel"
+                                        name="phone"
+                                        value=user.phone
+                                        placeholder="0123456789"
+                                    )
+                                .row.g-4
+                                    .col-lg-7
+                                        .upload-card
+                                            .upload-header
+                                                .upload-icon
+                                                    i(class="fa fa-camera")
+                                                .upload-info
+                                                    h3 Ảnh đại diện
+
+                                            .upload-body
+                                                label.upload-box(for="avatar")
+                                                    i(class="fa fa-image upload-main-icon")
+                                                    input(
+                                                        type="file"
+                                                        id="avatar"
+                                                        name="avatar"
+                                                        hidden
+                                                    )
+                                                if user.avatar
+                                                    img(src=user.avatar width="200")
+                                    .col-lg-5
+                                        .publish-card
+                                            .publish-header
+                                                .publish-icon
+                                                    i(class="fa fa-traffic-light")
+                                                h3 Trạng thái tài khoản
+
+                                            .publish-body
+                                                label.status-option(active=(user.status == "active" ? true : false))
+                                                    .status-left
+                                                        span.dot.green
+                                                        .status-info
+                                                            h4 Kích hoạt
+                                                            p Tài khoản có thể đăng nhập ngay
+                                                    input(type="radio" name="status" value="active" checked=(user.status == "active" ? true : false))
+
+                                                label.status-option(active=(user.status == "inactive" ? true : false))
+                                                    .status-left
+                                                        span.dot.yellow
+                                                        .status-info
+                                                            h4 Vô hiệu hóa
+                                                            p Không cho phép đăng nhập
+                                                    input(type="radio" name="status" value="inactive" checked=(user.status == "inactive" ? true : false))
+                            .form-footer
+                                button(type="button" class="btn-back") Quay lại
+                                button(type="submit" class="btn-submit") Cập nhật người dùng
+    script(src="/admin/JS/script.js")

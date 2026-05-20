@@ -1,0 +1,40 @@
+extends ../../layout/default.pug
+
+block content
+    .field-detail-page
+        .field-detail-container
+            h1.field-detail-title Chi tiết đặt sân
+
+            .field-detail-card
+                .field-detail-top
+                    .field-detail-info
+                        h2.field-detail-name #{booking ? booking.node : "Không có dữ liệu"}
+                        .field-detail-item
+                            span.field-detail-label ID:
+                            span #{booking ? booking._id : ""}
+                        .field-detail-item
+                            span.field-detail-label Người đặt ID:
+                            span #{booking ? booking.user_id : ""}
+                        .field-detail-item
+                            span.field-detail-label Sân ID:
+                            span #{booking ? booking.field_id : ""}
+                        .field-detail-item
+                            span.field-detail-label Khung giờ ID:
+                            span #{booking ? booking.slot_id : ""}
+                        .field-detail-item
+                            span.field-detail-label Dịch vụ ID:
+                            span #{booking ? booking.service_id : ""}
+                        .field-detail-item
+                            span.field-detail-label Tổng tiền:
+                            span #{booking ? booking.totalPrice : ""}
+                        .field-detail-item
+                            span.field-detail-label Giá đơn vị:
+                            span #{booking ? booking.price : ""}
+                        .field-detail-item
+                            span.field-detail-label Nội dung:
+                            span #{booking ? booking.node : ""}
+                        .field-detail-item
+                            span.field-detail-label Ngày tạo:
+                            span #{booking && booking.createdAt ? booking.createdAt.toLocaleString() : ""}
+                .field-detail-actions
+                    a.field-detail-btn.field-detail-btn-back(href=`${prefixAdmin}/bookings`) Quay lại

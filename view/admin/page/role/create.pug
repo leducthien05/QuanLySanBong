@@ -1,0 +1,70 @@
+extends ../../layout/default.pug
+
+block content
+    .create-field-page
+        .add-field-wrapper
+
+            .page-header
+                p Điền đầy đủ thông tin để tạo vai trò
+
+            .main-content
+                .info-card
+                    .card-body
+                        
+                        form(
+                            id="form-step1"
+                            method="POST"
+                            action=`${prefixAdmin}/roles/create`
+                        )
+                            .div-step1.active
+                                .card-header
+                                    img(
+                                        src="https://cdn-icons-png.flaticon.com/512/1828/1828919.png"
+                                        width="28"
+                                        alt=""
+                                    )
+                                    div
+                                        h5 Thông tin cơ bản
+                                        small Tên và mô tả vai trò
+                                .form-group
+                                    label
+                                        | TÊN VAI TRÒ
+                                        span.required *
+                                    input(
+                                        type="text"
+                                        name="name"
+                                        placeholder="Ví dụ: Quản lý, Nhân viên,..."
+                                        required
+                                    )
+
+                                .form-group
+                                    label MÔ TẢ
+                                    textarea(
+                                        rows="4"
+                                        name="description"
+                                        placeholder="Mô tả chi tiết về vai trò này..."
+                                    )
+
+                                .form-group
+                                    label TRẠNG THÁI
+                                    .status-options
+                                        label.status-option.active
+                                            .status-left
+                                                span.dot.green
+                                                .status-info
+                                                    h4 Hoạt động
+                                                    p Vai trò có thể được sử dụng ngay
+                                            input(type="radio" name="status" value="active" checked)
+
+                                        label.status-option
+                                            .status-left
+                                                span.dot.yellow
+                                                .status-info
+                                                    h4 Vô hiệu hóa
+                                                    p Vai trò sẽ bị vô hiệu hóa
+                                            input(type="radio" name="status" value="inactive")
+
+                            .form-footer
+                                button(type="button" class="btn-back") Quay lại
+                                button(type="submit" class="btn-submit") Tạo vai trò
+    script(src="/admin/JS/script.js")

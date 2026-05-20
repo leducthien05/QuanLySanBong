@@ -1,0 +1,30 @@
+extends ../../layout/default.pug
+
+block content
+    .field-detail-page
+        .field-detail-container
+            h1.field-detail-title Chi tiết vai trò
+
+            .field-detail-card
+                .field-detail-top
+                    .field-detail-info
+                        h2.field-detail-name #{role.name}
+                        .field-detail-item
+                            span.field-detail-label Mô tả:
+                            span #{role.description ? role.description : 'Không có mô tả'}
+                        .field-detail-item
+                            span.field-detail-label Trạng thái:
+                            if(role.status == "active")
+                                span.field-detail-status.field-detail-status-active Hoạt động
+                            else if(role.status == "inactive")
+                                span.field-detail-status.field-detail-status-inactive Vô hiệu
+                        if(role.permission && role.permission.length > 0)
+                            .field-detail-item
+                                span.field-detail-label Quyền hạn:
+                                ul
+                                    each permission in role.permission
+                                        li #{permission}
+                        
+                .field-detail-actions
+                    a.field-detail-btn.field-detail-btn-edit(href=`${prefixAdmin}/roles/edit/${role._id}`) Chỉnh sửa
+                    a.field-detail-btn.field-detail-btn-back(href=`${prefixAdmin}/roles`) Quay lại

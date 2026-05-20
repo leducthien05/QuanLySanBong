@@ -1,0 +1,66 @@
+extends ../../layout/default.pug
+include ../../mixin/pagination.pug
+include ../../mixin/search.pug
+include ../../mixin/sort.pug
+include ../../mixin/buttonStatus.pug
+include ../../mixin/change-multi.pug
+
+block content
+    .card.mb-3
+        .card-header Bộ lọc và Tìm kiếm
+            .card-body
+                .row
+                    .col-6
+                        +buttonStatus(filterStatus)
+                    .col-6
+                        +search(keyword)
+    .card.mb-3
+        .card-header Sắp xếp
+            .card-body
+                .row
+                    .col-6
+                        +sort
+    .card.mb-3
+        .card-header Danh sách đặt sân
+            .card-body
+                .row
+                    .col-8 
+                        +change(`${prefixAdmin}/services/change-multi-status?_method=PATCH`)
+    .field-table
+        table(table-view)
+            thead
+                tr
+                    th ID
+                    th NGƯỜI ĐẶT
+                    th SÂN
+                    th KHUNG GIỜ
+                    th DỊCH VỤ
+                    th TỔNG TIỀN
+                    th NỘI DUNG
+                    th THAO TÁC
+            tbody
+                each item in booking
+                    tr
+                        td #{item._id}
+                        td #{item.user_id}
+                        td #{item.field_id}
+                        td #{item.slot_id}
+                        td #{item.service_id}
+                        td #{item.totalPrice}
+                        td #{item.node}
+                        td
+                            if(item.status == "active")
+                                span(
+                                    status = item.status
+                                    data-status = item._id
+                                    class="status open"
+                                ) ● Hoạt động
+                            else 
+                                span(
+                                    status = item.status
+                                    data-status = item._id
+                                    class="status"
+                                ) ● Vô hiệu
+        +pagination(pagination)
+    form(action = `${prefixAdmin}/bookings/delete` form-delete)
+    script(src="/admin/JS/script.js")
