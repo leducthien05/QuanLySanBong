@@ -1,0 +1,535 @@
+/* ========================================
+   SETTINGS PAGE - GENERAL STYLES
+   ======================================== */
+
+.settings-container {
+    padding: 20px;
+    background: linear-gradient(135deg, #06110c 0%, #0a1810 100%);
+    min-height: 100vh;
+}
+
+.settings-header {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid rgba(163, 255, 77, 0.2);
+}
+
+.settings-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #a3ff4d;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.settings-title i {
+    font-size: 32px;
+    color: #79ff37;
+}
+
+.settings-subtitle {
+    color: #8aa292;
+    font-size: 14px;
+    margin: 0;
+}
+
+/* ========================================
+   FORM STYLES
+   ======================================== */
+
+.settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ========================================
+   SECTION STYLES (BEM)
+   ======================================== */
+
+.settings-section {
+    background: #071410 !important;
+    border: 1px solid rgba(163, 255, 77, 0.1) !important;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.settings-section:hover {
+    border-color: rgba(163, 255, 77, 0.2) !important;
+    box-shadow: 0 8px 25px rgba(163, 255, 77, 0.1);
+}
+
+.settings-section.card {
+    margin-bottom: 0;
+}
+
+.settings-section .card-header {
+    background: linear-gradient(90deg, rgba(163, 255, 77, 0.08) 0%, rgba(121, 255, 55, 0.05) 100%) !important;
+    border-bottom: 1px solid rgba(163, 255, 77, 0.15) !important;
+    padding: 18px 20px;
+}
+
+.settings-section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #a3ff4d;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.settings-section-header i {
+    font-size: 18px;
+    color: #79ff37;
+}
+
+.settings-section .card-body {
+    background: #071410 !important;
+    padding: 20px;
+    color: #d4e8d4;
+}
+
+/* ========================================
+   FORM ELEMENTS
+   ======================================== */
+
+.form-label {
+    color: #a3ff4d;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.form-control,
+.form-select {
+    background: #0a1810 !important;
+    border: 1px solid rgba(163, 255, 77, 0.2) !important;
+    color: #d4e8d4 !important;
+    padding: 10px 14px;
+    font-size: 13px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background: #0f1f18 !important;
+    border-color: #a3ff4d !important;
+    box-shadow: 0 0 0 0.2rem rgba(163, 255, 77, 0.25) !important;
+    color: #d4e8d4 !important;
+}
+
+.form-control::placeholder {
+    color: #688b74;
+}
+
+.form-control:disabled,
+.form-select:disabled {
+    background: #060d0a !important;
+    color: #688b74 !important;
+}
+
+/* ========================================
+   FORM GROUPS & SPACING
+   ======================================== */
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group.mb-3 {
+    margin-bottom: 20px;
+}
+
+.form-group.mb-2 {
+    margin-bottom: 12px;
+}
+
+/* ========================================
+   DIVIDER
+   ======================================== */
+
+.divider {
+    border: none;
+    border-top: 1px solid rgba(163, 255, 77, 0.15);
+    margin: 20px 0;
+}
+
+/* ========================================
+   IMAGE UPLOAD PREVIEW
+   ======================================== */
+
+.logo-upload-wrapper,
+.favicon-upload-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.logo-input,
+.favicon-input {
+    flex: 1;
+}
+
+.logo-preview-wrapper,
+.favicon-preview-wrapper {
+    width: 100px;
+    height: 100px;
+    border: 2px dashed rgba(163, 255, 77, 0.3);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 24, 16, 0.5);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.logo-preview,
+.favicon-preview {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.logo-placeholder,
+.favicon-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: #688b74;
+    font-size: 12px;
+}
+
+.logo-placeholder i,
+.favicon-placeholder i {
+    font-size: 24px;
+    color: #79ff37;
+    opacity: 0.5;
+}
+
+/* ========================================
+   FORM SWITCH
+   ======================================== */
+
+.form-check.form-switch {
+    padding-left: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.form-check-input {
+    width: 48px;
+    height: 26px;
+    margin-top: 0;
+    background: #0a1810;
+    border: 2px solid rgba(163, 255, 77, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.form-check-input:checked {
+    background: #a3ff4d;
+    border-color: #a3ff4d;
+    box-shadow: 0 0 10px rgba(163, 255, 77, 0.3);
+}
+
+.form-check-input:focus {
+    border-color: #79ff37;
+    box-shadow: 0 0 0 0.25rem rgba(163, 255, 77, 0.25);
+}
+
+.form-check-label {
+    margin-bottom: 0;
+    cursor: pointer;
+    user-select: none;
+    color: #a3ff4d;
+}
+
+/* ========================================
+   MAINTENANCE TOGGLE
+   ======================================== */
+
+.maintenance-toggle {
+    margin-right: 10px;
+}
+
+/* ========================================
+   PAYMENT METHOD STYLES
+   ======================================== */
+
+.payment-method-card {
+    border: 1px solid rgba(163, 255, 77, 0.15);
+    border-radius: 8px;
+    background: rgba(10, 24, 16, 0.3);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.payment-method-card:hover {
+    border-color: rgba(163, 255, 77, 0.25);
+    background: rgba(10, 24, 16, 0.5);
+}
+
+.payment-method-header {
+    padding: 15px 18px;
+    border-bottom: 1px solid rgba(163, 255, 77, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(163, 255, 77, 0.03);
+}
+
+.payment-method-title {
+    color: #a3ff4d;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.payment-method-title i {
+    color: #79ff37;
+    font-size: 16px;
+}
+
+.payment-method-content {
+    padding: 15px;
+    display: none;
+}
+
+.payment-method-content.active {
+    display: block;
+}
+
+/* ========================================
+   QR CODE PREVIEW
+   ======================================== */
+
+.qr-input {
+    display: block;
+    width: 100%;
+}
+
+.qr-preview-wrapper {
+    border: 2px dashed rgba(163, 255, 77, 0.3);
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    background: rgba(10, 24, 16, 0.5);
+    margin-bottom: 10px;
+}
+
+.qr-preview {
+    max-width: 120px;
+    max-height: 120px;
+    border-radius: 6px;
+}
+
+/* ========================================
+   BUTTON STYLES
+   ======================================== */
+
+.settings-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-start;
+    padding-top: 20px;
+    border-top: 1px solid rgba(163, 255, 77, 0.15);
+}
+
+.btn {
+    padding: 11px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, #a3ff4d 0%, #79ff37 100%);
+    color: #030a06;
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(90deg, #79ff37 0%, #a3ff4d 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(163, 255, 77, 0.3);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: #8aa292;
+    border: 1px solid rgba(163, 255, 77, 0.3);
+}
+
+.btn-secondary:hover {
+    background: rgba(163, 255, 77, 0.08);
+    color: #a3ff4d;
+    border-color: #a3ff4d;
+}
+
+.btn i {
+    font-size: 16px;
+}
+
+/* ========================================
+   LOADING STATE
+   ======================================== */
+
+.btn-submit.is-loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.btn-submit.is-loading span::after {
+    content: " ...";
+    animation: dots 1s infinite;
+}
+
+@keyframes dots {
+    0%,
+    20% {
+        content: "";
+    }
+    40% {
+        content: ".";
+    }
+    60% {
+        content: "..";
+    }
+    80%,
+    100% {
+        content: "...";
+    }
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+    .settings-container {
+        padding: 15px;
+    }
+
+    .settings-title {
+        font-size: 22px;
+    }
+
+    .logo-upload-wrapper,
+    .favicon-upload-wrapper {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .settings-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .row {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .col-md-6,
+    .col-md-12 {
+        padding-left: 0;
+        padding-right: 0;
+        margin-bottom: 15px;
+    }
+
+    .payment-method-card {
+        margin-bottom: 12px;
+    }
+}
+
+@media (max-width: 576px) {
+    .settings-section-header {
+        font-size: 14px;
+    }
+
+    .form-label {
+        font-size: 12px;
+    }
+
+    .settings-title {
+        font-size: 18px;
+        gap: 10px;
+    }
+
+    .settings-title i {
+        font-size: 24px;
+    }
+}
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+
+.form-control:focus-visible,
+.form-select:focus-visible,
+.form-check-input:focus-visible,
+.btn:focus-visible {
+    outline: 2px solid #a3ff4d;
+    outline-offset: 2px;
+}
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+
+.text-muted {
+    color: #688b74 !important;
+}
+
+.text-success {
+    color: #a3ff4d !important;
+}
+
+.text-danger {
+    color: #ff6b6b !important;
+}
+
+.mb-3 {
+    margin-bottom: 20px !important;
+}
+
+.mb-4 {
+    margin-bottom: 30px !important;
+}
+
+.mt-3 {
+    margin-top: 20px !important;
+}
+
+.gap-3 {
+    gap: 20px !important;
+}

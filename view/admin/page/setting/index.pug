@@ -1,0 +1,578 @@
+extends ../../layout/default.pug
+
+block content
+    .settings-container
+        
+        .settings-header.mb-4
+            h1.settings-title
+                i.fa-solid.fa-gear
+                span Cài đặt hệ thống
+            p.settings-subtitle Quản lý toàn bộ cài đặt của website
+
+        form.settings-form(
+            action=`${prefixAdmin}/settings/edit?_method=PATCH`
+            method="POST"
+            enctype="multipart/form-data"
+            id="settingForm"
+        )
+            input(type="hidden" name="id" value=setting._id)
+
+            // WEBSITE INFORMATION SECTION
+            .settings-section.card.mb-4
+                .card-header.settings-section-header
+                    i.fa-solid.fa-globe
+                    span Thông tin Website
+                
+                .card-body
+                    .row
+                        .col-md-6
+                            .form-group.mb-3
+                                label.form-label Website Name
+                                input.form-control(
+                                    type="text"
+                                    name="title"
+                                    value=setting.title || ''
+                                    placeholder="Nhập tên website"
+                                    required
+                                )
+                        
+                        .col-md-6
+                            .form-group.mb-3
+                                label.form-label Email
+                                input.form-control(
+                                    type="email"
+                                    name="email"
+                                    value=setting.email || ''
+                                    placeholder="Nhập email"
+                                )
+                    
+                    .row
+                        .col-md-6
+                            .form-group.mb-3
+                                label.form-label Phone Number
+                                input.form-control(
+                                    type="tel"
+                                    name="phone"
+                                    value=setting.phone || ''
+                                    placeholder="Nhập số điện thoại"
+                                )
+                        
+                        .col-md-6
+                            .form-group.mb-3
+                                label.form-label Default Language
+                                select.form-select(name="defaultLanguage")
+                                    option(value="vi" selected=setting.defaultLanguage === 'vi') Tiếng Việt
+                                    option(value="en" selected=setting.defaultLanguage === 'en') English
+                    
+                    .row
+                        .col-md-12
+                            .form-group.mb-3
+                                label.form-label Address
+                                textarea.form-control(
+                                    name="address"
+                                    rows="3"
+                                    placeholder="Nhập địa chỉ"
+                                )= setting.address || ''
+                        
+                        .col-md-12
+                            .form-group.mb-3
+                                label.form-label Copyright
+                                input.form-control(
+                                    type="text"
+                                    name="copyright"
+                                    value=setting.copyright || ''
+                                    placeholder="Nhập text bản quyền"
+                                )
+
+                    .divider
+
+                    .row
+                        .col-md-6
+                            .form-group.mb-3
+                                label.form-label Logo
+                                .logo-upload-wrapper
+                                    input.form-control.logo-input(
+                                        type="file"
+                                        name="logo"
+                                        accept="image/*"
+                                        id="logoInput"
+                                    )
+                                    .logo-preview-wrapper
+                                        if setting.logo
+                                            img.logo-preview(src=setting.logo alt="Logo")
+                                        else
+                                            .logo-placeholder
+                                                i.fa-solid.fa-image
+                                                span No logo
+
+                        .col-md-6
+                            .form-group.mb-3
+                                label.form-label Favicon
+                                .favicon-upload-wrapper
+                                    input.form-control.favicon-input(
+                                        type="file"
+                                        name="favicon"
+                                        accept="image/*"
+                                        id="faviconInput"
+                                    )
+                                    .favicon-preview-wrapper
+                                        if setting.favicon
+                                            img.favicon-preview(src=setting.favicon alt="Favicon")
+                                        else
+                                            .favicon-placeholder
+                                                i.fa-solid.fa-image
+                                                span No favicon
+
+            // WEBSITE CONFIGURATION SECTION
+            .settings-section.card.mb-4
+                .card-header.settings-section-header
+                    i.fa-solid.fa-sliders
+                    span Cấu hình Website
+                
+                .card-body
+                    .row
+                        .col-md-6
+                            .form-group.mb-3
+                                label.form-label Status
+                                select.form-select(name="status")
+                                    option(value="active" selected=setting.status === 'active') Active
+                                    option(value="inactive" selected=setting.status === 'inactive') Inactive
+
+                        .col-md-6
+                            .form-group.mb-3
+                                .form-check.form-switch
+                                    input.form-check-input.maintenance-toggle(
+                                        type="checkbox"
+                                        name="maintenanceMode"
+                                        id="maintenanceMode"
+                                        checked=setting.maintenanceMode || false
+                                    )
+                                    label.form-check-label(for="maintenanceMode") Maintenance Mode
+
+                    .row
+                        .col-md-12
+                            .form-group.mb-3
+                                label.form-label Maintenance Message
+                                textarea.form-control(
+                                    name="maintenanceMessage"
+                                    rows="2"
+                                    placeholder="Nhập thông báo bảo trì"
+                                )= setting.maintenanceMessage || ''
+
+                    .row
+                        .col-md-6
+                            .form-group.mb-3
+                                label.form-label Pagination Limit
+                                input.form-control(
+                                    type="number"
+                                    name="paginationLimit"
+                                    value=setting.paginationLimit || 10
+                                    min="1"
+                                    placeholder="Nhập số record trên trang"
+                                )
+
+            // SEO SECTION
+            .settings-section.card.mb-4
+                .card-header.settings-section-header
+                    i.fa-solid.fa-search
+                    span SEO Settings
+                
+                .card-body
+                    .form-group.mb-3
+                        label.form-label Meta Title
+                        input.form-control(
+                            type="text"
+                            name="metaTitle"
+                            value=(setting.seo && setting.seo.metaTitle) || ''
+                            placeholder="Nhập meta title"
+                        )
+
+                    .form-group.mb-3
+                        label.form-label Meta Description
+                        textarea.form-control(
+                            name="metaDescription"
+                            rows="2"
+                            placeholder="Nhập meta description"
+                        )= (setting.seo && setting.seo.metaDescription) || ''
+
+                    .form-group.mb-3
+                        label.form-label Meta Keywords
+                        textarea.form-control(
+                            name="metaKeywords"
+                            rows="2"
+                            placeholder="Nhập meta keywords"
+                        )= (setting.seo && setting.seo.metaKeywords) || ''
+
+            // PAYMENT METHODS SECTION
+            .settings-section.card.mb-4
+                .card-header.settings-section-header
+                    i.fa-solid.fa-credit-card
+                    span Payment Methods
+
+                .card-body
+                    // CASH
+                    .payment-method-card.mb-3
+                        .payment-method-header
+                            .form-check.form-switch
+                                input.form-check-input.payment-toggle(
+                                    type="checkbox"
+                                    name="payment-cash-enabled"
+                                    id="cashToggle"
+                                    checked=(setting.paymentMethods && setting.paymentMethods.cash && setting.paymentMethods.cash.enabled) || false
+                                )
+                                label.form-check-label.payment-method-title(for="cashToggle")
+                                    i.fa-solid.fa-money-bill-1
+                                    span Cash
+
+                        .payment-method-content(id="cashContent")
+                            .row.mt-3
+                                .col-md-6
+                                    .form-group.mb-2
+                                        label.form-label Account Name
+                                        input.form-control(
+                                            type="text"
+                                            name="payment-cash-name"
+                                            value=(setting.paymentMethods && setting.paymentMethods.cash && setting.paymentMethods.cash.accountName) || ''
+                                            placeholder="Nhập tên người nhận"
+                                        )
+
+                                .col-md-6
+                                    // Spacer
+
+                            .row
+                                .col-md-12
+                                    .form-group.mb-2
+                                        label.form-label Instructions
+                                        textarea.form-control(
+                                            name="payment-cash-description"
+                                            rows="2"
+                                            placeholder="Nhập hướng dẫn thanh toán"
+                                        )= (setting.paymentMethods && setting.paymentMethods.cash && setting.paymentMethods.cash.description) || ''
+
+                    // BANKING
+                    .payment-method-card.mb-3
+                        .payment-method-header
+                            .form-check.form-switch
+                                input.form-check-input.payment-toggle(
+                                    type="checkbox"
+                                    name="payment-banking-enabled"
+                                    id="bankingToggle"
+                                    checked=(setting.paymentMethods && setting.paymentMethods.banking && setting.paymentMethods.banking.enabled) || false
+                                )
+                                label.form-check-label.payment-method-title(for="bankingToggle")
+                                    i.fa-solid.fa-building
+                                    span Banking
+
+                        .payment-method-content(id="bankingContent")
+                            .row.mt-3
+                                .col-md-6
+                                    .form-group.mb-2
+                                        label.form-label Account Name
+                                        input.form-control(
+                                            type="text"
+                                            name="payment-banking-name"
+                                            value=(setting.paymentMethods && setting.paymentMethods.banking && setting.paymentMethods.banking.accountName) || ''
+                                            placeholder="Nhập tên tài khoản"
+                                        )
+
+                                .col-md-6
+                                    .form-group.mb-2
+                                        label.form-label Account Number
+                                        input.form-control(
+                                            type="text"
+                                            name="payment-banking-number"
+                                            value=(setting.paymentMethods && setting.paymentMethods.banking && setting.paymentMethods.banking.accountNumber) || ''
+                                            placeholder="Nhập số tài khoản"
+                                        )
+
+                            .row
+                                .col-md-6
+                                    .form-group.mb-2
+                                        label.form-label Bank Name
+                                        input.form-control(
+                                            type="text"
+                                            name="payment-banking-bankname"
+                                            value=(setting.paymentMethods && setting.paymentMethods.banking && setting.paymentMethods.banking.bankName) || ''
+                                            placeholder="Nhập tên ngân hàng"
+                                        )
+
+                                .col-md-6
+                                    .form-group.mb-2
+                                        label.form-label QR Code
+                                        input.form-control.qr-input(
+                                            type="file"
+                                            name="bankingQr"
+                                            accept="image/*"
+                                            id="bankingQrInput"
+                                        )
+
+                            .row
+                                .col-md-6
+                                    if setting.paymentMethods && setting.paymentMethods.banking && setting.paymentMethods.banking.qrImage
+                                        .qr-preview-wrapper
+                                            img.qr-preview(src=setting.paymentMethods.banking.qrImage alt="Banking QR")
+
+                                .col-md-12
+                                    .form-group.mb-2
+                                        label.form-label Instructions
+                                        textarea.form-control(
+                                            name="payment-banking-description"
+                                            rows="2"
+                                            placeholder="Nhập hướng dẫn thanh toán"
+                                        )= (setting.paymentMethods && setting.paymentMethods.banking && setting.paymentMethods.banking.description) || ''
+
+                    // MOMO
+                    .payment-method-card.mb-3
+                        .payment-method-header
+                            .form-check.form-switch
+                                input.form-check-input.payment-toggle(
+                                    type="checkbox"
+                                    name="payment-momo-enabled"
+                                    id="momoToggle"
+                                    checked=(setting.paymentMethods && setting.paymentMethods.momo && setting.paymentMethods.momo.enabled) || false
+                                )
+                                label.form-check-label.payment-method-title(for="momoToggle")
+                                    i.fa-solid.fa-mobile
+                                    span MOMO
+
+                        .payment-method-content(id="momoContent")
+                            .row.mt-3
+                                .col-md-6
+                                    .form-group.mb-2
+                                        label.form-label Account Name
+                                        input.form-control(
+                                            type="text"
+                                            name="payment-momo-name"
+                                            value=(setting.paymentMethods && setting.paymentMethods.momo && setting.paymentMethods.momo.accountName) || ''
+                                            placeholder="Nhập tên tài khoản"
+                                        )
+
+                                .col-md-6
+                                    .form-group.mb-2
+                                        label.form-label Account Number
+                                        input.form-control(
+                                            type="text"
+                                            name="payment-momo-number"
+                                            value=(setting.paymentMethods && setting.paymentMethods.momo && setting.paymentMethods.momo.accountNumber) || ''
+                                            placeholder="Nhập số điện thoại"
+                                        )
+
+                            .row
+                                .col-md-6
+                                    .form-group.mb-2
+                                        label.form-label QR Code
+                                        input.form-control.qr-input(
+                                            type="file"
+                                            name="momoQr"
+                                            accept="image/*"
+                                            id="momoQrInput"
+                                        )
+
+                                .col-md-6
+                                    if setting.paymentMethods && setting.paymentMethods.momo && setting.paymentMethods.momo.qrImage
+                                        .qr-preview-wrapper
+                                            img.qr-preview(src=setting.paymentMethods.momo.qrImage alt="MOMO QR")
+
+                            .row
+                                .col-md-12
+                                    .form-group.mb-2
+                                        label.form-label Instructions
+                                        textarea.form-control(
+                                            name="payment-momo-description"
+                                            rows="2"
+                                            placeholder="Nhập hướng dẫn thanh toán"
+                                        )= (setting.paymentMethods && setting.paymentMethods.momo && setting.paymentMethods.momo.description) || ''
+
+                    // ZALOPAY
+                    .payment-method-card.mb-3
+                        .payment-method-header
+                            .form-check.form-switch
+                                input.form-check-input.payment-toggle(
+                                    type="checkbox"
+                                    name="payment-zalopay-enabled"
+                                    id="zalopayToggle"
+                                    checked=(setting.paymentMethods && setting.paymentMethods.zalopay && setting.paymentMethods.zalopay.enabled) || false
+                                )
+                                label.form-check-label.payment-method-title(for="zalopayToggle")
+                                    i.fa-solid.fa-wallet
+                                    span ZaloPay
+
+                        .payment-method-content(id="zalopayContent")
+                            .row.mt-3
+                                .col-md-6
+                                    .form-group.mb-2
+                                        label.form-label Account Name
+                                        input.form-control(
+                                            type="text"
+                                            name="payment-zalopay-name"
+                                            value=(setting.paymentMethods && setting.paymentMethods.zalopay && setting.paymentMethods.zalopay.accountName) || ''
+                                            placeholder="Nhập tên tài khoản"
+                                        )
+
+                                .col-md-6
+                                    .form-group.mb-2
+                                        label.form-label Account Number
+                                        input.form-control(
+                                            type="text"
+                                            name="payment-zalopay-number"
+                                            value=(setting.paymentMethods && setting.paymentMethods.zalopay && setting.paymentMethods.zalopay.accountNumber) || ''
+                                            placeholder="Nhập số điện thoại"
+                                        )
+
+                            .row
+                                .col-md-6
+                                    .form-group.mb-2
+                                        label.form-label QR Code
+                                        input.form-control.qr-input(
+                                            type="file"
+                                            name="zalopayQr"
+                                            accept="image/*"
+                                            id="zalopayQrInput"
+                                        )
+
+                                .col-md-6
+                                    if setting.paymentMethods && setting.paymentMethods.zalopay && setting.paymentMethods.zalopay.qrImage
+                                        .qr-preview-wrapper
+                                            img.qr-preview(src=setting.paymentMethods.zalopay.qrImage alt="ZaloPay QR")
+
+                            .row
+                                .col-md-12
+                                    .form-group.mb-2
+                                        label.form-label Instructions
+                                        textarea.form-control(
+                                            name="payment-zalopay-description"
+                                            rows="2"
+                                            placeholder="Nhập hướng dẫn thanh toán"
+                                        )= (setting.paymentMethods && setting.paymentMethods.zalopay && setting.paymentMethods.zalopay.description) || ''
+
+                    // VNPAY
+                    .payment-method-card.mb-3
+                        .payment-method-header
+                            .form-check.form-switch
+                                input.form-check-input.payment-toggle(
+                                    type="checkbox"
+                                    name="payment-vnpay-enabled"
+                                    id="vnpayToggle"
+                                    checked=(setting.paymentMethods && setting.paymentMethods.vnpay && setting.paymentMethods.vnpay.enabled) || false
+                                )
+                                label.form-check-label.payment-method-title(for="vnpayToggle")
+                                    i.fa-solid.fa-credit-card
+                                    span VNPay
+
+                        .payment-method-content(id="vnpayContent")
+                            .row.mt-3
+                                .col-md-6
+                                    .form-group.mb-2
+                                        label.form-label Merchant Code
+                                        input.form-control(
+                                            type="text"
+                                            name="payment-vnpay-merchant"
+                                            value=(setting.paymentMethods && setting.paymentMethods.vnpay && setting.paymentMethods.vnpay.merchantCode) || ''
+                                            placeholder="Nhập mã nhà cung cấp"
+                                        )
+
+                                .col-md-6
+                                    .form-group.mb-2
+                                        label.form-label Access Key
+                                        input.form-control(
+                                            type="password"
+                                            name="payment-vnpay-access"
+                                            value=(setting.paymentMethods && setting.paymentMethods.vnpay && setting.paymentMethods.vnpay.accessKey) || ''
+                                            placeholder="Nhập access key"
+                                        )
+
+                            .row
+                                .col-md-6
+                                    .form-group.mb-2
+                                        label.form-label Secret Key
+                                        input.form-control(
+                                            type="password"
+                                            name="payment-vnpay-secret"
+                                            value=(setting.paymentMethods && setting.paymentMethods.vnpay && setting.paymentMethods.vnpay.secretKey) || ''
+                                            placeholder="Nhập secret key"
+                                        )
+
+                                .col-md-6
+                                    // Spacer
+
+                            .row
+                                .col-md-12
+                                    .form-group.mb-2
+                                        label.form-label Instructions
+                                        textarea.form-control(
+                                            name="payment-vnpay-description"
+                                            rows="2"
+                                            placeholder="Nhập hướng dẫn thanh toán"
+                                        )= (setting.paymentMethods && setting.paymentMethods.vnpay && setting.paymentMethods.vnpay.description) || ''
+
+            // SOCIAL MEDIA SECTION
+            .settings-section.card.mb-4
+                .card-header.settings-section-header
+                    i.fa-solid.fa-share-nodes
+                    span Social Media
+
+                .card-body
+                    .row
+                        .col-md-6
+                            .form-group.mb-3
+                                label.form-label Facebook URL
+                                input.form-control(
+                                    type="url"
+                                    name="facebook"
+                                    value=(setting.socialMedia && setting.socialMedia.facebook) || ''
+                                    placeholder="https://facebook.com/..."
+                                )
+
+                        .col-md-6
+                            .form-group.mb-3
+                                label.form-label YouTube URL
+                                input.form-control(
+                                    type="url"
+                                    name="youtube"
+                                    value=(setting.socialMedia && setting.socialMedia.youtube) || ''
+                                    placeholder="https://youtube.com/..."
+                                )
+
+                    .row
+                        .col-md-6
+                            .form-group.mb-3
+                                label.form-label TikTok URL
+                                input.form-control(
+                                    type="url"
+                                    name="tiktok"
+                                    value=(setting.socialMedia && setting.socialMedia.tiktok) || ''
+                                    placeholder="https://tiktok.com/..."
+                                )
+
+                        .col-md-6
+                            .form-group.mb-3
+                                label.form-label Instagram URL
+                                input.form-control(
+                                    type="url"
+                                    name="instagram"
+                                    value=(setting.socialMedia && setting.socialMedia.instagram) || ''
+                                    placeholder="https://instagram.com/..."
+                                )
+
+                    .row
+                        .col-md-6
+                            .form-group.mb-3
+                                label.form-label Zalo URL
+                                input.form-control(
+                                    type="url"
+                                    name="zalo"
+                                    value=(setting.socialMedia && setting.socialMedia.zalo) || ''
+                                    placeholder="https://zalo.me/..."
+                                )
+
+            // FORM ACTIONS
+            .settings-actions.mb-4
+                button.btn.btn-primary.btn-submit(type="submit")
+                    i.fa-solid.fa-check
+                    span Save Changes
+                a.btn.btn-secondary(href=`${prefixAdmin}/dashboard`)
+                    i.fa-solid.fa-arrow-left
+                    span Cancel
+
+    link(rel="stylesheet" href="/admin/CSS/setting.css")
+    script(src="/admin/JS/setting.js")

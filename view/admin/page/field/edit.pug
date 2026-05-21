@@ -25,13 +25,6 @@ block content
                     .step-number 2
                     .step-text
                         .step-title Hình ảnh & Tiện ích
-                div(
-                    class="step"
-                    number-step = "step3"
-                )
-                    .step-number 3
-                    .step-text
-                        .step-title Lịch hoạt động
 
             .main-content
                 .info-card
@@ -242,48 +235,6 @@ block content
                                             label.service-item
                                                 input(type="checkbox" name="service" value=item)
                                                 span #{item}
-                            .div-step3
-                                .schedule-card
-                                    .schedule-header
-                                        .schedule-left
-                                            .schedule-icon
-                                                i.fa.fa-calendar
-                                            .schedule-info
-                                                h3 Lịch hoạt động
-                                                p Chọn khung giờ khách có thể đặt sân
-                                        label.switch
-                                            input(type="checkbox" name="scheduleStatus")
-                                            span.slider Chọn tất cả
-
-                                    .schedule-body
-                                        table(class="schedule-table")
-                                            thead
-                                                tr
-                                                    th Giờ
-                                                    th T2
-                                                    th T3
-                                                    th T4
-                                                    th T5
-                                                    th T6
-                                                    th T7
-                                                    th CN
-
-                                            tbody
-                                                each time in timeactive
-                                                    tr
-                                                        td(class="time-label") #{time}
-
-                                                        each day in days
-                                                            td
-                                                                label(class="slot-item")
-                                                                    input(
-                                                                        type="checkbox"
-                                                                        name="schedule"
-                                                                        value=`${day}-${time}`
-                                                                        checked = (pricing.includes(`${day}-${time}`) ? true : false)
-                                                                        hidden
-                                                                    )
-                                                                    span(class="slot-box")
                             // footer submit
                             .form-footer
                                 button(type="button" class="btn-back") Quay lại

@@ -85,37 +85,6 @@ module.exports.createPost = async (req, res) => {
     }
     const field = new Field(dataField);
     await field.save();
-    // Lưu pricing
-    let schedules = req.body.schedule || [];
-
-    if (!Array.isArray(schedules)) {
-        schedules = [schedules];
-    }
-    const listPricing = [];
-    schedules.forEach(item => {
-        const [day, time] = item.split("-");
-
-        const hour = parseInt(time.split(":")[0]);
-        const endHour = `${String(hour + 1).padStart(2, "0")}:00`;
-        let price = parseInt(req.body.price);
-        let priceVip = parseInt(req.body.priceVip);
-        const schedule = {
-            field_id: field.id,
-            day_of_week: day,
-            start_time: time,
-            end_time: endHour,
-            feature: "0"
-        }
-        if (hour > 19 && hour < 23) {
-            schedule.feature = "1"
-            schedule.price = priceVip
-        } else {
-            schedule.feature = "0"
-            schedule.price = price
-        }
-        listPricing.push(schedule);
-    });
-    await Pricing.insertMany(listPricing);//Tạo nhiều bản ghi một lúc
     res.redirect(`${systemConfig.systemConfig.prefixAdmin}/fields`);
 }
 // [PATCH] /admin/fields/change-status/:status/:id
@@ -266,42 +235,6 @@ module.exports.editPatch = async (req, res) => {
             _id: req.params.id,
             deleted: false
         }, req.body);
-
-        await Pricing.deleteMany({
-            field_id: req.params.id,
-        });
-        // Cập nhật Pricing
-        let schedules = req.body.schedule || [];
-
-        if (!Array.isArray(schedules)) {
-            schedules = [schedules];
-        }
-        const listPricing = [];
-        schedules.forEach(item => {
-            const [day, time] = item.split("-");
-
-            const hour = parseInt(time.split(":")[0]);
-            const endHour = `${String(hour + 1).padStart(2, "0")}:00`;
-            let price = parseInt(field.price.price);
-            let priceVip = parseInt(field.price.priceVip);
-            const schedule = {
-                field_id: field.id,
-                day_of_week: day,
-                start_time: time,
-                end_time: endHour,
-                feature: "0"
-            }
-            if (hour > 19 && hour < 23) {
-                schedule.feature = "1"
-                schedule.price = priceVip
-            } else {
-                schedule.feature = "0"
-                schedule.price = price
-            }
-            listPricing.push(schedule);
-        });
-        await Pricing.insertMany(listPricing);
-
         res.redirect(req.get("referer") || "/");
     } catch (error) {
         console.log(error);
