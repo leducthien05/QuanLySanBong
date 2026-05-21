@@ -34,11 +34,12 @@ block content
                             each item in roles 
                                 option(value = item._id) #{item.name}
 
-                        button(
-                            class="save-btn"
-                            type="submit"
-                        )
-                            | Lưu thay đổi
+                        if(accountRole.permission.includes("permission"))
+                            button(
+                                class="save-btn"
+                                type="submit"
+                            )
+                                | Lưu thay đổi
 
                 //- Table
                 .permission-table-wrapper
@@ -426,6 +427,57 @@ block content
 
                                 each item in roles
                                     td("reports_overview")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+                            //- Group title
+                            tr.group-row
+                                td(colspan="6")
+                                    .group-title
+                                        i.fa-regular.fa-futbol
+                                        span NHÓM QUYỀN
+                            tr(data-role="roles_view")
+                                td.permission-name Xem danh sách nhóm quyền
+                                each item in roles
+                                    td("services_view")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+
+                            //- Row 2
+                            tr(data-role="roles_create")
+                                td.permission-name Thêm mới nhóm quyền
+
+                                each item in roles
+                                    td("services_create")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+
+                            //- Row 3
+                            tr(data-role="roles_edit")
+                                td.permission-name Chỉnh sửa nhóm quyền
+
+                                each item in roles
+                                    td("services_edit")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+
+                            //- Row 4
+                            tr(data-role="roles_delete")
+                                td.permission-name Xóa nhóm quyền
+
+                                each item in roles
+                                    td("service_delete")
                                         label.checkbox-custom
                                             input(
                                                 type="checkbox"

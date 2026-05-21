@@ -26,14 +26,16 @@ block content
             .card-body 
                 .row
                     .col-8 
-                        +change(`${prefixAdmin}/roles/change-multi-status?_method=PATCH`)
+                        if(accountRole.permission.includes("roles_edit"))
+                            +change(`${prefixAdmin}/roles/change-multi-status?_method=PATCH`)
                     .col-4
                         div(class="field-header")
                             div
-                            a(
-                                href=`${prefixAdmin}/roles/create`
-                                class="add-btn"
-                            ) + Thêm mới
+                            if(accountRole.permission.includes("roles_create"))
+                                a(
+                                    href=`${prefixAdmin}/roles/create`
+                                    class="add-btn"
+                                ) + Thêm mới
     div(class="field-table")
         table(
             table-view
@@ -64,31 +66,40 @@ block content
                         td #{item.description ? item.description : 'N/A'}
                         td
                             if(item.status == "active")
-                                span(
-                                    status = item.status
-                                    data-status = item._id
-                                    class="status open"
-                                ) ● Hoạt động
+                                if(accountRole.permission.includes("roles_edit"))
+                                    span(
+                                        status = item.status
+                                        data-status = item._id
+                                        class="status open"
+                                    ) ● Hoạt động
+                                else
+                                    span(class="status open") ● Hoạt động
                             else 
-                                span(
-                                    status = item.status
-                                    data-status = item._id
-                                    class="status"
-                                ) ● Vô hiệu
+                                if(accountRole.permission.includes("roles_edit"))
+                                    span(
+                                        status = item.status
+                                        data-status = item._id
+                                        class="status"
+                                    ) ● Vô hiệu
+                                else
+                                    span(class="status") ● Vô hiệu
                         td
-                            a(
-                                class="action-btn"
-                                href=`${prefixAdmin}/roles/edit/${item._id}`
-                            ) Sửa
-                            button(
-                                btn-delete
-                                data-id = item._id
-                                class="action-btn"
-                            ) Xóa
-                            a(
-                                href=`${prefixAdmin}/roles/detail/${item._id}`
-                                class="action-btn"
-                            ) Chi tiết
+                            if(accountRole.permission.includes("roles_edit"))
+                                a(
+                                    class="action-btn"
+                                    href=`${prefixAdmin}/roles/edit/${item._id}`
+                                ) Sửa
+                            if(accountRole.permission.includes("roles_delete"))
+                                button(
+                                    btn-delete
+                                    data-id = item._id
+                                    class="action-btn"
+                                ) Xóa
+                            if(accountRole.permission.includes("roles_view"))
+                                a(
+                                    href=`${prefixAdmin}/roles/detail/${item._id}`
+                                    class="action-btn"
+                                ) Chi tiết
             +pagination(pagination)
 
     form(

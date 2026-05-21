@@ -57,5 +57,6 @@ block content
                         | #{field.description}
 
                 .field-detail-actions
-                    a.field-detail-btn.field-detail-btn-edit(href=`${prefixAdmin}/fields/edit/${field._id}`) Chỉnh sửa
+                    if(accountRole.permission.includes("fields_edit"))
+                        a.field-detail-btn.field-detail-btn-edit(href=`${prefixAdmin}/fields/edit/${field._id}`) Chỉnh sửa
                     a.field-detail-btn.field-detail-btn-back(href=`${prefixAdmin}/fields`) Quay lại

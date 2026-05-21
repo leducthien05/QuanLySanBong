@@ -1,0 +1,213 @@
+extends ../../layout/default.pug
+
+block content
+    .section-accountAdmin-detail
+
+        .gf-profile
+
+            // HEADER
+            .gf-profile__hero
+                .gf-profile__main
+                    .gf-profile__left
+                        .gf-profile__avatar-wrap
+                            if accountAdmin.avatar
+                                img.gf-profile__avatar(
+                                    src=accountAdmin.avatar
+                                    alt="avatar"
+                                )
+                            else
+                                .gf-profile__avatar-placeholder
+                                    | AD
+
+                        .gf-profile__info
+
+                            h1.gf-profile__name
+                                | #{accountAdmin.fullName}
+
+                            .gf-profile__meta
+
+                                .gf-profile__meta-item
+                                    if(accountRole.name == "Quản trị viên")
+                                        span 👑
+                                        span #{accountRole.name}
+                                    else   
+                                        span #{accountRole.name}
+
+                                span.gf-profile__dot •
+
+                                .gf-profile__meta-item
+                                    i.fa-regular.fa-envelope
+                                    span #{accountAdmin.email}
+
+                                span.gf-profile__dot •
+
+                                .gf-profile__meta-item
+                                    i.fa-solid.fa-phone
+                                    span #{accountAdmin.phone || "Chưa cập nhật"}
+
+                    .gf-profile__actions
+
+                        a.gf-profile__edit-btn(
+                            href=`${prefixAdmin}/accounts/edit/${accountAdmin._id}`
+                        )
+                            i.fa-regular.fa-pen-to-square
+                            span Chỉnh sửa
+            // CONTENT
+            .gf-content
+                // LEFT
+                .gf-card
+                    .gf-card__header
+                        .gf-card__header-left
+                            .gf-card__icon
+                                i.fa-solid.fa-user
+                            h3 Thông tin cá nhân
+                    .gf-card__body
+
+                        .gf-form
+
+                            .gf-form__group
+                                label HỌ VÀ TÊN *
+                                .gf-form__input
+                                    | #{accountAdmin.fullName}
+
+                            .gf-form__group
+                                label TÊN HIỂN THỊ
+                                .gf-form__input
+                                    | #{accountAdmin.displayName}
+
+                            .gf-form__group
+                                label EMAIL
+                                .gf-form__input
+                                    | #{accountAdmin.email}
+
+                            .gf-form__group
+                                label SỐ ĐIỆN THOẠI
+                                .gf-form__input
+                                    | #{accountAdmin.phone || "Chưa cập nhật"}
+
+                            .gf-form__group
+                                label ĐỊA CHỈ
+                                .gf-form__input
+                                    | #{accountAdmin.address}
+
+                            .gf-form__group
+                                label NHÓM QUYỀN
+                                .gf-form__input
+                                    | #{accountRole.name}
+
+                // RIGHT
+                .gf-status
+
+                    .gf-status__header
+
+                        .gf-status__title
+
+                            span.gf-status__light
+
+                            h3 Trạng thái tài khoản
+
+                    .gf-status__body
+
+                        .gf-status__row
+
+                            span.gf-status__label
+                                | Trạng thái
+                            if(accountAdmin.status == "active")
+                                span.gf-status__badge.active
+                                    | ● Hoạt động
+                            else 
+                                span.gf-status__badge.active
+                                    | ● Ngừng hoạt động
+
+                        .gf-status__row
+
+                            span.gf-status__label
+                                | Loại tài khoản
+
+                            span.gf-status__badge.admin
+                                | #{accountRole.name}   
+    form.gf-edit-modal__form(
+            method="POST"
+            enctype="multipart/form-data"
+            action = `${prefixAdmin}/myaccount/edit/${accountAdmin._id}`
+        )
+            // AVATAR
+            .gf-edit-modal__avatar-section
+
+                .gf-edit-modal__avatar-wrap
+
+                    if accountAdmin.avatar
+                        img.gf-edit-modal__avatar(
+                            src=accountAdmin.avatar
+                            alt="avatar"
+                        )
+                    else
+                        .gf-edit-modal__avatar-placeholder
+                            | AD
+
+                label.gf-edit-modal__upload
+                    i.fa-solid.fa-camera
+                    span Đổi ảnh
+
+                    input(
+                        type="file"
+                        name="avatar"
+                        hidden
+                    )
+
+            // FORM
+            .gf-edit-modal__grid
+
+                .gf-edit-modal__group
+                    label Họ và tên
+
+                    input.gf-edit-modal__input(
+                        type="text"
+                        name="fullName"
+                        value=accountAdmin.fullName
+                        placeholder="Nhập họ tên"
+                    )
+
+                .gf-edit-modal__group
+                    label Email
+
+                    input.gf-edit-modal__input(
+                        type="email"
+                        name="email"
+                        readonly
+                        value=accountAdmin.email
+                        placeholder="Nhập email"
+                    )
+
+                .gf-edit-modal__group
+                    label Số điện thoại
+
+                    input.gf-edit-modal__input(
+                        type="text"
+                        name="phone"
+                        value=accountAdmin.phone
+                        placeholder="Nhập số điện thoại"
+                    )
+
+                .gf-edit-modal__group
+                    label Mật khẩu mới
+
+                    input.gf-edit-modal__input(
+                        type="password"
+                        name="password"
+                        placeholder="Nhập mật khẩu mới"
+                    )
+
+            // ACTIONS
+            .gf-edit-modal__actions
+
+                button.gf-edit-modal__cancel(
+                    type="button"
+                )
+                    | Hủy
+
+                button.gf-edit-modal__submit(
+                    type="submit"
+                )
+                    i.fa-solid.fa-floppy-disk
+                    span Lưu thay đổi                   

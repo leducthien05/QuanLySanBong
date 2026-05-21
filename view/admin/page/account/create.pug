@@ -46,18 +46,44 @@ block content
                                             )
                                     .col-md-6
                                         .form-group
+                                            label ĐIỆN THOẠI
+                                            input(
+                                                type="text"
+                                                name="phone"
+                                                placeholder="0987654321"  
+                                            )     
+                                    .col-md-6
+                                        .form-group
+                                            label ĐỊA CHỈ
+                                            input(
+                                                type="text"
+                                                name="address"
+                                                placeholder="Bắc Giang,...."  
+                                            )
+                                    .col-md-6
+                                        .form-group
                                             label MẬT KHẨU
                                             input(
                                                 type="password"
                                                 name="password"
                                                 placeholder="Nhập mật khẩu"
                                             )
-                                .form-group
-                                    label VAI TRÒ
-                                    select(name="role_id")
-                                        option(value="") Chọn vai trò
-                                        each role in roles
-                                            option(value=role._id) #{role.name} 
+                                    .col-md-6
+                                        .form-group
+                                            label TÊN HIỂN THỊ
+                                            input(
+                                                type="text"
+                                                name="displayName"
+                                                placeholder="Admin"
+                                            )
+                                    .col-md-6
+                                        .form-group
+                                            label VAI TRÒ
+                                            select(name="role_id")
+                                                option(value="") Chọn vai trò
+                                                each role in roles
+                                                    option(value=role._id) #{role.name} 
+                                    
                                 .row.g-4
                                     .col-lg-7
                                         .upload-card

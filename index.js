@@ -16,6 +16,9 @@ app.use(methodOverride('_method'));
 // app.use(express.urlencoded({ extended: true }));
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
+// cookie-parser
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 // express-session
 const session = require('express-session');
 app.use(session({

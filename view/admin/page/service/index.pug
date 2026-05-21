@@ -26,17 +26,17 @@ block content
         .card-header Hành động
             .card-body 
                 .row
-                    //- if(role.permission.includes("products_edit")) 
                     .col-8 
-                        +change(`${prefixAdmin}/services/change-multi-status?_method=PATCH`)
-                    //- if(role.permission.includes("products_create"))
+                        if(accountRole.permission.includes("services_edit"))
+                            +change(`${prefixAdmin}/services/change-multi-status?_method=PATCH`)
                     .col-4
                         div(class="field-header")
                             div
-                            a(
-                                href=`${prefixAdmin}/services/create`
-                                class="add-btn"
-                            ) + Thêm mới
+                            if(accountRole.permission.includes("services_create"))
+                                a(
+                                    href=`${prefixAdmin}/services/create`
+                                    class="add-btn"
+                                ) + Thêm mới
     div(class="field-table")
         table(
             table-view
@@ -92,31 +92,40 @@ block content
                         td(class="price") #{item.price}
                         td
                             if(item.status == "active")
-                                span(
-                                    status = item.status
-                                    data-status = item._id
-                                    class="status open"
-                                    ) ● Mở cửa
+                                if(accountRole.permission.includes("services_edit"))
+                                    span(
+                                        status = item.status
+                                        data-status = item._id
+                                        class="status open"
+                                        ) ● Mở cửa
+                                else
+                                    span(class="status open") ● Mở cửa
                             else 
-                                span(
-                                    status = item.status
-                                    data-status = item._id
-                                    class="status"
-                                    ) ● Đóng cửa
+                                if(accountRole.permission.includes("services_edit"))
+                                    span(
+                                        status = item.status
+                                        data-status = item._id
+                                        class="status"
+                                        ) ● Đóng cửa
+                                else
+                                    span(class="status") ● Đóng cửa
                         td
-                            a(
-                                class="action-btn"
-                                href=`${prefixAdmin}/services/edit/${item._id}`
-                            ) Sửa
-                            button(
-                                btn-delete
-                                data-id = item._id
-                                class="action-btn"
-                            ) Xóa
-                            a(
-                                href=`${prefixAdmin}/services/detail/${item._id}`
-                                class="action-btn"
-                            ) Chi tiết
+                            if(accountRole.permission.includes("services_edit"))
+                                a(
+                                    class="action-btn"
+                                    href=`${prefixAdmin}/services/edit/${item._id}`
+                                ) Sửa
+                            if(accountRole.permission.includes("services_delete"))
+                                button(
+                                    btn-delete
+                                    data-id = item._id
+                                    class="action-btn"
+                                ) Xóa
+                            if(accountRole.permission.includes("services_view"))
+                                a(
+                                    href=`${prefixAdmin}/services/detail/${item._id}`
+                                    class="action-btn"
+                                ) Chi tiết
             +pagination(pagination) 
 
     form(

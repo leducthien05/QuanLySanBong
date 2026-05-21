@@ -1,0 +1,72 @@
+extends ../../layout/auth
+
+block content
+  .login-wrapper
+    // Background decoration
+    
+
+    // Login card container
+    .login-container
+      .login-card
+        // Header section
+        header.login-header
+          h1.login-header__title Đăng Nhập
+          p.login-header__subtitle Quản Lý Sân Bóng Management System
+
+        // Form section
+        form.login-form(
+          id="loginForm" 
+          method="POST" 
+          action=`${prefixAdmin}/auth/login`
+        )
+          
+          // Email field
+          .login-form__group
+            label.login-form__label(for="email") Email Address
+            .login-form__input-wrapper
+              input.login-form__input(
+                type="email"
+                id="email"
+                name="email"
+                placeholder="your@email.com"
+                required
+                autocomplete="email"
+              )
+              svg.login-form__icon(width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2")
+                rect(x="2" y="4" width="20" height="16" rx="2")
+                path(d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7")
+            .login-form__error(id="emailError" role="alert")
+
+          // Password field
+          .login-form__group
+            label.login-form__label(for="password") Password
+            .login-form__input-wrapper
+              input.login-form__input(
+                type="password"
+                id="password"
+                name="password"
+                placeholder="••••••••"
+                required
+                autocomplete="current-password"
+              )
+              button.login-form__toggle-password(
+                type="button"
+                id="togglePassword"
+                aria-label="Toggle password visibility"
+              )
+                svg.login-form__icon-eye(width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2")
+                  path(d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z")
+                  circle(cx="12" cy="12" r="3")
+                svg.login-form__icon-eye-off(width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2")
+                  path(d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.26 3.64m-5.88 5.88a3 3 0 1 1-4.24-4.24")
+                  line(x1="1" y1="1" x2="23" y2="23")
+            .login-form__error(id="passwordError" role="alert")
+
+          // Submit button
+          button.login-form__submit(type="submit" id="submitBtn")
+            span.login-form__submit-text Sign In
+            .login-form__loader(id="loader")
+              .login-form__spinner
+
+          // Form error alert
+          .login-form__alert(id="formError" role="alert")

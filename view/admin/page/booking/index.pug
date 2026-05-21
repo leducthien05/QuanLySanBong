@@ -25,7 +25,8 @@ block content
             .card-body
                 .row
                     .col-8 
-                        +change(`${prefixAdmin}/services/change-multi-status?_method=PATCH`)
+                        if(accountRole.permission.includes("bookings_edit"))
+                            +change(`${prefixAdmin}/services/change-multi-status?_method=PATCH`)
     .field-table
         table(table-view)
             thead

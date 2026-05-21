@@ -1,0 +1,10 @@
+extends ../../layout/default
+
+block content
+    .container.mt-5
+        .row.justify-content-center
+            .col-md-8.text-center
+                h1.text-danger 403
+                h3 Không có quyền truy cập
+                p Bạn không có quyền để xem trang này.
+                a.btn.btn-primary(href=`${prefixAdmin}/dashboard`) Quay về Dashboard

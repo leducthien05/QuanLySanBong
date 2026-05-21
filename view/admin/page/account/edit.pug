@@ -47,18 +47,47 @@ block content
                                             )
                                     .col-md-6
                                         .form-group
+                                            label ĐIỆN THOẠI
+                                            input(
+                                                value = account.phone
+                                                type="text"
+                                                name="phone"
+                                                placeholder="0987654321"  
+                                            )     
+                                    .col-md-6
+                                        .form-group
+                                            label ĐỊA CHỈ
+                                            input(
+                                                value=account.address
+                                                type="text"
+                                                name="address"
+                                                placeholder="Bắc Giang,...."  
+                                            )
+                                    .col-md-6
+                                        .form-group
                                             label MẬT KHẨU
                                             input(
                                                 type="password"
                                                 name="password"
                                                 placeholder="Để trống nếu không đổi"
                                             )
-                                .form-group
-                                    label VAI TRÒ
-                                    select(name="role_id")
-                                        option(value="") Chọn vai trò
-                                        each role in roles
-                                            option(value=role._id selected=(role._id.toString() == account.role_id.toString() ? true : false))= role.name
+                                    .col-md-6
+                                        .form-group
+                                            label TÊN HIỂN THỊ
+                                            input(
+                                                type="text"
+                                                name="displayName"
+                                                placeholder="Admin"
+                                                value=account.displayName
+                                            )
+                                    .col-md-6
+                                        .form-group
+                                            label VAI TRÒ
+                                            select(name="role_id")
+                                                option(value="") Chọn vai trò
+                                                each role in roles
+                                                    option(value=role._id selected=(role._id.toString() == account.role_id.toString() ? true : false))= role.name
+                                    
                                 .row.g-4
                                     .col-lg-7
                                         .upload-card
@@ -77,8 +106,8 @@ block content
                                                         name="avatar"
                                                         hidden
                                                     )
-                                                if account.avatar
-                                                    img(src=account.avatar width="200")
+                                                    if account.avatar
+                                                        img(src=account.avatar width="200")
                                     .col-lg-5
                                         .publish-card
                                             .publish-header

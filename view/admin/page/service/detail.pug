@@ -30,5 +30,6 @@ block content
                         | #{service.description}
 
                 .field-detail-actions
-                    a.field-detail-btn.field-detail-btn-edit(href=`${prefixAdmin}/services/edit/${service._id}`) Chỉnh sửa
+                    if(accountRole.permission.includes("services_edit"))
+                        a.field-detail-btn.field-detail-btn-edit(href=`${prefixAdmin}/services/edit/${service._id}`) Chỉnh sửa
                     a.field-detail-btn.field-detail-btn-back(href=`${prefixAdmin}/services`) Quay lại

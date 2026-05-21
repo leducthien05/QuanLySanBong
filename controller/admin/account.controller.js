@@ -5,6 +5,7 @@ const systemConfig = require("../../config/system");
 const paginationHelper = require("../../helper/pagination.helper");
 const searchHelper = require("../../helper/search.helper");
 const filterStatusHelper = require("../../helper/filterStatus.helper");
+const { hashPassword } = require("../../helper/password.helper");
 
 // [GET] /admin/accounts
 module.exports.index = async (req, res) => {
@@ -69,14 +70,25 @@ module.exports.create = async (req, res) => {
 // [POST] /admin/accounts/create
 module.exports.createPost = async (req, res) => {
     try {
+        const existEmail = await Account.findOne({
+            email: req.body.email,
+            deleted: false
+        });
+        if(existEmail){
+            req.flash("error", "Email đã tồn tại!");
+            return res.redirect(req.get("referer") || "/");
+        }
+        req.body.password = await hashPassword(req.body.password);
         const data = {
             fullName: req.body.fullName,
             phone: req.body.phone,
             email: req.body.email,
+            address: req.body.address,
             password: req.body.password,
             role_id: req.body.role_id,
             avatar: req.body.avatar,
             status: req.body.status,
+            displayName: req.body.displayName
         };
         const account = new Account(data);
         await account.save();
@@ -200,14 +212,24 @@ module.exports.edit = async (req, res) => {
 // [PATCH] /admin/accounts/edit/:id
 module.exports.editPatch = async (req, res) => {
     try {
-        const updateData = { ...req.body };
-        if (!updateData.password) {
-            delete updateData.password;
+        const existEmail = await Account.findOne({
+            email: req.body.password,
+            _id: {$ne: req.params.id},
+            deleted: false
+        });
+        if(existEmail){
+            req.flash("error", "Email đã tồn tại!");
+            return res.redirect(req.get("referer") || "/");
+        }
+        if (!req.body.password) {
+            delete req.body.password;
+        }else{
+            req.body.password = await hashPassword(req.body.password);
         }
         await Account.updateOne({
             _id: req.params.id,
             deleted: false
-        }, updateData);
+        }, req.body);
 
         res.redirect(`${systemConfig.systemConfig.prefixAdmin}/accounts`);
     } catch (error) {
@@ -226,6 +248,6 @@ module.exports.detail = async (req, res) => {
     res.render("admin/page/account/detail", {
         titlePage: account.fullName,
         account: account,
-        roleName: role ? role.name : ""
+        role: role
     });
 };

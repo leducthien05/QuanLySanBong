@@ -26,5 +26,6 @@ block content
                                         li #{permission}
                         
                 .field-detail-actions
-                    a.field-detail-btn.field-detail-btn-edit(href=`${prefixAdmin}/roles/edit/${role._id}`) Chỉnh sửa
+                    if(accountRole.permission.includes("roles_edit"))
+                        a.field-detail-btn.field-detail-btn-edit(href=`${prefixAdmin}/roles/edit/${role._id}`) Chỉnh sửa
                     a.field-detail-btn.field-detail-btn-back(href=`${prefixAdmin}/roles`) Quay lại

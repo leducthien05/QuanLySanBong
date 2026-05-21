@@ -26,17 +26,17 @@ block content
         .card-header Hành động
             .card-body 
                 .row
-                    //- if(role.permission.includes("products_edit")) 
                     .col-8 
-                        +change(`${prefixAdmin}/fields/change-multi-status?_method=PATCH`)
-                    //- if(role.permission.includes("products_create"))
+                        if(accountRole.permission.includes("fields_edit"))
+                            +change(`${prefixAdmin}/fields/change-multi-status?_method=PATCH`)
                     .col-4
                         div(class="field-header")
                             div
-                            a(
-                                href=`${prefixAdmin}/fields/create`
-                                class="add-btn"
-                            ) + Thêm sân mới
+                            if(accountRole.permission.includes("fields_create"))
+                                a(
+                                    href=`${prefixAdmin}/fields/create`
+                                    class="add-btn"
+                                ) + Thêm sân mới
     div(class="field-table")
         table(
             table-view
@@ -83,31 +83,40 @@ block content
                         td ⭐ 
                         td
                             if(item.status == "active")
-                                span(
-                                    status = item.status
-                                    data-status = item._id
-                                    class="status open"
-                                    ) ● Mở cửa
+                                if(accountRole.permission.includes("fields_edit"))
+                                    span(
+                                        status = item.status
+                                        data-status = item._id
+                                        class="status open"
+                                        ) ● Mở cửa
+                                else
+                                    span(class="status open") ● Mở cửa
                             else 
-                                span(
-                                    status = item.status
-                                    data-status = item._id
-                                    class="status"
-                                    ) ● Đóng cửa
+                                if(accountRole.permission.includes("fields_edit"))
+                                    span(
+                                        status = item.status
+                                        data-status = item._id
+                                        class="status"
+                                        ) ● Đóng cửa
+                                else
+                                    span(class="status") ● Đóng cửa
                         td
-                            a(
-                                class="action-btn"
-                                href=`${prefixAdmin}/fields/edit/${item._id}`
-                            ) Sửa
-                            button(
-                                btn-delete
-                                data-id = item._id
-                                class="action-btn"
-                            ) Xóa
-                            a(
-                                href=`${prefixAdmin}/fields/detail/${item._id}`
-                                class="action-btn"
-                            ) Chi tiết
+                            if(accountRole.permission.includes("fields_edit"))
+                                a(
+                                    class="action-btn"
+                                    href=`${prefixAdmin}/fields/edit/${item._id}`
+                                ) Sửa
+                            if(accountRole.permission.includes("fields_delete"))
+                                button(
+                                    btn-delete
+                                    data-id = item._id
+                                    class="action-btn"
+                                ) Xóa
+                            if(accountRole.permission.includes("fields_view"))
+                                a(
+                                    href=`${prefixAdmin}/fields/detail/${item._id}`
+                                    class="action-btn"
+                                ) Chi tiết
             +pagination(pagination) 
 
     form(

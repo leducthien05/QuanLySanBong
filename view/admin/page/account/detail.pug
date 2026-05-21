@@ -1,39 +1,129 @@
 extends ../../layout/default.pug
 
 block content
-    .field-detail-page
-        .field-detail-container
-            h1.field-detail-title Chi tiết tài khoản
+    .section-account-detail
 
-            .field-detail-card
-                .field-detail-top
-                    .field-detail-image
-                        if account.avatar
-                            img(src=account.avatar)
-                        else
-                            img(src="https://cdn-icons-png.flaticon.com/512/847/847969.png")
-                    .field-detail-info
-                        h2.field-detail-name #{account.fullName}
-                        .field-detail-item
-                            span.field-detail-label Email:
-                            span #{account.email}
-                        .field-detail-item
-                            span.field-detail-label Vai trò:
-                            span #{roleName || "Chưa gán"}
-                        .field-detail-item
-                            span.field-detail-label Trạng thái:
-                            if(account.status == "active")
-                                span.field-detail-status.field-detail-status-active Hoạt động
-                            else if(account.status == "inactive")
-                                span.field-detail-status.field-detail-status-inactive Tạm nghỉ
-                .field-detail-section
-                    h3.field-detail-section-title Thông tin thêm
+        .gf-profile
 
-                    .field-detail-description
-                        | ID: #{account._id}
-                        br
-                        | Token: #{account.token}
+            // HEADER
+            .gf-profile__hero
+                .gf-profile__main
+                    .gf-profile__left
+                        .gf-profile__avatar-wrap
+                            if account.avatar
+                                img.gf-profile__avatar(
+                                    src=account.avatar
+                                    alt="avatar"
+                                )
+                            else
+                                .gf-profile__avatar-placeholder
+                                    | AD
 
-                .field-detail-actions
-                    a.field-detail-btn.field-detail-btn-edit(href=`${prefixAdmin}/accounts/edit/${account._id}`) Chỉnh sửa
-                    a.field-detail-btn.field-detail-btn-back(href=`${prefixAdmin}/accounts`) Quay lại
+                        .gf-profile__info
+
+                            h1.gf-profile__name
+                                | #{account.fullName}
+
+                            .gf-profile__meta
+
+                                .gf-profile__meta-item
+                                    if(role.name == "Quản trị viên")
+                                        span 👑
+                                        span #{role.name}
+                                    else   
+                                        span #{role.name}
+
+                                span.gf-profile__dot •
+
+                                .gf-profile__meta-item
+                                    i.fa-regular.fa-envelope
+                                    span #{account.email}
+
+                                span.gf-profile__dot •
+
+                                .gf-profile__meta-item
+                                    i.fa-solid.fa-phone
+                                    span #{account.phone || "Chưa cập nhật"}
+
+                    .gf-profile__actions
+
+                        a.gf-profile__edit-btn(
+                            href=`${prefixAdmin}/accounts/edit/${account._id}`
+                        )
+                            i.fa-regular.fa-pen-to-square
+                            span Chỉnh sửa
+            // CONTENT
+            .gf-content
+                // LEFT
+                .gf-card
+                    .gf-card__header
+                        .gf-card__header-left
+                            .gf-card__icon
+                                i.fa-solid.fa-user
+                            h3 Thông tin cá nhân
+                    .gf-card__body
+
+                        .gf-form
+
+                            .gf-form__group
+                                label HỌ VÀ TÊN *
+                                .gf-form__input
+                                    | #{account.fullName}
+
+                            .gf-form__group
+                                label TÊN HIỂN THỊ
+                                .gf-form__input
+                                    | #{account.displayName}
+
+                            .gf-form__group
+                                label EMAIL
+                                .gf-form__input
+                                    | #{account.email}
+
+                            .gf-form__group
+                                label SỐ ĐIỆN THOẠI
+                                .gf-form__input
+                                    | #{account.phone || "Chưa cập nhật"}
+
+                            .gf-form__group
+                                label ĐỊA CHỈ
+                                .gf-form__input
+                                    | #{account.address}
+
+                            .gf-form__group
+                                label NHÓM QUYỀN
+                                .gf-form__input
+                                    | #{role.name}
+
+                // RIGHT
+                .gf-status
+
+                    .gf-status__header
+
+                        .gf-status__title
+
+                            span.gf-status__light
+
+                            h3 Trạng thái tài khoản
+
+                    .gf-status__body
+
+                        .gf-status__row
+
+                            span.gf-status__label
+                                | Trạng thái
+                            if(role.status == "active")
+                                span.gf-status__badge.active
+                                    | ● Hoạt động
+                            else 
+                                span.gf-status__badge.active
+                                    | ● Ngừng hoạt động
+
+                        .gf-status__row
+
+                            span.gf-status__label
+                                | Loại tài khoản
+
+                            span.gf-status__badge.admin
+                                | #{role.name}   
+    

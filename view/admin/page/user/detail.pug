@@ -35,5 +35,6 @@ block content
                         | Token: #{user.tokenUser}
 
                 .field-detail-actions
-                    a.field-detail-btn.field-detail-btn-edit(href=`${prefixAdmin}/users/edit/${user._id}`) Chỉnh sửa
+                    if(accountRole.permission.includes("users_edit"))
+                        a.field-detail-btn.field-detail-btn-edit(href=`${prefixAdmin}/users/edit/${user._id}`) Chỉnh sửa
                     a.field-detail-btn.field-detail-btn-back(href=`${prefixAdmin}/users`) Quay lại
