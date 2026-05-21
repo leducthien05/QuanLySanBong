@@ -161,18 +161,18 @@ if (formChangeMulti) {
 
 // Xóa 
 const btnDelete = document.querySelectorAll("[btn-delete]");
-if(btnDelete.length > 0){
+if (btnDelete.length > 0) {
     const formDelete = document.querySelector("[form-delete]");
     const action = formDelete.action;
-    btnDelete.forEach(btn =>{
-        btn.addEventListener("click", (e)=>{
+    btnDelete.forEach(btn => {
+        btn.addEventListener("click", (e) => {
             const id = btn.getAttribute("data-id");
             const link = `${action}/${id}`;
             fetch(link, {
                 method: "DELETE",
             })
                 .then(res => res.json())
-                .then(data =>{
+                .then(data => {
                     const record = btn.closest("tr");
                     record.remove();
                 });
@@ -182,15 +182,15 @@ if(btnDelete.length > 0){
 
 // Giờ hoạt động
 const checkboxAllTimeactive = document.querySelector("input[name='scheduleStatus']");
-if(checkboxAllTimeactive){
+if (checkboxAllTimeactive) {
     const checkbox = document.querySelectorAll("input[name='schedule']");
     const checkall = document.querySelectorAll("input[name='schedule']:checked").length;
-    if(checkbox.length == checkall){
+    if (checkbox.length == checkall) {
         checkboxAllTimeactive.checked = true;
     }
-    checkboxAllTimeactive.addEventListener("click", (e)=>{
-        if(checkboxAllTimeactive.checked == true){
-            checkbox.forEach(item =>{
+    checkboxAllTimeactive.addEventListener("click", (e) => {
+        if (checkboxAllTimeactive.checked == true) {
+            checkbox.forEach(item => {
                 item.checked = true;
             });
         }
@@ -205,4 +205,41 @@ if(checkboxAllTimeactive){
             }
         });
     });
+}
+
+
+// Chỉnh sửa thông tin tài khoản
+const modal = document.querySelector(".gf-edit-modal");
+const btnOpen = document.querySelector(".gf-profile__edit-btn");
+const btnClose = document.querySelector(".gf-edit-modal__close");
+const btnCancel = document.querySelector(".gf-edit-modal__cancel");
+const overlay = document.querySelector(".gf-edit-modal__overlay");
+
+if (btnOpen) {
+    // MỞ MODAL
+    btnOpen.addEventListener("click", () => {
+        modal.classList.add("active");
+    });
+}
+
+if (modal) {
+    // ĐÓNG MODAL
+    function closeModal() {
+        modal.classList.remove("active");
+    }
+}
+
+if (btnClose) {
+    // NÚT X
+    btnClose.addEventListener("click", closeModal);
+}
+
+if (btnCancel) {
+    // NÚT HỦY
+    btnCancel.addEventListener("click", closeModal);
+}
+
+if (overlay) {
+    // CLICK OVERLAY
+    overlay.addEventListener("click", closeModal);
 }

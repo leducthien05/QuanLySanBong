@@ -69,10 +69,13 @@ aside.sidebar
     hr
 
     .admin-profile
-        .avatar 
-            img(
-                src=accountAdmin.avatar
-            )
+        a(
+            href=`${prefixAdmin}/myaccount`
+        )
+            .avatar 
+                img(
+                    src=accountAdmin.avatar
+                )
         .info
             h5 #{accountRole.name}
             p #{accountAdmin.fullName}

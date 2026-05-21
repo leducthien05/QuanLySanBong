@@ -47,8 +47,7 @@ block content
 
                     .gf-profile__actions
 
-                        a.gf-profile__edit-btn(
-                            href=`${prefixAdmin}/accounts/edit/${accountAdmin._id}`
+                        button.gf-profile__edit-btn(
                         )
                             i.fa-regular.fa-pen-to-square
                             span Chỉnh sửa
@@ -126,88 +125,122 @@ block content
 
                             span.gf-status__badge.admin
                                 | #{accountRole.name}   
-    form.gf-edit-modal__form(
-            method="POST"
-            enctype="multipart/form-data"
-            action = `${prefixAdmin}/myaccount/edit/${accountAdmin._id}`
-        )
-            // AVATAR
-            .gf-edit-modal__avatar-section
+    .gf-edit-modal
 
-                .gf-edit-modal__avatar-wrap
+        .gf-edit-modal__overlay
 
-                    if accountAdmin.avatar
-                        img.gf-edit-modal__avatar(
-                            src=accountAdmin.avatar
-                            alt="avatar"
+        .gf-edit-modal__container
+
+            .gf-edit-modal__header
+
+                .gf-edit-modal__title
+                    h3 Chỉnh sửa tài khoản
+                    p Cập nhật thông tin cá nhân
+
+                button.gf-edit-modal__close(type="button")
+                    i.fa-solid.fa-xmark
+            form.gf-edit-modal__form(
+                    method="POST"
+                    enctype="multipart/form-data"
+                    action = `${prefixAdmin}/myaccount/edit/${accountAdmin._id}?_method=PATCH`
+                )
+                    // AVATAR
+                    .gf-edit-modal__avatar-section
+
+                        .gf-edit-modal__avatar-wrap
+
+                            if accountAdmin.avatar
+                                img.gf-edit-modal__avatar(
+                                    src=accountAdmin.avatar
+                                    alt="avatar"
+                                )
+                            else
+                                .gf-edit-modal__avatar-placeholder
+                                    | AD
+
+                        label.gf-edit-modal__upload
+                            i.fa-solid.fa-camera
+                            span Đổi ảnh
+
+                            input(
+                                type="file"
+                                name="avatar"
+                                hidden
+                            )
+
+                    // FORM
+                    .gf-edit-modal__grid
+
+                        .gf-edit-modal__group
+                            label Họ và tên
+
+                            input.gf-edit-modal__input(
+                                type="text"
+                                name="fullName"
+                                value=accountAdmin.fullName
+                                placeholder="Nhập họ tên"
+                            )
+
+                        .gf-edit-modal__group
+                            label Email
+
+                            input.gf-edit-modal__input(
+                                type="email"
+                                name="email"
+                                readonly
+                                value=accountAdmin.email
+                                placeholder="Nhập email"
+                            )
+
+                        .gf-edit-modal__group
+                            label Số điện thoại
+
+                            input.gf-edit-modal__input(
+                                type="text"
+                                name="phone"
+                                value=accountAdmin.phone
+                                placeholder="Nhập số điện thoại"
+                            )
+
+                        .gf-edit-modal__group
+                            label Mật khẩu mới
+
+                            input.gf-edit-modal__input(
+                                type="password"
+                                name="password"
+                                placeholder="Nhập mật khẩu mới"
+                            )
+                        .gf-edit-modal__group
+                            label Địa chỉ
+
+                            input.gf-edit-modal__input(
+                                type="text"
+                                name="address"
+                                value = accountAdmin.address
+                                placeholder="Nhập địa chỉ mới"
+                            )
+                        .gf-edit-modal__group
+                            label Tên hiển thị
+
+                            input.gf-edit-modal__input(
+                                type="text"
+                                name="displayName"
+                                value = accountAdmin.displayName
+                                placeholder="Nhập tên hiển thị mới"
+                            )
+
+                    // ACTIONS
+                    .gf-edit-modal__actions
+
+                        button.gf-edit-modal__cancel(
+                            type="button"
                         )
-                    else
-                        .gf-edit-modal__avatar-placeholder
-                            | AD
+                            | Hủy
 
-                label.gf-edit-modal__upload
-                    i.fa-solid.fa-camera
-                    span Đổi ảnh
+                        button.gf-edit-modal__submit(
+                            type="submit"
+                        )
+                            i.fa-solid.fa-floppy-disk
+                            span Lưu thay đổi      
 
-                    input(
-                        type="file"
-                        name="avatar"
-                        hidden
-                    )
-
-            // FORM
-            .gf-edit-modal__grid
-
-                .gf-edit-modal__group
-                    label Họ và tên
-
-                    input.gf-edit-modal__input(
-                        type="text"
-                        name="fullName"
-                        value=accountAdmin.fullName
-                        placeholder="Nhập họ tên"
-                    )
-
-                .gf-edit-modal__group
-                    label Email
-
-                    input.gf-edit-modal__input(
-                        type="email"
-                        name="email"
-                        readonly
-                        value=accountAdmin.email
-                        placeholder="Nhập email"
-                    )
-
-                .gf-edit-modal__group
-                    label Số điện thoại
-
-                    input.gf-edit-modal__input(
-                        type="text"
-                        name="phone"
-                        value=accountAdmin.phone
-                        placeholder="Nhập số điện thoại"
-                    )
-
-                .gf-edit-modal__group
-                    label Mật khẩu mới
-
-                    input.gf-edit-modal__input(
-                        type="password"
-                        name="password"
-                        placeholder="Nhập mật khẩu mới"
-                    )
-
-            // ACTIONS
-            .gf-edit-modal__actions
-
-                button.gf-edit-modal__cancel(
-                    type="button"
-                )
-                    | Hủy
-
-                button.gf-edit-modal__submit(
-                    type="submit"
-                )
-                    i.fa-solid.fa-floppy-disk
-                    span Lưu thay đổi                   
+    script(src="/admin/JS/script.js")             
