@@ -12,7 +12,7 @@ router.get("/", controller.detail);
 router.patch(
     "/edit/:id",
     upload.single("avatar"),
-    uploadImage.uploadCloudinary,
+    uploadImage.uploadSingle,
     controller.editPatch
 );
 

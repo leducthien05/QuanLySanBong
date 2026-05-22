@@ -15,7 +15,7 @@ router.post(
     "/create",
     permission.checkPermission("accounts_create"),
     upload.single("avatar"),
-    uploadImage.uploadCloudinary,
+    uploadImage.uploadSingle,
     validate.create,
     controller.createPost
 );
@@ -27,7 +27,7 @@ router.patch(
     "/edit/:id",
     permission.checkPermission("accounts_edit"),
     upload.single("avatar"),
-    uploadImage.uploadCloudinary,
+    uploadImage.uploadSingle,
     validate.create,
     controller.editPatch
 );

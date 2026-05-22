@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
+const multer = require("multer");
 
+const upload = multer();
 const controller = require("../../controller/admin/setting.controller");
 const permission = require("../../middleware/admin/permission.middleware");
 const uploadImage = require("../../middleware/admin/uploadImage.middleware");
@@ -11,8 +13,14 @@ router.get("/", permission.checkPermission("settings"), controller.index);
 // [PATCH] /admin/settings/edit
 router.patch(
     "/edit",
+    upload.fields(
+        [
+            { name: "logo", maxCount: 1 },
+            { name: "favicon", maxCount: 1 }
+        ]
+    ),
     permission.checkPermission("settings"),
-    uploadImage.uploadCloudinary,
+    uploadImage.uploadMulti,
     controller.editPatch
 );
 

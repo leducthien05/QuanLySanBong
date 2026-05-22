@@ -38,28 +38,13 @@ const settingSchema = new mongoose.Schema({
         enum: ['active', 'inactive'],
         default: 'active'
     },
-    maintenanceMode: {
-        type: Boolean,
-        default: false
-    },
     maintenanceMessage: {
         type: String,
         default: 'Website is under maintenance. Please come back later.'
     },
-    paginationLimit: {
-        type: Number,
-        default: 10
-    },
     defaultLanguage: {
         type: String,
         default: 'vi'
-    },
-
-    // SEO Settings
-    seo: {
-        metaTitle: String,
-        metaDescription: String,
-        metaKeywords: String
     },
 
     // Payment Methods

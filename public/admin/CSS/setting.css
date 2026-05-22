@@ -221,24 +221,33 @@
    ======================================== */
 
 .form-check.form-switch {
-    padding-left: 0;
     display: flex;
     align-items: center;
     gap: 12px;
-}
 
+    padding-left: 0;
+    min-height: auto;
+}
 .form-check-input {
+    position: relative;
+
     width: 48px;
     height: 26px;
+
     margin-top: 0;
-    background: #0a1810;
+    margin-left: 0 !important;
+
+    background-color: #0a1810;
     border: 2px solid rgba(163, 255, 77, 0.3);
+
     cursor: pointer;
     transition: all 0.3s ease;
+
+    box-shadow: none;
 }
 
 .form-check-input:checked {
-    background: #a3ff4d;
+    background-color: #a3ff4d;
     border-color: #a3ff4d;
     box-shadow: 0 0 10px rgba(163, 255, 77, 0.3);
 }
@@ -260,7 +269,12 @@
    ======================================== */
 
 .maintenance-toggle {
-    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    padding-top: 0;
+    margin-right: 0;
 }
 
 /* ========================================

@@ -10,11 +10,13 @@ const myaccountRouter = require("./myaccount.router");
 const settingRouter = require("./setting.router");
 
 const authMiddleware = require("../../middleware/admin/auth.middleware");
+const adminMiddleware = require("../../middleware/admin/admin.middleware");
 
 const systemConfig = require("../../config/system");
 
 module.exports = (app) =>{
     const prefixAdmin = systemConfig.systemConfig.prefixAdmin;
+    app.use(adminMiddleware);
     app.use(prefixAdmin + "/dashboard", authMiddleware.requireAuth, dashboardRouter);
     app.use(prefixAdmin + "/fields", authMiddleware.requireAuth, fieldRouter);
     app.use(prefixAdmin + "/services", authMiddleware.requireAuth, serviceRouter);

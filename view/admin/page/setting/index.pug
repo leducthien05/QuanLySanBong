@@ -157,51 +157,7 @@ block content
                                     name="maintenanceMessage"
                                     rows="2"
                                     placeholder="Nhập thông báo bảo trì"
-                                )= setting.maintenanceMessage || ''
-
-                    .row
-                        .col-md-6
-                            .form-group.mb-3
-                                label.form-label Pagination Limit
-                                input.form-control(
-                                    type="number"
-                                    name="paginationLimit"
-                                    value=setting.paginationLimit || 10
-                                    min="1"
-                                    placeholder="Nhập số record trên trang"
-                                )
-
-            // SEO SECTION
-            .settings-section.card.mb-4
-                .card-header.settings-section-header
-                    i.fa-solid.fa-search
-                    span SEO Settings
-                
-                .card-body
-                    .form-group.mb-3
-                        label.form-label Meta Title
-                        input.form-control(
-                            type="text"
-                            name="metaTitle"
-                            value=(setting.seo && setting.seo.metaTitle) || ''
-                            placeholder="Nhập meta title"
-                        )
-
-                    .form-group.mb-3
-                        label.form-label Meta Description
-                        textarea.form-control(
-                            name="metaDescription"
-                            rows="2"
-                            placeholder="Nhập meta description"
-                        )= (setting.seo && setting.seo.metaDescription) || ''
-
-                    .form-group.mb-3
-                        label.form-label Meta Keywords
-                        textarea.form-control(
-                            name="metaKeywords"
-                            rows="2"
-                            placeholder="Nhập meta keywords"
-                        )= (setting.seo && setting.seo.metaKeywords) || ''
+                                ) #{setting.maintenanceMessage || '' } 
 
             // PAYMENT METHODS SECTION
             .settings-section.card.mb-4
@@ -216,7 +172,7 @@ block content
                             .form-check.form-switch
                                 input.form-check-input.payment-toggle(
                                     type="checkbox"
-                                    name="payment-cash-enabled"
+                                    name="cash"
                                     id="cashToggle"
                                     checked=(setting.paymentMethods && setting.paymentMethods.cash && setting.paymentMethods.cash.enabled) || false
                                 )
@@ -231,8 +187,8 @@ block content
                                         label.form-label Account Name
                                         input.form-control(
                                             type="text"
-                                            name="payment-cash-name"
-                                            value=(setting.paymentMethods && setting.paymentMethods.cash && setting.paymentMethods.cash.accountName) || ''
+                                            name="cash-name"
+                                            value=((setting.paymentMethods && setting.paymentMethods.cash && setting.paymentMethods.cash.accountName) ? setting.paymentMethods.cash.accountName : '')
                                             placeholder="Nhập tên người nhận"
                                         )
 
@@ -244,7 +200,7 @@ block content
                                     .form-group.mb-2
                                         label.form-label Instructions
                                         textarea.form-control(
-                                            name="payment-cash-description"
+                                            name="cash-description"
                                             rows="2"
                                             placeholder="Nhập hướng dẫn thanh toán"
                                         )= (setting.paymentMethods && setting.paymentMethods.cash && setting.paymentMethods.cash.description) || ''
@@ -255,7 +211,7 @@ block content
                             .form-check.form-switch
                                 input.form-check-input.payment-toggle(
                                     type="checkbox"
-                                    name="payment-banking-enabled"
+                                    name="banking"
                                     id="bankingToggle"
                                     checked=(setting.paymentMethods && setting.paymentMethods.banking && setting.paymentMethods.banking.enabled) || false
                                 )
@@ -270,8 +226,8 @@ block content
                                         label.form-label Account Name
                                         input.form-control(
                                             type="text"
-                                            name="payment-banking-name"
-                                            value=(setting.paymentMethods && setting.paymentMethods.banking && setting.paymentMethods.banking.accountName) || ''
+                                            name="bankingName"
+                                            value=((setting.paymentMethods && setting.paymentMethods.banking && setting.paymentMethods.banking.accountName) ? setting.paymentMethods.banking.accountName : '')
                                             placeholder="Nhập tên tài khoản"
                                         )
 
@@ -280,7 +236,7 @@ block content
                                         label.form-label Account Number
                                         input.form-control(
                                             type="text"
-                                            name="payment-banking-number"
+                                            name="bankingNumber"
                                             value=(setting.paymentMethods && setting.paymentMethods.banking && setting.paymentMethods.banking.accountNumber) || ''
                                             placeholder="Nhập số tài khoản"
                                         )
@@ -291,7 +247,7 @@ block content
                                         label.form-label Bank Name
                                         input.form-control(
                                             type="text"
-                                            name="payment-banking-bankname"
+                                            name="bankingBankName"
                                             value=(setting.paymentMethods && setting.paymentMethods.banking && setting.paymentMethods.banking.bankName) || ''
                                             placeholder="Nhập tên ngân hàng"
                                         )
@@ -316,7 +272,7 @@ block content
                                     .form-group.mb-2
                                         label.form-label Instructions
                                         textarea.form-control(
-                                            name="payment-banking-description"
+                                            name="bankingDescription"
                                             rows="2"
                                             placeholder="Nhập hướng dẫn thanh toán"
                                         )= (setting.paymentMethods && setting.paymentMethods.banking && setting.paymentMethods.banking.description) || ''
@@ -327,7 +283,7 @@ block content
                             .form-check.form-switch
                                 input.form-check-input.payment-toggle(
                                     type="checkbox"
-                                    name="payment-momo-enabled"
+                                    name="momo"
                                     id="momoToggle"
                                     checked=(setting.paymentMethods && setting.paymentMethods.momo && setting.paymentMethods.momo.enabled) || false
                                 )
@@ -342,7 +298,7 @@ block content
                                         label.form-label Account Name
                                         input.form-control(
                                             type="text"
-                                            name="payment-momo-name"
+                                            name="momoName"
                                             value=(setting.paymentMethods && setting.paymentMethods.momo && setting.paymentMethods.momo.accountName) || ''
                                             placeholder="Nhập tên tài khoản"
                                         )
@@ -352,7 +308,7 @@ block content
                                         label.form-label Account Number
                                         input.form-control(
                                             type="text"
-                                            name="payment-momo-number"
+                                            name="momoNumber"
                                             value=(setting.paymentMethods && setting.paymentMethods.momo && setting.paymentMethods.momo.accountNumber) || ''
                                             placeholder="Nhập số điện thoại"
                                         )
@@ -378,7 +334,7 @@ block content
                                     .form-group.mb-2
                                         label.form-label Instructions
                                         textarea.form-control(
-                                            name="payment-momo-description"
+                                            name="momoDescription"
                                             rows="2"
                                             placeholder="Nhập hướng dẫn thanh toán"
                                         )= (setting.paymentMethods && setting.paymentMethods.momo && setting.paymentMethods.momo.description) || ''
@@ -389,7 +345,7 @@ block content
                             .form-check.form-switch
                                 input.form-check-input.payment-toggle(
                                     type="checkbox"
-                                    name="payment-zalopay-enabled"
+                                    name="zalopay"
                                     id="zalopayToggle"
                                     checked=(setting.paymentMethods && setting.paymentMethods.zalopay && setting.paymentMethods.zalopay.enabled) || false
                                 )
@@ -404,7 +360,7 @@ block content
                                         label.form-label Account Name
                                         input.form-control(
                                             type="text"
-                                            name="payment-zalopay-name"
+                                            name="zalopayName"
                                             value=(setting.paymentMethods && setting.paymentMethods.zalopay && setting.paymentMethods.zalopay.accountName) || ''
                                             placeholder="Nhập tên tài khoản"
                                         )
@@ -414,7 +370,7 @@ block content
                                         label.form-label Account Number
                                         input.form-control(
                                             type="text"
-                                            name="payment-zalopay-number"
+                                            name="zalopayNumber"
                                             value=(setting.paymentMethods && setting.paymentMethods.zalopay && setting.paymentMethods.zalopay.accountNumber) || ''
                                             placeholder="Nhập số điện thoại"
                                         )
@@ -440,7 +396,7 @@ block content
                                     .form-group.mb-2
                                         label.form-label Instructions
                                         textarea.form-control(
-                                            name="payment-zalopay-description"
+                                            name="zalopayDescription"
                                             rows="2"
                                             placeholder="Nhập hướng dẫn thanh toán"
                                         )= (setting.paymentMethods && setting.paymentMethods.zalopay && setting.paymentMethods.zalopay.description) || ''
@@ -451,7 +407,7 @@ block content
                             .form-check.form-switch
                                 input.form-check-input.payment-toggle(
                                     type="checkbox"
-                                    name="payment-vnpay-enabled"
+                                    name="vnpay"
                                     id="vnpayToggle"
                                     checked=(setting.paymentMethods && setting.paymentMethods.vnpay && setting.paymentMethods.vnpay.enabled) || false
                                 )
@@ -466,7 +422,7 @@ block content
                                         label.form-label Merchant Code
                                         input.form-control(
                                             type="text"
-                                            name="payment-vnpay-merchant"
+                                            name="vnpayMerchant"
                                             value=(setting.paymentMethods && setting.paymentMethods.vnpay && setting.paymentMethods.vnpay.merchantCode) || ''
                                             placeholder="Nhập mã nhà cung cấp"
                                         )
@@ -476,7 +432,7 @@ block content
                                         label.form-label Access Key
                                         input.form-control(
                                             type="password"
-                                            name="payment-vnpay-access"
+                                            name="vnpayAccess"
                                             value=(setting.paymentMethods && setting.paymentMethods.vnpay && setting.paymentMethods.vnpay.accessKey) || ''
                                             placeholder="Nhập access key"
                                         )
@@ -487,7 +443,7 @@ block content
                                         label.form-label Secret Key
                                         input.form-control(
                                             type="password"
-                                            name="payment-vnpay-secret"
+                                            name="vnpaySecret"
                                             value=(setting.paymentMethods && setting.paymentMethods.vnpay && setting.paymentMethods.vnpay.secretKey) || ''
                                             placeholder="Nhập secret key"
                                         )
@@ -500,7 +456,7 @@ block content
                                     .form-group.mb-2
                                         label.form-label Instructions
                                         textarea.form-control(
-                                            name="payment-vnpay-description"
+                                            name="vnpayDescription"
                                             rows="2"
                                             placeholder="Nhập hướng dẫn thanh toán"
                                         )= (setting.paymentMethods && setting.paymentMethods.vnpay && setting.paymentMethods.vnpay.description) || ''
