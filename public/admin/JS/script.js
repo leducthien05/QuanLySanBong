@@ -243,3 +243,49 @@ if (overlay) {
     // CLICK OVERLAY
     overlay.addEventListener("click", closeModal);
 }
+
+// Thông báo
+const toggleBtn = document.querySelector(".notification");
+const notificationBox = document.querySelector(".notification-box");
+if (toggleBtn && notificationBox) {
+    toggleBtn.addEventListener("click", () => {
+        notificationBox.classList.toggle("active");
+    });
+    /* Click outside */
+    document.addEventListener("click", (e) => {
+        if (!notificationBox.contains(e.target) && !toggleBtn.contains(e.target)) {
+            notificationBox.classList.remove("active");
+        }
+    });
+}
+
+// Ngày hôm nay
+const today = new Date();
+
+// Danh sách thứ
+const weekdays = [
+    "Chủ nhật",
+    "Thứ 2",
+    "Thứ 3",
+    "Thứ 4",
+    "Thứ 5",
+    "Thứ 6",
+    "Thứ 7"
+];
+
+// Lấy thứ
+const weekday = weekdays[today.getDay()];
+
+// Lấy ngày tháng năm
+const fullDate = `${weekday}, ${today.getDate()}/${
+    today.getMonth() + 1
+}/${today.getFullYear()}`;
+
+const dateElement = document.querySelector(".date");
+if(dateElement){
+    dateElement.textContent = fullDate;
+}
+
+
+
+

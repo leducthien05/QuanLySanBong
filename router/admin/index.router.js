@@ -16,7 +16,8 @@ const systemConfig = require("../../config/system");
 
 module.exports = (app) =>{
     const prefixAdmin = systemConfig.systemConfig.prefixAdmin;
-    app.use(adminMiddleware);
+    app.use(adminMiddleware.settingMiddleware);
+    app.use(adminMiddleware.notificationMiddleware);
     app.use(prefixAdmin + "/dashboard", authMiddleware.requireAuth, dashboardRouter);
     app.use(prefixAdmin + "/fields", authMiddleware.requireAuth, fieldRouter);
     app.use(prefixAdmin + "/services", authMiddleware.requireAuth, serviceRouter);

@@ -30,6 +30,9 @@ app.use(session({
     maxAge: 60000
   }
 }));
+//Cấu hình conver thời gian
+const moment = require("moment");
+app.locals.moment = moment;
 // flash
 const flash = require('express-flash');
 app.use(flash());

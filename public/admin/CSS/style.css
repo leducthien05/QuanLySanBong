@@ -201,6 +201,201 @@ hr {
     box-shadow: 0 0 15px rgba(163, 255, 77, 0.25);
 }
 
+.sidebar-footer {
+    margin-top: auto;
+    padding: 18px 16px 18px;
+    border-top: 1px solid rgba(163, 255, 77, 0.12);
+    background: rgba(11, 25, 14, 0.72);
+    backdrop-filter: blur(18px);
+}
+
+.sidebar-logout {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 16px;
+    color: #ffdbdb;
+    background: rgba(99, 16, 16, 0.16);
+    border: 1px solid rgba(255, 92, 92, 0.28);
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    transition: transform 0.28s ease, box-shadow 0.32s ease, background 0.28s ease, color 0.28s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.sidebar-logout__icon {
+    display: inline-flex;
+    width: 20px;
+    height: 20px;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.28s ease;
+}
+
+.sidebar-logout::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top left, rgba(255, 86, 86, 0.32), transparent 40%);
+    opacity: 0;
+    transition: opacity 0.28s ease;
+}
+
+.sidebar-logout:hover {
+    transform: translateX(6px);
+    color: #ffe9e9;
+    background: rgba(255, 65, 65, 0.16);
+    box-shadow: 0 0 28px rgba(255, 80, 80, 0.35);
+}
+
+.sidebar-logout:hover::before {
+    opacity: 1;
+}
+
+.sidebar-logout__icon {
+    display: inline-flex;
+    width: 24px;
+    height: 24px;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.28s ease;
+}
+
+.sidebar-logout:hover .sidebar-logout__icon {
+    transform: translateX(2px) rotate(12deg);
+}
+
+.sidebar-logout-modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.24s ease;
+    z-index: 2200;
+}
+
+.sidebar-logout-modal.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.sidebar-logout-modal__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.62);
+}
+
+.sidebar-logout-modal__container {
+    position: relative;
+    width: min(420px, calc(100% - 40px));
+    padding: 28px 26px;
+    border-radius: 24px;
+    background: rgba(9, 22, 14, 0.98);
+    border: 1px solid rgba(163, 255, 77, 0.12);
+    box-shadow: 0 26px 75px rgba(0, 0, 0, 0.45);
+    transform: translateY(18px);
+    transition: transform 0.3s ease;
+}
+
+.sidebar-logout-modal.active .sidebar-logout-modal__container {
+    transform: translateY(0);
+}
+
+.sidebar-logout-modal__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: rgba(255, 86, 86, 0.15);
+    color: #ff8b8b;
+    margin-bottom: 18px;
+    font-size: 20px;
+}
+
+.sidebar-logout-modal__title {
+    color: #e8fdd6;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.sidebar-logout-modal__message {
+    color: #b8d5b1;
+    line-height: 1.75;
+    margin-bottom: 24px;
+}
+
+.sidebar-logout-modal__actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+.sidebar-logout-modal__cancel,
+.sidebar-logout-modal__confirm {
+    min-width: 110px;
+    padding: 12px 16px;
+    border: 1px solid transparent;
+    border-radius: 14px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.24s ease, transform 0.24s ease, border-color 0.24s ease;
+}
+
+.sidebar-logout-modal__cancel {
+    background: rgba(255, 255, 255, 0.05);
+    color: #d8e5cf;
+}
+
+.sidebar-logout-modal__cancel:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
+}
+
+.sidebar-logout-modal__confirm {
+    background: #d23d3d;
+    color: white;
+    border-color: rgba(255, 85, 85, 0.45);
+}
+
+.sidebar-logout-modal__confirm:hover {
+    background: #ea5252;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 900px) {
+    .sidebar {
+        position: relative;
+        width: 100%;
+        min-height: auto;
+        height: auto;
+    }
+
+    .main {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .sidebar-footer {
+        padding: 18px 16px 24px;
+    }
+
+    .sidebar-logout {
+        justify-content: flex-start;
+    }
+}
+
 /* Scrollbar sidebar mini */
 .sidebar::-webkit-scrollbar {
     width: 4px;
@@ -2761,4 +2956,206 @@ td {
         width: 100%;
         justify-content: center;
     }
+}
+
+/* notification */
+.notification-wrapper {
+    position: relative;
+}
+
+/* Toggle Button */
+.notification-toggle {
+    width: 52px;
+    height: 52px;
+
+    border-radius: 16px;
+    border: 1px solid rgba(160, 255, 120, 0.15);
+
+    background: rgba(8, 24, 16, 0.95);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.notification-toggle:hover {
+    background: rgba(120, 255, 120, 0.08);
+}
+
+.notification-toggle i {
+    font-size: 18px;
+    color: #E8FEEA;
+}
+
+/* Notification Box */
+.notification-box {
+    position: absolute;
+    top: calc(100% + 5px);
+    right: 0;
+
+    width: 360px;
+
+    background: linear-gradient(
+        180deg,
+        rgba(7, 27, 19, 0.98) 0%,
+        rgba(3, 18, 12, 0.98) 100%
+    );
+
+    border: 1px solid rgba(140, 255, 102, 0.18);
+    border-radius: 20px;
+
+    overflow: hidden;
+
+    backdrop-filter: blur(12px);
+
+    box-shadow:
+        0 0 25px rgba(103, 255, 80, 0.06),
+        0 8px 30px rgba(0, 0, 0, 0.4);
+
+    opacity: 0;
+    visibility: hidden;
+
+    transform: translateY(10px) scale(0.96);
+
+    transition:
+        opacity 0.25s ease,
+        transform 0.25s ease,
+        visibility 0.25s;
+
+    z-index: 999;
+}
+
+/* Active */
+.notification-box.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+/* Header */
+.notification-box__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 18px 20px;
+
+    border-bottom: 1px solid rgba(162, 255, 131, 0.08);
+}
+
+.notification-box__title {
+    margin: 0;
+
+    color: #FFFFFF;
+
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.notification-box__mark {
+    border: none;
+    background: transparent;
+
+    color: #9BEA42;
+
+    font-size: 12px;
+    font-weight: 500;
+
+    cursor: pointer;
+}
+
+/* List */
+.notification-box__list {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Item */
+.notification-box__item {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 12px;
+
+    padding: 16px 20px;
+
+    border-bottom: 1px solid rgba(162, 255, 131, 0.06);
+
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.notification-box__item:last-child {
+    border-bottom: none;
+}
+
+.notification-box__item:hover {
+    background: rgba(120, 255, 88, 0.04);
+}
+
+/* Icon */
+.notification-box__icon {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+
+    border-radius: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 14px;
+}
+
+/* Content */
+.notification-box__content {
+    flex: 1;
+}
+
+.notification-box__text {
+    color: #F2F5F3;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    line-height: 1.4;
+
+    margin-bottom: 4px;
+}
+
+.notification-box__time {
+    color: rgba(226, 235, 229, 0.55);
+
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* Status */
+.notification-box__item--success .notification-box__icon {
+    background: rgba(62, 255, 132, 0.12);
+    color: #53FF95;
+}
+
+.notification-box__item--warning .notification-box__icon {
+    background: rgba(255, 214, 74, 0.12);
+    color: #FFD54A;
+}
+
+.notification-box__item--info .notification-box__icon {
+    background: rgba(80, 199, 255, 0.12);
+    color: #6ED7FF;
+}
+
+.notification-box__item--danger .notification-box__icon {
+    background: rgba(255, 96, 96, 0.12);
+    color: #FF6B6B;
+}
+
+.notification-box__item--star .notification-box__icon {
+    background: rgba(141, 255, 75, 0.12);
+    color: #9BFF3F;
 }

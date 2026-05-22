@@ -79,4 +79,23 @@ aside.sidebar
         .info
             h5 #{accountRole.name}
             p #{accountAdmin.fullName}
-    script(src="/admin/JS/sidebar.js") 
+
+    .sidebar-footer
+        a.sidebar-logout(href=`${prefixAdmin}/auth/logout`)
+            span.sidebar-logout__icon
+                i.fa-solid.fa-right-from-bracket
+            span.sidebar-logout__text Logout
+
+    .sidebar-logout-modal
+        .sidebar-logout-modal__overlay
+        .sidebar-logout-modal__container
+            .sidebar-logout-modal__icon
+                i.fa-solid.fa-triangle-exclamation
+            h3.sidebar-logout-modal__title Are you sure you want to logout?
+            p.sidebar-logout-modal__message Bạn sẽ cần đăng nhập lại để vào lại trang quản trị.
+            .sidebar-logout-modal__actions
+                button.sidebar-logout-modal__cancel(type="button") Cancel
+                button.sidebar-logout-modal__confirm(type="button") Logout
+
+    script(src="/admin/JS/sidebar.js")
+    script(src="/admin/JS/logout.js")

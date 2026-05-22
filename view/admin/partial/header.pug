@@ -1,3 +1,4 @@
+include ../../admin/mixin/convertTime.pug
 header.header
 
     .field-header
@@ -6,7 +7,32 @@ header.header
 
     .header-right
 
-        p.date Thứ Sáu, 08/05/2026
+        p.date
 
         .notification
             i.fa-regular.fa-bell
+            .notification-wrapper
+                //- Notification Box
+                .notification-box
+
+                    //- Header
+                    .notification-box__header
+                        h3.notification-box__title Thông báo
+
+                        button.notification-box__mark(type="button")
+                            | Đánh dấu đã đọc
+
+                    //- List
+                    .notification-box__list
+                        each item in notification
+                            //- Item Success
+                            .notification-box__item.notification-box__item--success
+                                .notification-box__icon
+                                    i.fa-solid.fa-check
+
+                                .notification-box__content
+                                    .notification-box__text
+                                        | #{item.content}
+
+                                    .notification-box__time
+                                        +dateTime(item.createdAt)                      
