@@ -44,6 +44,8 @@ app.use(express.static(`${__dirname}/public/`));
 // Router 
 const routerAdmin = require("./router/admin/index.router");
 routerAdmin(app);
+const routerClient = require("./router/client/index.router");
+routerClient(app);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

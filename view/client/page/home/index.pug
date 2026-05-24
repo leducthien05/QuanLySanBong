@@ -1,0 +1,174 @@
+extends ../../layout/default.pug
+
+block content
+
+    // HERO
+    section.gf-hero
+        .gf-container.gf-hero__grid
+
+            .gf-hero__content
+
+                .gf-hero__tag
+                    span.gf-dot
+                    | Đặt sân trong 60 giây
+
+                h1.gf-hero__title
+                    | Tìm & Đặt
+                    br
+                    span Sân Bóng
+                    br
+                    | Ngay Hôm Nay
+
+                p.gf-hero__desc
+                    | Hơn 50 sân bóng chất lượng cao tại Hà Nội.
+                    | Đặt lịch dễ dàng, thanh toán nhanh chóng.
+
+                .gf-hero__actions
+                    button.gf-btn.gf-btn--primary
+                        | Đặt sân ngay
+
+                    button.gf-btn.gf-btn--outline
+                        | Xem sân trống
+
+                .gf-stats
+
+                    .gf-stat
+                        h3 50+
+                        p Sân bóng
+
+                    .gf-stat
+                        h3 2K+
+                        p Người dùng
+
+                    .gf-stat
+                        h3 98%
+                        p Hài lòng
+
+            .gf-hero__card
+
+                .gf-hero__image
+                    span ⚽
+
+                .gf-hero__info
+
+                    .gf-hero__meta
+                        h3 Sân A1 - GreenField
+
+                        p ★★★★★ 4.9 (128 đánh giá)
+
+                    span.gf-badge Còn trống
+
+    // SEARCH
+    section.gf-search
+        .gf-container
+
+            .gf-section-head
+                h2
+                    | Tìm
+                    span  Sân Trống
+
+            .gf-search-box
+
+                .gf-search-grid
+
+                    .gf-form-group
+                        label Ngày đặt sân
+                        input(type="date")
+
+                    .gf-form-group
+                        label Khu vực
+                        select
+                            option Tất cả khu vực
+                            option Cầu Giấy
+                            option Hoàn Kiếm
+                            option Đống Đa
+                            option Long Biên
+
+                    .gf-form-group
+                        label Loại sân
+                        select
+                            option Tất cả loại sân
+                            option Sân 5 người
+                            option Sân 7 người
+                            option Sân 11 người
+
+                    .gf-form-group
+                        label Thời gian
+                        select
+                            option Bất kỳ
+                            option Sáng
+                            option Chiều
+                            option Tối
+
+                button.gf-search-btn
+                    | Tìm kiếm sân
+
+    // FIELD
+    section.gf-fields
+        .gf-container
+
+            .gf-section-head.gf-section-head--between
+
+                h2
+                    | Sân Nổi
+                    span  Bật
+
+                a.gf-see-all(href="#")
+                    | Xem tất cả →
+
+            .gf-fields-grid
+
+                each item in [1,2,3,4,5,6]
+
+                    .gf-field-card
+
+                        .gf-field-thumb
+
+                            .gf-field-thumb__img ⚽
+
+                            .gf-field-tags
+                                span Sân 5
+                                span Cỏ nhân tạo
+
+                            .gf-field-status
+                                | Còn trống
+
+                        .gf-field-body
+
+                            h3 Sân Cầu Giấy FC
+
+                            p.gf-field-location
+                                | 📍 Cầu Giấy, Hà Nội
+
+                            .gf-field-bottom
+
+                                .gf-price
+                                    | 150k
+                                    span  / giờ
+
+                                button.gf-book-btn
+                                    | Đặt ngay
+
+    // SLOT
+    section.gf-slots
+        .gf-container
+
+            .gf-section-head.gf-section-head--between
+
+                h2
+                    | Chọn
+                    span  Khung Giờ
+
+                a.gf-see-all(href="#")
+                    | ← Quay lại
+
+            .gf-slot-grid
+
+                each item in ['06:00','07:00','08:00','09:00','10:00','11:00','13:00','14:00','15:00','16:00','17:00','18:00']
+
+                    .gf-slot
+                        h4= item
+                        p 1 giờ
+
+    // FOOTER SPACE
+    .gf-space

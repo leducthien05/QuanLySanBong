@@ -1,0 +1,41 @@
+header.gf-header
+
+    .gf-container.gf-header__wrap
+
+        // LOGO
+        a.gf-logo(href="/")
+            | Green
+            span Field
+
+        // MENU
+        ul.gf-menu
+
+            li
+                a(href="/")
+                    | Trang chủ
+
+            li
+                a(href="/fields")
+                    | Sân bóng
+
+            li
+                a(href="/tournaments")
+                    | Giải đấu
+
+            li
+                a(href="/booking-history")
+                    | Lịch sử
+
+            li
+                a(href="/contact")
+                    | Liên hệ
+
+        // ACTION
+        .gf-header__action
+
+            if user
+                a.gf-login-btn(href="/account")
+                    | Tài khoản
+            else
+                a.gf-login-btn(href="/login")
+                    | Đăng nhập
