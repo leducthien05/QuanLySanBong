@@ -32,7 +32,20 @@ const fieldSchema = new mongoose.Schema({
         googleMapUrl: String
     },
     service: Array,
-    rating: Number,
+    rating: {
+        totalRating: {
+            type: Number,
+            default: 0 
+        },
+        totalReviews: {
+            type: Number,
+            default: 0
+        },
+    },
+    feature: {
+        type: String,
+        default: "0"
+    },
     category_id: String,
     image: String,
     status: {

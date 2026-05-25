@@ -77,6 +77,9 @@ module.exports.createPost = async (req, res) => {
         image: req.body.image,
         status: req.body.status
     }
+    if(req.body.feature){
+        dataField.featured = req.body.feature;
+    }
     if (req.body.position) {
         dataField.position = parseInt(req.body.position);
     } else {

@@ -223,6 +223,19 @@ block content
                                                         value="inactive"
                                                         checked = (field.status == "inactive" ? true : false)
                                                     )
+                                            .publish-body
+                                                label.status-option.active
+                                                    .status-left
+                                                        span.dot.green
+                                                        .status-info
+                                                            h4 Sân nổi bật
+                                                            p Sân có doanh thu cao sẽ được đề xuất nhiều hơn
+                                                    input(
+                                                        type="radio" 
+                                                        name="feature" 
+                                                        value="1" 
+                                                        checked = (field.feature == "1" ? true : false)
+                                                    )
                                 .service-box
                                     .service-header
                                         .service-icon ✨

@@ -1,14 +1,23 @@
 const Booking = require("../../model/booking.model");
 const Field = require("../../model/field.model");
+const Service = require("../../model/service.model");
 
 module.exports.index = async (req, res) => {
     try {
-        const fields = await Field.find();
-        const bookings = await Booking.find().populate("field").populate("account");
+        const find = {
+            deleted: false,
+            status: "active",
+            feature: "1"
+        }
+        const fields = await Field.find(find).sort({ "rating.totalRating": -1 }).limit(6);
+        const service = await Service.find({
+            deleted: false,
+            status: "active",
+        });
         res.render("client/page/home/index", {
             title: "Trang chủ",
-            fields,
-            bookings,
+            fields: fields,
+            services: service
         });
     } catch (error) {
         console.error(error);

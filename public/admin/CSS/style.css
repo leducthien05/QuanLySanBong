@@ -1128,7 +1128,6 @@ td {
 
 /* div status */
 .div-step1,
-.div-step3,
 .div-step2 {
     display: none;
 }
@@ -1138,7 +1137,6 @@ td {
 }
 
 .div-step1.active,
-.div-step3.active,
 .div-step2.active {
     display: block;
 }

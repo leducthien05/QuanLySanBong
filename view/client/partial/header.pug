@@ -4,8 +4,10 @@ header.gf-header
 
         // LOGO
         a.gf-logo(href="/")
-            | Green
-            span Field
+            image(
+                src=settingGeneral.logo
+                alt="GreenField"
+            )
 
         // MENU
         ul.gf-menu
@@ -17,6 +19,9 @@ header.gf-header
             li
                 a(href="/fields")
                     | Sân bóng
+            li
+                a(href="/booking")
+                    | Đặt sân
 
             li
                 a(href="/tournaments")

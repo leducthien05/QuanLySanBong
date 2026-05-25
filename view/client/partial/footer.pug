@@ -5,8 +5,10 @@ footer.gf-footer
         .gf-footer__left
 
             a.gf-logo(href="/")
-                | Green
-                span Field
+                image(
+                    src=settingGeneral.logo
+                    alt="GreenField"
+                )
 
             p
                 | Hệ thống đặt sân bóng online tại Hà Nội.
@@ -14,9 +16,9 @@ footer.gf-footer
         .gf-footer__center
 
             p
-                | © 2025 GreenField.
+                | #{settingGeneral.copyright}
                 | All rights reserved.
 
         .gf-footer__right
 
-            span 📞 1900 1234
+            span 📞 #{settingGeneral.phone}

@@ -3,7 +3,6 @@ const steps = document.querySelectorAll(".step");
 if (steps.length > 0) {
     const step1Content = document.querySelector(".div-step1");
     const step2Content = document.querySelector(".div-step2");
-    const step3Content = document.querySelector(".div-step3");
 
     step1Content.classList.add("active");
     step2Content.classList.remove("active");
@@ -18,7 +17,6 @@ if (steps.length > 0) {
             // ẩn tất cả content
             step1Content.classList.remove("active");
             step2Content.classList.remove("active");
-            step3Content.classList.remove("active");
 
             const divStep = step.getAttribute("number-step");
 
@@ -30,9 +28,6 @@ if (steps.length > 0) {
                 step2Content.classList.add("active");
             }
 
-            if (divStep === "step3") {
-                step3Content.classList.add("active");
-            }
         });
     });
 }
