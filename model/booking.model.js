@@ -4,7 +4,8 @@ const crypto = require("crypto");
 const bookingSchema = new mongoose.Schema({
     field_id: String,
     user_id: String,
-    slot_id: String,
+    pricing_id: String,
+    date: Date,
     totalPrice: Number,
     node: String,
     price: Number,

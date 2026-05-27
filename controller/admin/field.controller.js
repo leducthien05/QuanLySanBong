@@ -42,12 +42,8 @@ module.exports.index = async (req, res) => {
 }
 // [GET] /admin/fields/create
 module.exports.create = async (req, res) => {
-    const timeactive = ['06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00'];
-    const day = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
     res.render("admin/page/field/create", {
         titlePage: "Thêm sân bóng mới",
-        timeactive: timeactive,
-        days: day
     });
 }
 // [POST] /admin/fields/create
@@ -77,7 +73,7 @@ module.exports.createPost = async (req, res) => {
         image: req.body.image,
         status: req.body.status
     }
-    if(req.body.feature){
+    if (req.body.feature) {
         dataField.featured = req.body.feature;
     }
     if (req.body.position) {
@@ -88,6 +84,57 @@ module.exports.createPost = async (req, res) => {
     }
     const field = new Field(dataField);
     await field.save();
+    const slot = [];
+    if (openTime && closeTime) {
+        // Tạo các slot thời gian
+        const toMinuters = (time) =>{
+            const [hour, minute] = time.split(":").map(Number);
+            return hour * 60 + minute;
+        }
+        let currentTime = openTime;
+        while (toMinuters(currentTime) < toMinuters(closeTime)) {
+            slot.push(currentTime);
+            // Tính thời gian kết thúc của slot hiện tại
+            const [hour, minute] = currentTime.split(":").map(Number);
+            let nextHour = hour;
+            let nextMinute = minute + field.timeactive.slotDuration;
+            if (nextMinute >= 60) {
+                nextHour += Math.floor(nextMinute / 60);
+                nextMinute = nextMinute % 60 + 15;
+            }
+            if (nextHour >= 24) {
+                nextHour = nextHour % 24;
+            }
+            currentTime = `${nextHour.toString().padStart(2, "0")}:${nextMinute.toString().padStart(2, "0")}`;
+        }
+        console.log(slot);
+        // Lưu thông tin giá cho từng slot thời gian
+        const dayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        let schedules = [];
+        dayOfWeek.forEach(day => {
+            const daySchedules = slot.map(time => {
+                if (day === "Saturday" || day === "Sunday") {
+                    return {
+                        field_id: field._id,
+                        day_of_week: day,
+                        start_time: time,
+                        feature: "weekend",
+                        price: field.price.priceVip
+                    }
+                } else {
+                    return {
+                        field_id: field._id,
+                        day_of_week: day,
+                        start_time: time,
+                        feature: "weekday",
+                        price: field.price.price
+                    }
+                }
+            });
+            schedules.push(...daySchedules);
+        });
+        await Pricing.insertMany(schedules);
+    }
     res.redirect(`${systemConfig.systemConfig.prefixAdmin}/fields`);
 }
 // [PATCH] /admin/fields/change-status/:status/:id
@@ -199,24 +246,12 @@ module.exports.deleteField = async (req, res) => {
 }
 // [GET] /admin/fields/edit/:id
 module.exports.edit = async (req, res) => {
-    const timeactive = ['06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00'];
-    const day = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
     const field = await Field.findOne({
         _id: req.params.id,
         deleted: false
     });
-    const pricing = await Pricing.find({
-        field_id: req.params.id,
-        deleted: false
-    });
-    const time = pricing.map(item => {
-        return `${item.day_of_week}-${item.start_time}`
-    });
     res.render("admin/page/field/edit", {
         titlePage: "Chỉnh sửa sân bóng",
-        pricing: time,
-        days: day,
-        timeactive: timeactive,
         field: field
     });
 }
@@ -234,10 +269,72 @@ module.exports.editPatch = async (req, res) => {
             titleAddress: req.body.titleAddress,
             googleMapUrl: req.body.googleMapUrl
         }
+        
+        req.body.timeactive = {
+            openTime: req.body.timeactive.split("-")[0],
+            closeTime: req.body.timeactive.split("-")[1],
+            slotDuration: 60
+        }
         const field = await Field.findOneAndUpdate({
             _id: req.params.id,
             deleted: false
-        }, req.body);
+        }, req.body, {
+            returnDocument: "after"
+        });
+        const slot = [];
+        if (req.body.timeactive) {
+            const openTime = req.body.timeactive.openTime;
+            const closeTime = req.body.timeactive.closeTime;
+            if (openTime && closeTime) {
+                const toMinuters = (tiem)=>{
+                    const [hour, minute] = tiem.split(":").map(Number);
+                    return hour * 60 + minute;
+                }
+                let currentTime = openTime;
+                while (toMinuters(currentTime) <= toMinuters(closeTime)) {
+                    slot.push(currentTime);
+                    // Tính thời gian kết thúc của slot hiện tại
+                    const [hour, minute] = currentTime.split(":").map(Number);
+                    let nextHour = hour;
+                    let nextMinute = minute + field.timeactive.slotDuration;
+                    if (nextMinute >= 60) {
+                        nextHour += Math.floor(nextMinute / 60);
+                        nextMinute = nextMinute % 60;
+                    }
+                    console.log(field.timeactive.slotDuration)
+                    currentTime = `${nextHour.toString().padStart(2, "0")}:${nextMinute.toString().padStart(2, "0")}`;
+                }
+                // Lưu thông tin giá cho từng slot thời gian
+                const dayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                let schedules = [];
+                dayOfWeek.forEach(day => {
+                    const daySchedules = slot.map(time => {
+                        if (day === "Saturday" || day === "Sunday") {
+                            return {
+                                field_id: field._id,
+                                day_of_week: day,
+                                start_time: time,
+                                feature: "weekend",
+                                price: field.price.priceVip
+                            }
+                        } else {
+                            return {
+                                field_id: field._id,
+                                day_of_week: day,
+                                start_time: time,
+                                feature: "weekday",
+                                price: field.price.price
+                            }
+                        }
+                    });
+                    schedules.push(...daySchedules);
+                });
+                await Pricing.deleteMany({ field_id: req.params.id });
+                await Pricing.insertMany(schedules);
+            }
+        } else {
+            await Pricing.deleteMany({ field_id: req.params.id });
+        }
         res.redirect(req.get("referer") || "/");
     } catch (error) {
         console.log(error);

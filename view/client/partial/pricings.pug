@@ -1,0 +1,8 @@
+each item in pricings
+    .booking-slot-card(
+        data-slot-id=item._id
+    )
+        .booking-slot-time
+            | #{item.start_time}
+        .booking-slot-duration
+            | #{item.duration} 1 giờ

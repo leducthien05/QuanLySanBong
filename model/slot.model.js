@@ -8,7 +8,7 @@ const slotSchema = new mongoose.Schema({
     end_time: Date,
     status: {
         type: String,
-        default: "active"
+        default: "unbooked"
     },
     price: Number,
     createdAt: Date, 

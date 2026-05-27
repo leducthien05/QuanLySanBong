@@ -23,46 +23,30 @@ block content
     section.gf-search
         .gf-container
 
-            .gf-section-head
-                h2
-                    | Tìm
-                    span  Sân Trống
-
             .gf-search-box
 
                 .gf-search-grid
 
                     .gf-form-group
                         label Ngày đặt sân
-                        input(type="date")
-
-                    .gf-form-group
-                        label Khu vực
-                        select
-                            option Tất cả khu vực
-                            option Cầu Giấy
-                            option Hoàn Kiếm
-                            option Đống Đa
-                            option Long Biên
+                        input(
+                            type="date"
+                            name="date"
+                        )
 
                     .gf-form-group
                         label Loại sân
-                        select
-                            option Tất cả loại sân
-                            option Sân 5 người
-                            option Sân 7 người
-                            option Sân 11 người
-
+                        select(name="type")
+                            option(value="") Tất cả
+                            option(value="5") Sân 5
+                            option(value="7") Sân 7
+                            option(value="11") Sân 11
                     .gf-form-group
-                        label Thời gian
-                        select
-                            option Bất kỳ
-                            option Sáng
-                            option Chiều
-                            option Tối
-
-                button.gf-search-btn
-                    | Tìm kiếm sân
+                        label Vị trí
+                        select(name="address")
+                            option(value="") Tất cả
+                            each item in address
+                                option(value=item) #{item}
         //- FIELD SELECTION SECTION
         section.booking-fields
             .gf-container
@@ -70,109 +54,38 @@ block content
                 .booking-section-header
                     h2.booking-section-title Chọn Sân Bóng
                     span.booking-subtitle-text Các sân bóng khả dụng
-
-                //- Sample fields grid
                 .booking-fields-grid
-                    
-                    //- Field Card 1
-                    .booking-field-card(data-field-id="1")
-                        .booking-field-image
-                            span 🏟️
-                        
-                        .booking-field-content
-                            h3.booking-field-name Sân Bóng 5 Người
+                    each item in fields
+                        //- Field Card 1
+                        .booking-field-card(data-field-id=item._id)
+                            .booking-field-image
+                                img(
+                                    src=item.image
+                                )
                             
-                            .booking-field-type Loại: 5v5
-                            
-                            .booking-field-location
-                                | 📍 Hà Nội, Quận Thanh Xuân
-                            
-                            .booking-field-rating
-                                span.booking-stars ⭐⭐⭐⭐⭐
-                                span.booking-rating-number (4.8)
-                            
-                            .booking-field-footer
-                                .booking-field-price
-                                    span.booking-price-number 150.000
-                                    span.booking-price-unit đ/giờ
+                            .booking-field-content
+                                h3.booking-field-name=item.name
                                 
-                                .booking-field-status.booking-field-status--available
-                                    span Sẵn sàng
-
-                    //- Field Card 2
-                    .booking-field-card(data-field-id="2")
-                        .booking-field-image
-                            span 🏟️
-                        
-                        .booking-field-content
-                            h3.booking-field-name Sân Bóng 7 Người
-                            
-                            .booking-field-type Loại: 7v7
-                            
-                            .booking-field-location
-                                | 📍 Hà Nội, Quận Cầu Giấy
-                            
-                            .booking-field-rating
-                                span.booking-stars ⭐⭐⭐⭐
-                                span.booking-rating-number (4.5)
-                            
-                            .booking-field-footer
-                                .booking-field-price
-                                    span.booking-price-number 200.000
-                                    span.booking-price-unit đ/giờ
+                                .booking-field-type Loại: #{item.type}v#{item.capacity}
                                 
-                                .booking-field-status.booking-field-status--available
-                                    span Sẵn sàng
-
-                    //- Field Card 3
-                    .booking-field-card(data-field-id="3")
-                        .booking-field-image
-                            span 🏟️
-                        
-                        .booking-field-content
-                            h3.booking-field-name Sân Bóng 11 Người
-                            
-                            .booking-field-type Loại: 11v11
-                            
-                            .booking-field-location
-                                | 📍 Hà Nội, Quận Hoàng Mai
-                            
-                            .booking-field-rating
-                                span.booking-stars ⭐⭐⭐⭐⭐
-                                span.booking-rating-number (4.9)
-                            
-                            .booking-field-footer
-                                .booking-field-price
-                                    span.booking-price-number 350.000
-                                    span.booking-price-unit đ/giờ
+                                .booking-field-location
+                                    a(
+                                        href=item.address.googleMapUrl
+                                    )
+                                    | 📍 #{item.address.titleAddress}
                                 
-                                .booking-field-status.booking-field-status--available
-                                    span Sẵn sàng
-
-                    //- Field Card 4
-                    .booking-field-card(data-field-id="4")
-                        .booking-field-image
-                            span 🏟️
-                        
-                        .booking-field-content
-                            h3.booking-field-name Sân Bóng Nhân Tạo 5
-                            
-                            .booking-field-type Loại: 5v5 Nhân Tạo
-                            
-                            .booking-field-location
-                                | 📍 Hà Nội, Quận Bắc Từ Liêm
-                            
-                            .booking-field-rating
-                                span.booking-stars ⭐⭐⭐⭐⭐
-                                span.booking-rating-number (5.0)
-                            
-                            .booking-field-footer
-                                .booking-field-price
-                                    span.booking-price-number 180.000
-                                    span.booking-price-unit đ/giờ
+                                //- .booking-field-rating
+                                //-     span.booking-stars ⭐⭐⭐⭐⭐
+                                //-     span.booking-rating-number (4.8)
                                 
-                                .booking-field-status.booking-field-status--available
-                                    span Sẵn sàng
+                                .booking-field-footer
+                                    .booking-field-price
+                                        span.booking-price-number #{item.price.price}
+                                        span.booking-price-unit đ/giờ
+                                    
+                                    .booking-field-status.booking-field-status--available
+                                        span Sẵn sàng
+        .booking-slots-grid
 
         //- SERVICES SECTION
         section.booking-services
@@ -184,66 +97,22 @@ block content
 
                 //- Services grid
                 .booking-services-grid
+                    each item in services
+                        //- Service 1: Ball Rental
+                        .booking-service-card(data-service-id=item._id)
+                            .booking-service-icon 
+                                img(
+                                    src=item.image
+                                    alt=item.name
+                                )
+                            
+                            h3.booking-service-name #{item.name}
+                            
+                            .booking-service-description #{item.description}
+                            
+                            .booking-service-price #{item.price} đ
 
-                    //- Service 1: Ball Rental
-                    .booking-service-card(data-service-id="1")
-                        .booking-service-icon 🏀
-                        
-                        h3.booking-service-name Cho Thuê Bóng
-                        
-                        .booking-service-description Bóng chuyên nghiệp cao cấp
-                        
-                        .booking-service-price 50.000 đ
-
-                    //- Service 2: Drinks
-                    .booking-service-card(data-service-id="2")
-                        .booking-service-icon 🥤
-                        
-                        h3.booking-service-name Nước Uống
-                        
-                        .booking-service-description Nước lạnh và đồ uống
-                        
-                        .booking-service-price 30.000 đ
-
-                    //- Service 3: Bib Rental
-                    .booking-service-card(data-service-id="3")
-                        .booking-service-icon 👕
-                        
-                        h3.booking-service-name Cho Thuê Yếm
-                        
-                        .booking-service-description Yếm thi đấu 2 đội
-                        
-                        .booking-service-price 100.000 đ
-
-                    //- Service 4: Shoe Rental
-                    .booking-service-card(data-service-id="4")
-                        .booking-service-icon 👟
-                        
-                        h3.booking-service-name Cho Thuê Giày
-                        
-                        .booking-service-description Giày chuyên nghiệp cao cấp
-                        
-                        .booking-service-price 80.000 đ
-
-                    //- Service 5: Referee
-                    .booking-service-card(data-service-id="5")
-                        .booking-service-icon 🏃
-                        
-                        h3.booking-service-name Trọng Tài
-                        
-                        .booking-service-description Trọng tài chuyên nghiệp
-                        
-                        .booking-service-price 200.000 đ
-
-                    //- Service 6: Medicine Kit
-                    .booking-service-card(data-service-id="6")
-                        .booking-service-icon 🏥
-                        
-                        h3.booking-service-name Hộp Y Tế
-                        
-                        .booking-service-description Hộp sơ cứu cấp cứu
-                        
-                        .booking-service-price 50.000 đ
+                    
 
         //- BOOKING SUMMARY SECTION
         section.booking-summary-section
@@ -278,3 +147,4 @@ block content
                         button.booking-btn.booking-btn--primary Tiếp Tục
 
         .booking-space
+    script(src="/client/JS/script.js")
