@@ -97,8 +97,25 @@ module.exports.getField = async (req, res) => {
         default:
             break;
     }
+    const idPricing = pricing.map(item => item.id);
+    const bookings = await Booking.find({
+        deleted: false,
+        field_id: req.params.id,
+        pricing_id: { $in: idPricing },
+        date: new Date(date)
+    });
+    const bookingMap = {};
+    bookings.forEach(item =>{
+        bookingMap[item.pricing_id] = "booked";
+    });
+    pricing.forEach(item =>{
+        if(bookingMap[item.id]){
+            item.status = "booked";
+        }
+    });
     res.status(200).json({
-        pricings: pricing
+        pricings: pricing,
+        date: date
     });
 }
 

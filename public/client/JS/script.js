@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', function () {
         let selectedField = null;
         fieldCards.forEach(card => {
             card.addEventListener('click', () => {
-
                 // Remove previous selection
                 if (selectedField) {
                     selectedField.classList.remove('booking-field-card--selected');
@@ -22,7 +21,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 card.classList.add('booking-field-card--selected');
 
                 selectedField = card;
-
+                // Thời gian đã chọn
+                const divTime = document.querySelector(".booking-selected-time");
+                const timeText = divTime.querySelector("#selectedTimeText");
                 // Create URL
                 const url = new URL(window.location.href);
 
@@ -45,46 +46,78 @@ document.addEventListener('DOMContentLoaded', function () {
                 fetch(link)
                     .then(res => res.json())
                     .then(data => {
+                        timeText.textContent = data.date ? `${data.date}` : "Chưa chọn khung giờ";
                         let html = "";
                         data.pricings.forEach(item => {
-                            html += `
-                                <div class="booking-slot-card" data-slot-id=${item._id}>
-                                    <div class="booking-slot-time">
-                                        ${item.start_time}
+                            if (item.status == "booked") {
+                                html += `
+                                    <div class="booking-slot-card booked" data-slot-id=${item._id}>
+                                        <div class="booking-slot-time">
+                                            ${item.start_time}
+                                        </div>
+                                        <div class="booking-slot-duration">
+                                            1 giờ
+                                        </div>
                                     </div>
-                                    <div class="booking-slot-duration">
-                                        1 giờ
+                                `;
+                            } else {
+                                html += `
+                                    <div class="booking-slot-card" data-slot-id=${item._id}>
+                                        <div class="booking-slot-time">
+                                            ${item.start_time}
+                                        </div>
+                                        <div class="booking-slot-duration">
+                                            1 giờ
+                                        </div>
                                     </div>
-                                </div>
-                            `;
+                                `;
+                            }
+
                         });
                         pricingList.innerHTML = html;
+                        const listSlot = document.querySelectorAll(".booking-slot-card");
+                        const slot = [];
+                        if (listSlot.length > 0) {
+                            listSlot.forEach(item => {
+                                item.addEventListener("click", (e) => {
+                                    const id = item.getAttribute("data-slot-id");
+                                    if (slot.includes(id)) {
+                                        // xóa khỏi mảng
+                                        const index = slot.indexOf(id);
+                                        slot.splice(index, 1);
+                                        // bỏ class UI
+                                        item.classList.remove("selected");
+                                    } else {
+                                        slot.push(id);
+                                        item.classList.add("selected");
+                                    }
+                                });
+                            });
+                        }
                     });
             });
         });
     }
     initFieldSelection();
 
+
     // // ========== SERVICE SELECTION ==========
-    // const serviceCards = document.querySelectorAll('.booking-service-card');
-    // serviceCards.forEach(card => {
-    //     card.addEventListener('click', function () {
-    //         const serviceId = this.dataset.serviceId;
+    const serviceCards = document.querySelectorAll('.booking-service-card');
+    serviceCards.forEach(card => {
+        card.addEventListener('click', function () {
+            const serviceId = this.dataset.serviceId;
 
-    //         if (this.classList.contains('booking-service-card--selected')) {
-    //             // Deselect service
-    //             this.classList.remove('booking-service-card--selected');
-    //             selectedServices.delete(serviceId);
-    //         } else {
-    //             // Select service
-    //             this.classList.add('booking-service-card--selected');
-    //             selectedServices.add(serviceId);
-    //         }
-
-    //         // Update summary
-    //         updateSummary();
-    //     });
-    // });
+            if (this.classList.contains('booking-service-card--selected')) {
+                // Deselect service
+                this.classList.remove('booking-service-card--selected');
+                selectedServices.delete(serviceId);
+            } else {
+                // Select service
+                this.classList.add('booking-service-card--selected');
+                selectedServices.add(serviceId);
+            }
+        });
+    });
 
     // // ========== SUMMARY UPDATE FUNCTION ==========
     // function updateSummary() {
@@ -216,13 +249,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     "select[name='address']"
                 ).value;
                 dataQuery = {};
-                if(date){
+                if (date) {
                     dataQuery.date = date;
                 }
-                if(type){
+                if (type) {
                     dataQuery.type = type;
                 }
-                if(address){
+                if (address) {
                     dataQuery.address = address;
                 }
                 const query = new URLSearchParams(dataQuery);
@@ -237,7 +270,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         .then(res => res.json())
                         .then(data => {
                             let html = "";
-                            data.fields.forEach(item =>{
+                            data.fields.forEach(item => {
                                 html += `
                                     <div class="booking-field-card" data-field-id=${item._id}>
                                         <div class="booking-field-image">

@@ -85,8 +85,13 @@ block content
                                     
                                     .booking-field-status.booking-field-status--available
                                         span Sẵn sàng
-        .booking-slots-grid
-
+        .gf-container
+            .booking-selected-time
+                span.booking-selected-time-label Giờ đã chọn:
+                span.booking-selected-time-value#selectedTimeText Chưa chọn khung giờ
+        .gf-container
+            section.booking-slots-grid
+        
         //- SERVICES SECTION
         section.booking-services
             .gf-container
@@ -111,40 +116,69 @@ block content
                             .booking-service-description #{item.description}
                             
                             .booking-service-price #{item.price} đ
-
-                    
-
-        //- BOOKING SUMMARY SECTION
-        section.booking-summary-section
+        section.booking-confirmation
             .gf-container
-                .booking-summary-card
+                .booking-section-header
+                    h2.booking-section-title Xác nhận đặt sân
+                    span.booking-subtitle-text Chọn phương thức thanh toán trước khi tiếp tục
 
-                    h2.booking-summary-title Tóm Tắt Đơn Đặt
+                .booking-payment-grid
+                    button.payment-method-card.payment-method-card--active(type="button" data-payment-method="cash")
+                        .payment-method-card-main
+                            span.payment-method-title Tiền mặt
+                            span.payment-method-subtitle Thanh toán tại quầy
+                        .payment-method-check
+                    button.payment-method-card(type="button" data-payment-method="momo")
+                        .payment-method-card-main
+                            span.payment-method-title Ví MoMo
+                            span.payment-method-subtitle Thanh toán qua MoMo
+                        .payment-method-check
+                    button.payment-method-card(type="button" data-payment-method="bank")
+                        .payment-method-card-main
+                            span.payment-method-title Chuyển khoản ngân hàng
+                            span.payment-method-subtitle Chuyển khoản nhanh
+                        .payment-method-check
 
-                    .booking-summary-content
+                .booking-action-row
+                    button.booking-confirm-button(type="button") Tạo booking
 
-                        //- Selected Field
-                        .booking-summary-item
-                            span.booking-summary-label Sân Bóng:
-                            span.booking-summary-value.booking-selected-field Chưa chọn
+        .booking-modal-overlay.hidden
+            .booking-modal
+                .booking-modal-header
+                    h3 Xác nhận đặt sân
+                    button.booking-modal-close(type="button") ×
+                p.booking-modal-subtitle Vui lòng kiểm tra thông tin và tiến hành thanh toán.
+                .booking-modal-info
+                    .booking-modal-row
+                        span.label Sân
+                        span.value.booking-modal-field-name Chưa chọn
+                    .booking-modal-row
+                        span.label Địa điểm
+                        span.value.booking-modal-field-location Chưa chọn
+                    .booking-modal-row
+                        span.label Loại sân
+                        span.value.booking-modal-field-type Chưa chọn
+                    .booking-modal-row
+                        span.label Ngày
+                        span.value.booking-modal-field-date Chưa chọn
+                    .booking-modal-row
+                        span.label Giờ
+                        span.value.booking-modal-field-times Chưa chọn
+                .booking-modal-total
+                    span Tổng thanh toán
+                    strong.booking-modal-total-amount 0 đ
+                .booking-modal-actions
+                    button.booking-modal-cancel(type="button") Hủy
+                    button.booking-modal-pay(type="button") Thanh toán ngay
 
-                        //- Services
-                        .booking-summary-item
-                            span.booking-summary-label Dịch Vụ:
-                            .booking-summary-value
-                                span.booking-selected-services Chưa chọn
-                                span.booking-services-count (0 dịch vụ)
 
-                        //- Total Price
-                        .booking-summary-item.booking-summary-item--total
-                            span.booking-summary-label Tổng Giá:
-                            span.booking-summary-value
-                                span.booking-total-price 0
-                                span.booking-price-unit đ
+    form.booking-form.hidden(
+        method="POST"
+    )
 
-                    .booking-summary-actions
-                        button.booking-btn.booking-btn--secondary Xóa
-                        button.booking-btn.booking-btn--primary Tiếp Tục
-
-        .booking-space
+        .hidden
+            input.hidden(
+                type="text"
+                name="bookingData"
+            )
     script(src="/client/JS/script.js")

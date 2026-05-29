@@ -8,8 +8,9 @@ const bookingSchema = new mongoose.Schema({
     date: Date,
     totalPrice: Number,
     node: String,
+    paymentMethod: String,
     price: Number,
-    service_id: String,
+    service: Array,
     createdAt: Date, 
     updatedAt: Date,
     deleted: {
@@ -17,5 +18,16 @@ const bookingSchema = new mongoose.Schema({
         default: false
     }
 });
+
+bookingSchema.index(
+    {
+        field_id: 1,
+        date: 1,
+        pricing_id: 1
+    },
+    {
+        unique: true
+    }
+);
 const Booking = mongoose.model('Booking', bookingSchema, 'booking');
 module.exports = Booking;
