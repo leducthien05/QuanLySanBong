@@ -87,7 +87,7 @@ module.exports.createPost = async (req, res) => {
     const slot = [];
     if (openTime && closeTime) {
         // Tạo các slot thời gian
-        const toMinuters = (time) =>{
+        const toMinuters = (time) => {
             const [hour, minute] = time.split(":").map(Number);
             return hour * 60 + minute;
         }
@@ -113,21 +113,33 @@ module.exports.createPost = async (req, res) => {
         let schedules = [];
         dayOfWeek.forEach(day => {
             const daySchedules = slot.map(time => {
+                const [hour, minute] = time.split(":").map(Number);
                 if (day === "Saturday" || day === "Sunday") {
                     return {
                         field_id: field._id,
                         day_of_week: day,
                         start_time: time,
-                        feature: "weekend",
+                        feature: "1",
                         price: field.price.priceVip
                     }
                 } else {
-                    return {
-                        field_id: field._id,
-                        day_of_week: day,
-                        start_time: time,
-                        feature: "weekday",
-                        price: field.price.price
+                    if (hour >= 18 && hour <= 24) {
+                        return {
+                            field_id: field._id,
+                            day_of_week: day,
+                            start_time: time,
+                            feature: "1",
+                            price: field.price.priceVip
+                        }
+                    }
+                    else {
+                        return {
+                            field_id: field._id,
+                            day_of_week: day,
+                            start_time: time,
+                            feature: "0",
+                            price: field.price.price
+                        }
                     }
                 }
             });
@@ -269,7 +281,7 @@ module.exports.editPatch = async (req, res) => {
             titleAddress: req.body.titleAddress,
             googleMapUrl: req.body.googleMapUrl
         }
-        
+
         req.body.timeactive = {
             openTime: req.body.timeactive.split("-")[0],
             closeTime: req.body.timeactive.split("-")[1],
@@ -286,7 +298,7 @@ module.exports.editPatch = async (req, res) => {
             const openTime = req.body.timeactive.openTime;
             const closeTime = req.body.timeactive.closeTime;
             if (openTime && closeTime) {
-                const toMinuters = (tiem)=>{
+                const toMinuters = (tiem) => {
                     const [hour, minute] = tiem.split(":").map(Number);
                     return hour * 60 + minute;
                 }
@@ -309,21 +321,33 @@ module.exports.editPatch = async (req, res) => {
                 let schedules = [];
                 dayOfWeek.forEach(day => {
                     const daySchedules = slot.map(time => {
+                        const [hour, minute] = time.split(":").map(Number);
                         if (day === "Saturday" || day === "Sunday") {
                             return {
                                 field_id: field._id,
                                 day_of_week: day,
                                 start_time: time,
-                                feature: "weekend",
+                                feature: "1",
                                 price: field.price.priceVip
                             }
                         } else {
-                            return {
-                                field_id: field._id,
-                                day_of_week: day,
-                                start_time: time,
-                                feature: "weekday",
-                                price: field.price.price
+                            if (hour >= 18 && hour <= 24) {
+                                return {
+                                    field_id: field._id,
+                                    day_of_week: day,
+                                    start_time: time,
+                                    feature: "1",
+                                    price: field.price.priceVip
+                                }
+                            }
+                            else {
+                                return {
+                                    field_id: field._id,
+                                    day_of_week: day,
+                                    start_time: time,
+                                    feature: "0",
+                                    price: field.price.price
+                                }
                             }
                         }
                     });

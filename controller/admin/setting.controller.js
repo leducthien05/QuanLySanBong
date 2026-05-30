@@ -1,78 +1,18 @@
 const Setting = require("../../model/setting-general.model");
+const Payment = require("../../model/payment.model");
 const upload = require("../../helper/uploadCloudinary.helper");
 
 // [GET] /admin/settings
 module.exports.index = async (req, res) => {
     try {
-        let setting = await Setting.findOne({
+        const setting = await Setting.findOne({
             deleted: false
         });
-
-        // Create default settings if not found
-        if (!setting) {
-            const defaultSetting = {
-                title: 'GreenField',
-                status: 'active',
-                maintenanceMode: false,
-                maintenanceMessage: 'Website is under maintenance. Please come back later.',
-                paginationLimit: 10,
-                defaultLanguage: 'vi',
-                seo: {
-                    metaTitle: 'GreenField',
-                    metaDescription: 'Sports Field Management System',
-                    metaKeywords: 'sports, field, booking'
-                },
-                paymentMethods: {
-                    cash: {
-                        enabled: true,
-                        accountName: '',
-                        description: ''
-                    },
-                    banking: {
-                        enabled: false,
-                        accountName: '',
-                        accountNumber: '',
-                        bankName: '',
-                        qrImage: null,
-                        description: ''
-                    },
-                    momo: {
-                        enabled: false,
-                        accountName: '',
-                        accountNumber: '',
-                        qrImage: null,
-                        description: ''
-                    },
-                    zalopay: {
-                        enabled: false,
-                        accountName: '',
-                        accountNumber: '',
-                        qrImage: null,
-                        description: ''
-                    },
-                    vnpay: {
-                        enabled: false,
-                        merchantCode: '',
-                        accessKey: '',
-                        secretKey: '',
-                        description: ''
-                    }
-                },
-                socialMedia: {
-                    facebook: '',
-                    youtube: '',
-                    tiktok: '',
-                    instagram: '',
-                    zalo: ''
-                }
-            };
-            setting = new Setting(defaultSetting);
-            await setting.save();
-        }
-
+        const payment = await Payment.find({});
         res.render("admin/page/setting/index", {
             titlePage: "Cài đặt hệ thống",
-            setting: setting
+            setting: setting,
+            listPayment: payment
         });
     } catch (error) {
         console.error("Error fetching settings:", error);
@@ -95,44 +35,6 @@ module.exports.editPatch = async (req, res) => {
             maintenanceMessage: req.body.maintenanceMessage,
             defaultLanguage: req.body.defaultLanguage,
 
-            // Payment Methods
-            paymentMethods: {
-                cash: {
-                    enabled: false,
-                    accountName: "",
-                    description: ""
-                },
-                banking: {
-                    enabled: false,
-                    accountName: "",
-                    accountNumber: "",
-                    bankName: "",
-                    qrImage: "",
-                    description: ""
-                },
-                momo: {
-                    enabled: false,
-                    accountName: "",
-                    accountNumber: "",
-                    qrImage: "",
-                    description: ""
-                },
-                zalopay: {
-                    enabled: false,
-                    accountName: "",
-                    accountNumber: "",
-                    qrImage: "",
-                    description: ""
-                },
-                vnpay: {
-                    enabled: false,
-                    merchantCode: "",
-                    accessKey: "",
-                    secretKey: "",
-                    description: ""
-                }
-            },
-
             // Social Media
             socialMedia: {
                 facebook: req.body.facebook,
@@ -142,46 +44,129 @@ module.exports.editPatch = async (req, res) => {
                 zalo: req.body.zalo
             },
         }
-        if(req.body.logo){
+        if (req.body.logo) {
             data.logo = req.body.logo[0];
         }
-        if(req.body.favicon){
+        if (req.body.favicon) {
             data.favicon = req.body.favicon[0];
         }
-        // Cash
-        if(req.body.cash){
-            data.paymentMethods.cash.enabled = true;
-            data.paymentMethods.cash.accountName = req.body['accountName'] || "";
-            data.paymentMethods.cash.description = req.body['cashDescription'] || "";
+        // CASH
+        if (req.body.cash) {
+            const data = {
+                title: "cash",
+                accountName: req.body["accountNameCash"] || "",
+                description: req.body["descriptionCash"] || "",
+                status: "active"
+            };
+
+            await Payment.updateOne({
+                title: "cash"
+            }, data);
+        }else{
+            await Payment.updateOne({
+                title: "cash"
+            }, {
+                $set: {
+                    status: "inactive"
+                }
+            });
         }
-        if(req.body.banking){
-            data.paymentMethods.banking.enabled = true;
-            data.paymentMethods.banking.accountName = req.body['accountName'] || "";
-            data.paymentMethods.banking.accountNumber = req.body['accountNumber'] || "";
-            data.paymentMethods.banking.bankName = req.body['bankName'] || "";
-            data.paymentMethods.banking.description = req.body['description'] || "";
+
+        // BANKING
+        if (req.body.banking) {
+            const data = {
+                title: "banking",
+                accountName: req.body["accountNameBanking"] || "",
+                accountNumber: req.body["accountNumberBanking"] || "",
+                bankingBankName: req.body["bankingBankName"] || "",
+                description: req.body["descriptionBanking"] || "",
+                status: "active"
+            };
+
+            await Payment.updateOne({
+                title: "banking"
+            }, data);
+        }else{
+            await Payment.updateOne({
+                title: "banking"
+            }, {
+                $set: {
+                    status: "inactive"
+                }
+            });
         }
-        if(req.body.momo){
-            data.paymentMethods.momo.enabled = true;
-            data.paymentMethods.momo.accountName = req.body['accountName'] || "";
-            data.paymentMethods.momo.accountNumber = req.body['accountNumber'] || "";
-            data.paymentMethods.momo.description = req.body['description'] || "";
+
+        // MOMO
+        if (req.body.momo) {
+            const data = {
+                title: "momo",
+                accountName: req.body["accountNameMomo"] || "",
+                accountNumber: req.body["accountNumberMomo"] || "",
+                description: req.body["descriptionMomo"] || "",
+                status: "active"
+            };
+
+            await Payment.updateOne({
+                title: "momo"
+            }, data);
+        }else{
+            await Payment.updateOne({
+                title: "momo"
+            }, {
+                $set: {
+                    status: "inactive"
+                }
+            });
         }
-        if(req.body.zalopay){
-            data.paymentMethods.zalopay.enabled = true;
-            data.paymentMethods.zalopay.accountName = req.body['accountName'] || "";
-            data.paymentMethods.zalopay.accountNumber = req.body['accountNumber'] || "";
-            data.paymentMethods.zalopay.description = req.body['description'] || "";
+        // ZALOPAY
+        if (req.body.zalopay) {
+            const data = {
+                title: "zalopay",
+                accountName: req.body["accountNameZalopay"] || "",
+                accountNumber: req.body["accountNumberPay"] || "",
+                description: req.body["descriptionZalopay"] || "",
+                status: "active"
+            };
+
+
+            await Payment.updateOne({
+                title: "zalopay"
+            }, data);
+        }else{
+            await Payment.updateOne({
+                title: "zalopay"
+            }, {
+                $set: {
+                    status: "inactive"
+                }
+            });
         }
-        if(req.body.vnpay){
-            data.paymentMethods.vnpay.enabled = true;
-            data.paymentMethods.vnpay.merchantCode = req.body['merchantCode'] || "";
-            data.paymentMethods.vnpay.accessKey = req.body['accessKey'] || "";
-            data.paymentMethods.vnpay.secretKey = req.body['secretKey'] || "";
-            data.paymentMethods.vnpay.description = req.body['description'] || "";
+
+        // VNPAY
+        if (req.body.vnpay) {
+            const data = {
+                title: "vnpay",
+                vnpayMerchantCode: req.body["vnpayMerchantCode"] || "",
+                vnpayAccessKey: req.body["vnpayAccess"] || "",
+                vnpaySecretKey: req.body["vnpaySecret"] || "",
+                description: req.body["vnpayDescription"] || "",
+                status: "active"
+            };
+
+            await Payment.updateOne({
+                title: "vnpay"
+            }, data);
+        }else{
+            await Payment.updateOne({
+                title: "vnpay"
+            }, {
+                $set: {
+                    status: "inactive"
+                }
+            });
         }
         await Setting.updateOne({}, data);
-        req.flash("success", "Cập nhật cài đặt thành công");
+        // req.flash("success", "Cập nhật cài đặt thành công");
         res.redirect("/admin/settings");
     } catch (error) {
         console.error("Error updating settings:", error);

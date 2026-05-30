@@ -2,6 +2,7 @@ const Booking = require("../../model/booking.model");
 const Field = require("../../model/field.model");
 const Service = require("../../model/service.model");
 const Pricing = require("../../model/pricing.model");
+const Payment = require("../../model/payment.model");
 
 // [GET] /booking
 module.exports.index = async (req, res) => {
@@ -18,12 +19,16 @@ module.exports.index = async (req, res) => {
     const uniqueAddresses = [...new Set(address)];
     const pricings = await Pricing.find({ deleted: false });
     const services = await Service.find(find);
+    const payment = await Payment.find({
+        status: "active"
+    });
     res.render("client/page/booking/index", {
         pageTitle: "Đặt Sân Bóng - Quản Lý Sân Bóng",
         fields: fields,
         services: services,
         pricings: pricings,
-        address: uniqueAddresses
+        address: uniqueAddresses,
+        payment: payment
     });
 }
 

@@ -48,7 +48,7 @@ block content
                             each item in address
                                 option(value=item) #{item}
         //- FIELD SELECTION SECTION
-        section.booking-fields
+        section(class="booking-fields")
             .gf-container
 
                 .booking-section-header
@@ -57,14 +57,18 @@ block content
                 .booking-fields-grid
                     each item in fields
                         //- Field Card 1
-                        .booking-field-card(data-field-id=item._id)
+                        div(
+                            class="booking-field-card"
+                            data-field-id=item._id 
+                            data-field = item
+                        )
                             .booking-field-image
                                 img(
                                     src=item.image
                                 )
                             
                             .booking-field-content
-                                h3.booking-field-name=item.name
+                                h3.booking-field-name #{item.name}
                                 
                                 .booking-field-type Loại: #{item.type}v#{item.capacity}
                                 
@@ -123,22 +127,12 @@ block content
                     span.booking-subtitle-text Chọn phương thức thanh toán trước khi tiếp tục
 
                 .booking-payment-grid
-                    button.payment-method-card.payment-method-card--active(type="button" data-payment-method="cash")
-                        .payment-method-card-main
-                            span.payment-method-title Tiền mặt
-                            span.payment-method-subtitle Thanh toán tại quầy
-                        .payment-method-check
-                    button.payment-method-card(type="button" data-payment-method="momo")
-                        .payment-method-card-main
-                            span.payment-method-title Ví MoMo
-                            span.payment-method-subtitle Thanh toán qua MoMo
-                        .payment-method-check
-                    button.payment-method-card(type="button" data-payment-method="bank")
-                        .payment-method-card-main
-                            span.payment-method-title Chuyển khoản ngân hàng
-                            span.payment-method-subtitle Chuyển khoản nhanh
-                        .payment-method-check
-
+                    each item in payment
+                        button.payment-method-card(type="button" data-payment-method=item._id)
+                            .payment-method-card-main
+                                span.payment-method-title #{item.title}
+                                span.payment-method-subtitle #{item.description}
+                            .payment-method-check
                 .booking-action-row
                     button.booking-confirm-button(type="button") Tạo booking
 

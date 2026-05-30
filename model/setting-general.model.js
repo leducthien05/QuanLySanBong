@@ -47,59 +47,6 @@ const settingSchema = new mongoose.Schema({
         default: 'vi'
     },
 
-    // Payment Methods
-    paymentMethods: {
-        cash: {
-            enabled: {
-                type: Boolean,
-                default: true
-            },
-            accountName: String,
-            description: String
-        },
-        banking: {
-            enabled: {
-                type: Boolean,
-                default: false
-            },
-            accountName: String,
-            accountNumber: String,
-            bankName: String,
-            qrImage: String,
-            description: String
-        },
-        momo: {
-            enabled: {
-                type: Boolean,
-                default: false
-            },
-            accountName: String,
-            accountNumber: String,
-            qrImage: String,
-            description: String
-        },
-        zalopay: {
-            enabled: {
-                type: Boolean,
-                default: false
-            },
-            accountName: String,
-            accountNumber: String,
-            qrImage: String,
-            description: String
-        },
-        vnpay: {
-            enabled: {
-                type: Boolean,
-                default: false
-            },
-            merchantCode: String,
-            accessKey: String,
-            secretKey: String,
-            description: String
-        }
-    },
-
     // Social Media
     socialMedia: {
         facebook: String,

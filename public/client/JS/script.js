@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (!bookingContainer) return;
     const formBooking = bookingContainer.querySelector('.booking-form');
+    const bookingData = {}
     // ========== FIELD SELECTION ==========
     function initFieldSelection() {
         const fieldCards = document.querySelectorAll('.booking-field-card');
@@ -12,11 +13,32 @@ document.addEventListener('DOMContentLoaded', function () {
         let selectedField = null;
         fieldCards.forEach(card => {
             card.addEventListener('click', () => {
+                // Reset data
+                bookingData.pricing = [];
+                bookingData.price = 0;
+
+                bookingData.date = "";
+                bookingData.type = "";
+                bookingData.address = "";
+                bookingData.field_id = "";
+                bookingData.field_name = "";
+
+                bookingData.service = [];
+                bookingData.payment = null;
+                // Thêm id và tên sân
+                bookingData.field_id = card.getAttribute("data-field-id");
+                const dataField = JSON.parse(card.getAttribute("data-field"));
+                bookingData.field_name = dataField.name;
                 // Remove previous selection
                 if (selectedField) {
                     selectedField.classList.remove('booking-field-card--selected');
                 }
-
+                // Lấy địa chỉ
+                const address = dataField.address.titleAddress
+                bookingData.address = address;
+                // Lấy loại sân
+                const type = dataField.type;
+                bookingData.type = type;
                 // Select new field
                 card.classList.add('booking-field-card--selected');
 
@@ -49,47 +71,100 @@ document.addEventListener('DOMContentLoaded', function () {
                         timeText.textContent = data.date ? `${data.date}` : "Chưa chọn khung giờ";
                         let html = "";
                         data.pricings.forEach(item => {
-                            if (item.status == "booked") {
-                                html += `
-                                    <div class="booking-slot-card booked" data-slot-id=${item._id}>
-                                        <div class="booking-slot-time">
-                                            ${item.start_time}
+                            if (item.feature == "1") {
+                                if (item.status == "booked") {
+                                    html += `
+                                        <div class="booking-slot-card booked vip" data-slot-id=${item._id}>
+                                            <div class="booking-slot-time">
+                                                ${item.start_time}
+                                            </div>
+                                            <div class="booking-slot-duration">
+                                                1 giờ
+                                            </div>
                                         </div>
-                                        <div class="booking-slot-duration">
-                                            1 giờ
+                                    `;
+                                } else {
+                                    html += `
+                                        <div class="booking-slot-card vip" data-slot-id=${item._id}>
+                                            <div class="booking-slot-time">
+                                                ${item.start_time}
+                                            </div>
+                                            <div class="booking-slot-duration">
+                                                1 giờ
+                                            </div>
                                         </div>
-                                    </div>
-                                `;
+                                    `;
+                                }
                             } else {
-                                html += `
-                                    <div class="booking-slot-card" data-slot-id=${item._id}>
-                                        <div class="booking-slot-time">
-                                            ${item.start_time}
+                                if (item.status == "booked") {
+                                    html += `
+                                        <div class="booking-slot-card booked" data-slot-id=${item._id}>
+                                            <div class="booking-slot-time">
+                                                ${item.start_time}
+                                            </div>
+                                            <div class="booking-slot-duration">
+                                                1 giờ
+                                            </div>
                                         </div>
-                                        <div class="booking-slot-duration">
-                                            1 giờ
+                                    `;
+                                } else {
+                                    html += `
+                                        <div class="booking-slot-card" data-slot-id=${item._id}>
+                                            <div class="booking-slot-time">
+                                                ${item.start_time}
+                                            </div>
+                                            <div class="booking-slot-duration">
+                                                1 giờ
+                                            </div>
                                         </div>
-                                    </div>
-                                `;
+                                    `;
+                                }
+
                             }
 
                         });
                         pricingList.innerHTML = html;
                         const listSlot = document.querySelectorAll(".booking-slot-card");
-                        const slot = [];
+                        bookingData.pricing = [];
+                        bookingData.price = 0;
                         if (listSlot.length > 0) {
                             listSlot.forEach(item => {
                                 item.addEventListener("click", (e) => {
+                                    if (item.classList.contains("booked")) {
+                                        return;
+                                    }
                                     const id = item.getAttribute("data-slot-id");
-                                    if (slot.includes(id)) {
-                                        // xóa khỏi mảng
-                                        const index = slot.indexOf(id);
-                                        slot.splice(index, 1);
-                                        // bỏ class UI
+                                    const pricing = item.querySelector(".booking-slot-time");
+                                    const dataField = JSON.parse(card.getAttribute("data-field"));
+                                    const textTime = pricing.textContent;
+
+                                    const index = bookingData.pricing.findIndex(
+                                        item => item.pricing_id === id
+                                    );
+
+                                    if (index !== -1) {
+                                        bookingData.pricing.splice(index, 1);
+
                                         item.classList.remove("selected");
+
+                                        if (item.classList.contains("vip")) {
+                                            bookingData.price -= dataField.price.priceVip;
+                                        } else {
+                                            bookingData.price -= dataField.price.price;
+                                        }
                                     } else {
-                                        slot.push(id);
+                                        bookingData.pricing.push({
+                                            pricing_id: id,
+                                            time: textTime
+                                        });
+
                                         item.classList.add("selected");
+
+                                        if (item.classList.contains("vip")) {
+                                            bookingData.price += dataField.price.priceVip;
+                                        } else {
+                                            bookingData.price += dataField.price.price;
+                                        }
                                     }
                                 });
                             });
@@ -99,131 +174,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
     initFieldSelection();
-
-
-    // // ========== SERVICE SELECTION ==========
-    const serviceCards = document.querySelectorAll('.booking-service-card');
-    serviceCards.forEach(card => {
-        card.addEventListener('click', function () {
-            const serviceId = this.dataset.serviceId;
-
-            if (this.classList.contains('booking-service-card--selected')) {
-                // Deselect service
-                this.classList.remove('booking-service-card--selected');
-                selectedServices.delete(serviceId);
-            } else {
-                // Select service
-                this.classList.add('booking-service-card--selected');
-                selectedServices.add(serviceId);
-            }
-        });
-    });
-
-    // // ========== SUMMARY UPDATE FUNCTION ==========
-    // function updateSummary() {
-    //     const selectedFieldElement = document.querySelector('.booking-selected-field');
-    //     const selectedServicesElement = document.querySelector('.booking-selected-services');
-    //     const servicesCountElement = document.querySelector('.booking-services-count');
-    //     const totalPriceElement = document.querySelector('.booking-total-price');
-
-    //     let fieldName = 'Chưa chọn';
-    //     let fieldPrice = 0;
-    //     let servicesPrice = 0;
-    //     let servicesList = [];
-
-    //     // Get selected field info
-    //     if (selectedField) {
-    //         const fieldNameElement = selectedField.querySelector('.booking-field-name');
-    //         const priceElement = selectedField.querySelector('.booking-price-number');
-
-    //         fieldName = fieldNameElement ? fieldNameElement.textContent : 'Chưa chọn';
-    //         fieldPrice = parseInt(priceElement?.textContent?.replace(/\D/g, '') || 0);
-    //     }
-
-    //     // Get selected services info
-    //     selectedServices.forEach(serviceId => {
-    //         const serviceCard = document.querySelector(`.booking-service-card[data-service-id="${serviceId}"]`);
-    //         if (serviceCard) {
-    //             const serviceName = serviceCard.querySelector('.booking-service-name');
-    //             const servicePrice = serviceCard.querySelector('.booking-service-price');
-
-    //             if (serviceName) {
-    //                 servicesList.push(serviceName.textContent);
-    //             }
-
-    //             if (servicePrice) {
-    //                 const price = parseInt(servicePrice.textContent.replace(/\D/g, '') || 0);
-    //                 servicesPrice += price;
-    //             }
-    //         }
-    //     });
-
-    //     // Update DOM elements
-    //     selectedFieldElement.textContent = fieldName;
-
-    //     if (servicesList.length > 0) {
-    //         selectedServicesElement.textContent = servicesList.join(', ');
-    //     } else {
-    //         selectedServicesElement.textContent = 'Chưa chọn';
-    //     }
-
-    //     servicesCountElement.textContent = `(${selectedServices.size} dịch vụ)`;
-
-    //     // Calculate and display total
-    //     const totalPrice = fieldPrice + servicesPrice;
-    //     totalPriceElement.textContent = totalPrice.toLocaleString('vi-VN');
-    // }
-
-    // // ========== ACTION BUTTONS ==========
-    // const clearBtn = document.querySelector('.booking-btn--secondary');
-    // const submitBtn = document.querySelector('.booking-btn--primary');
-
-    // if (clearBtn) {
-    //     clearBtn.addEventListener('click', function () {
-    //         // Clear field selection
-    //         fieldCards.forEach(card => card.classList.remove('booking-field-card--selected'));
-    //         selectedField = null;
-
-    //         // Clear service selections
-    //         serviceCards.forEach(card => card.classList.remove('booking-service-card--selected'));
-    //         selectedServices.clear();
-
-    //         // Update summary
-    //         updateSummary();
-    //     });
-    // }
-
-    // if (submitBtn) {
-    //     submitBtn.addEventListener('click', function () {
-    //         if (!selectedField) {
-    //             alert('Vui lòng chọn một sân bóng');
-    //             return;
-    //         }
-
-    //         // Prepare booking data
-    //         const bookingData = {
-    //             fieldId: selectedField.dataset.fieldId,
-    //             fieldName: selectedField.querySelector('.booking-field-name').textContent,
-    //             fieldPrice: parseInt(selectedField.querySelector('.booking-price-number').textContent.replace(/\D/g, '')),
-    //             services: Array.from(selectedServices),
-    //             totalServices: selectedServices.size,
-    //             totalPrice: parseInt(document.querySelector('.booking-total-price').textContent.replace(/\D/g, ''))
-    //         };
-
-    //         // Log booking data (for now)
-    //         console.log('Booking Data:', bookingData);
-
-    //         // You can store this data in localStorage or send it to the server
-    //         localStorage.setItem('bookingData', JSON.stringify(bookingData));
-
-    //         // Redirect to next step or show confirmation
-    //         alert('Đặt sân thành công! Chuyển đến thanh toán...');
-    //         // window.location.href = '/checkout'; // Uncomment when ready
-    //     });
-    // }
-
-    // // ========== INITIALIZE SUMMARY ==========
-    // updateSummary();
 
     // Tìm kiếm sân
     const searchBox = document.querySelector(".gf-search-box");
@@ -251,15 +201,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 dataQuery = {};
                 if (date) {
                     dataQuery.date = date;
+                    bookingData.date = date
+                } else {
+                    const today = new Date().toISOString().split("T")[0];
+                    bookingData.data = today;
                 }
                 if (type) {
                     dataQuery.type = type;
+                    bookingData.type = type
                 }
                 if (address) {
                     dataQuery.address = address;
+                    bookingData.address = address
                 }
                 const query = new URLSearchParams(dataQuery);
-                console.log(query.toString());
                 try {
 
                     fieldList.classList.add("loading");
@@ -271,8 +226,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         .then(data => {
                             let html = "";
                             data.fields.forEach(item => {
+                                const dataField = JSON.stringify(item);
                                 html += `
-                                    <div class="booking-field-card" data-field-id=${item._id}>
+                                    <div class="booking-field-card" data-field-id=${item._id} data-field='${dataField}'>
                                         <div class="booking-field-image">
                                             <img src=${item.image}>
                                         </div>
@@ -330,6 +286,105 @@ document.addEventListener('DOMContentLoaded', function () {
                 field.classList.add("booking-field-card--selected");
             });
         });
+    }
+
+    // // ========== SERVICE SELECTION ==========
+    const serviceCards = document.querySelectorAll('.booking-service-card');
+    bookingData.service = [];
+    serviceCards.forEach(card => {
+        card.addEventListener('click', function () {
+            const serviceId = card.getAttribute("data-service-id");
+            if (bookingData.service.includes(serviceId)) {
+                // xóa khỏi mảng
+                const index = bookingData.service.indexOf(serviceId);
+                bookingData.service.splice(index, 1);
+                // bỏ class UI
+                card.classList.remove("booking-service-card--selected");
+            } else {
+                bookingData.service.push(serviceId);
+                card.classList.add("booking-service-card--selected");
+            }
+        });
+    });
+
+    // Mở model
+    const btnOpenModel = document.querySelector(".booking-confirm-button");
+    if (btnOpenModel) {
+        const modelForm = document.querySelector(".booking-modal-overlay.hidden");
+        const valueField = modelForm.querySelector(".booking-modal-field-name");
+        const valueLocation = modelForm.querySelector(".booking-modal-field-location");
+        const valueType = modelForm.querySelector(".booking-modal-field-type");
+        const valueDate = modelForm.querySelector(".booking-modal-field-date");
+        const valueTime = modelForm.querySelector(".booking-modal-field-times");
+        const valueAmount = modelForm.querySelector(".booking-modal-total-amount");
+        btnOpenModel.addEventListener("click", () => {
+            if (bookingData.field_name) {
+                valueField.textContent = bookingData.field_name;
+            }
+            if (bookingData.address) {
+                valueLocation.textContent = bookingData.address;
+            }
+            if (bookingData.type) {
+                valueType.textContent = bookingData.type;
+            }
+            if (bookingData.date) {
+                valueDate.textContent = bookingData.date;
+            } else {
+                const today = new Date().toISOString().split("T")[0];
+                valueDate.textContent = today;
+            }
+            if (bookingData.pricing && bookingData.pricing.length > 0) {
+                let string = "";
+                bookingData.pricing.forEach(item => {
+                    string += item.time;
+                });
+                valueTime.textContent = string;
+            }
+            if (bookingData.price) {
+                valueAmount.textContent = bookingData.price.toLocaleString("vi-VN") + " đ";;
+            }
+            modelForm.classList.remove("hidden");
+            modelForm.classList.add("active");
+        });
+        const btnCloseForm = modelForm.querySelector(".booking-modal-close");
+        if (btnCloseForm) {
+            btnCloseForm.addEventListener("click", () => {
+                modelForm.classList.remove("active");
+                modelForm.classList.add("hidden");
+            });
+        }
+    }
+
+    // Payment method
+    const paymentCard = document.querySelector(".booking-payment-grid");
+
+    if (paymentCard) {
+
+        bookingData.payment = null;
+
+        const listPayment = paymentCard.querySelectorAll(".payment-method-card");
+
+        if (listPayment.length > 0) {
+
+            listPayment.forEach(item => {
+
+                item.addEventListener("click", () => {
+
+                    // remove active cũ
+                    listPayment.forEach(card => {
+                        card.classList.remove("payment-method-card--active");
+                    });
+
+                    // active card mới
+                    item.classList.add("payment-method-card--active");
+
+                    // lưu dữ liệu
+                    bookingData.payment = item.getAttribute("data-payment-method");
+                });
+
+            });
+
+        }
     }
 });
 

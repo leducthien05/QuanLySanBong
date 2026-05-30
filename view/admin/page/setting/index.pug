@@ -166,301 +166,300 @@ block content
                     span Payment Methods
 
                 .card-body
-                    // CASH
-                    .payment-method-card.mb-3
-                        .payment-method-header
-                            .form-check.form-switch
-                                input.form-check-input.payment-toggle(
-                                    type="checkbox"
-                                    name="cash"
-                                    id="cashToggle"
-                                    checked=(setting.paymentMethods && setting.paymentMethods.cash && setting.paymentMethods.cash.enabled) || false
-                                )
-                                label.form-check-label.payment-method-title(for="cashToggle")
-                                    i.fa-solid.fa-money-bill-1
-                                    span Cash
-
-                        .payment-method-content(id="cashContent")
-                            .row.mt-3
-                                .col-md-6
-                                    .form-group.mb-2
-                                        label.form-label Account Name
-                                        input.form-control(
-                                            type="text"
-                                            name="cash-name"
-                                            value=((setting.paymentMethods && setting.paymentMethods.cash && setting.paymentMethods.cash.accountName) ? setting.paymentMethods.cash.accountName : '')
-                                            placeholder="Nhập tên người nhận"
+                    each item in listPayment
+                        if(item.title == "cash")
+                            // CASH
+                            .payment-method-card.mb-3
+                                .payment-method-header
+                                    .form-check.form-switch
+                                        input.form-check-input.payment-toggle(
+                                            type="checkbox"
+                                            name="cash"
+                                            id="cashToggle"
+                                            checked=(item.status == "active" ? true : false) 
                                         )
+                                        label.form-check-label.payment-method-title(for="cashToggle")
+                                            i.fa-solid.fa-money-bill-1
+                                            span Cash
 
-                                .col-md-6
-                                    // Spacer
+                                .payment-method-content(id="cashContent")
+                                    .row.mt-3
+                                        .col-md-6
+                                            .form-group.mb-2
+                                                label.form-label Account Name
+                                                input.form-control(
+                                                    type="text"
+                                                    name="accountNameCash"
+                                                    value=item.accountName
+                                                    placeholder="Nhập tên người nhận"
+                                                )
 
-                            .row
-                                .col-md-12
-                                    .form-group.mb-2
-                                        label.form-label Instructions
-                                        textarea.form-control(
-                                            name="cash-description"
-                                            rows="2"
-                                            placeholder="Nhập hướng dẫn thanh toán"
-                                        )= (setting.paymentMethods && setting.paymentMethods.cash && setting.paymentMethods.cash.description) || ''
+                                        .col-md-6
+                                            // Spacer
 
-                    // BANKING
-                    .payment-method-card.mb-3
-                        .payment-method-header
-                            .form-check.form-switch
-                                input.form-check-input.payment-toggle(
-                                    type="checkbox"
-                                    name="banking"
-                                    id="bankingToggle"
-                                    checked=(setting.paymentMethods && setting.paymentMethods.banking && setting.paymentMethods.banking.enabled) || false
-                                )
-                                label.form-check-label.payment-method-title(for="bankingToggle")
-                                    i.fa-solid.fa-building
-                                    span Banking
-
-                        .payment-method-content(id="bankingContent")
-                            .row.mt-3
-                                .col-md-6
-                                    .form-group.mb-2
-                                        label.form-label Account Name
-                                        input.form-control(
-                                            type="text"
-                                            name="bankingName"
-                                            value=((setting.paymentMethods && setting.paymentMethods.banking && setting.paymentMethods.banking.accountName) ? setting.paymentMethods.banking.accountName : '')
-                                            placeholder="Nhập tên tài khoản"
+                                    .row
+                                        .col-md-12
+                                            .form-group.mb-2
+                                                label.form-label Instructions
+                                                textarea.form-control(
+                                                    name="descriptionCash"
+                                                    rows="2"
+                                                    placeholder="Nhập hướng dẫn thanh toán"
+                                                ) #{item.description}
+                        else if(item.title == "banking")
+                            // BANKING
+                            .payment-method-card.mb-3
+                                .payment-method-header
+                                    .form-check.form-switch
+                                        input.form-check-input.payment-toggle(
+                                            type="checkbox"
+                                            name="banking"
+                                            id="bankingToggle"
+                                            checked=(item.status == "active" ? true : false)
                                         )
+                                        label.form-check-label.payment-method-title(for="bankingToggle")
+                                            i.fa-solid.fa-building
+                                            span Banking
 
-                                .col-md-6
-                                    .form-group.mb-2
-                                        label.form-label Account Number
-                                        input.form-control(
-                                            type="text"
-                                            name="bankingNumber"
-                                            value=(setting.paymentMethods && setting.paymentMethods.banking && setting.paymentMethods.banking.accountNumber) || ''
-                                            placeholder="Nhập số tài khoản"
+                                .payment-method-content(id="bankingContent")
+                                    .row.mt-3
+                                        .col-md-6
+                                            .form-group.mb-2
+                                                label.form-label Account Name
+                                                input.form-control(
+                                                    type="text"
+                                                    name="accountNameBanking"
+                                                    value=item.accountName
+                                                    placeholder="Nhập tên tài khoản"
+                                                )
+
+                                        .col-md-6
+                                            .form-group.mb-2
+                                                label.form-label Account Number
+                                                input.form-control(
+                                                    type="text"
+                                                    name="accountNumberBanking"
+                                                    value=item.accountNumber
+                                                    placeholder="Nhập số tài khoản"
+                                                )
+
+                                    .row
+                                        .col-md-6
+                                            .form-group.mb-2
+                                                label.form-label Bank Name
+                                                input.form-control(
+                                                    type="text"
+                                                    name="bankingBankName"
+                                                    value=item.bankingBankName
+                                                    placeholder="Nhập tên ngân hàng"
+                                                )
+
+                                        .col-md-6
+                                            .form-group.mb-2
+                                                label.form-label QR Code
+                                                input.form-control.qr-input(
+                                                    type="file"
+                                                    name="bankingQr"
+                                                    accept="image/*"
+                                                    id="bankingQrInput"
+                                                )
+
+                                    .row
+                                        .col-md-6
+                                            if(item.bankingQr)
+                                                .qr-preview-wrapper
+                                                    img.qr-preview(src=item.bankingQr alt="Banking QR")
+
+                                        .col-md-12
+                                            .form-group.mb-2
+                                                label.form-label Instructions
+                                                textarea.form-control(
+                                                    name="descriptionBanking"
+                                                    rows="2"
+                                                    placeholder="Nhập hướng dẫn thanh toán"
+                                                ) #{item.description}
+                        else if(item.title == "momo")
+                            // MOMO
+                            .payment-method-card.mb-3
+                                .payment-method-header
+                                    .form-check.form-switch
+                                        input.form-check-input.payment-toggle(
+                                            type="checkbox"
+                                            name="momo"
+                                            id="momoToggle"
+                                            checked=(item.status == "active" ? true : false)
                                         )
+                                        label.form-check-label.payment-method-title(for="momoToggle")
+                                            i.fa-solid.fa-mobile
+                                            span MOMO
 
-                            .row
-                                .col-md-6
-                                    .form-group.mb-2
-                                        label.form-label Bank Name
-                                        input.form-control(
-                                            type="text"
-                                            name="bankingBankName"
-                                            value=(setting.paymentMethods && setting.paymentMethods.banking && setting.paymentMethods.banking.bankName) || ''
-                                            placeholder="Nhập tên ngân hàng"
+                                .payment-method-content(id="momoContent")
+                                    .row.mt-3
+                                        .col-md-6
+                                            .form-group.mb-2
+                                                label.form-label Account Name
+                                                input.form-control(
+                                                    type="text"
+                                                    name="accountNameMomo"
+                                                    value=item.accountName
+                                                    placeholder="Nhập tên tài khoản"
+                                                )
+
+                                        .col-md-6
+                                            .form-group.mb-2
+                                                label.form-label Account Number
+                                                input.form-control(
+                                                    type="text"
+                                                    name="accountNumberMomo"
+                                                    value=item.accountNumber
+                                                    placeholder="Nhập số điện thoại"
+                                                )
+
+                                    .row
+                                        .col-md-6
+                                            .form-group.mb-2
+                                                label.form-label QR Code
+                                                input.form-control.qr-input(
+                                                    type="file"
+                                                    name="momoQr"
+                                                    accept="image/*"
+                                                    id="momoQrInput"
+                                                )
+
+                                        .col-md-6
+                                            if(item.momoQr)
+                                                .qr-preview-wrapper
+                                                    img.qr-preview(src=item.momoQr alt="MOMO QR")
+
+                                    .row
+                                        .col-md-12
+                                            .form-group.mb-2
+                                                label.form-label Instructions
+                                                textarea.form-control(
+                                                    name="descriptionMomo"
+                                                    rows="2"
+                                                    placeholder="Nhập hướng dẫn thanh toán"
+                                                ) #{item.description}
+                        else if(item.title == "zalopay")
+                            // ZALOPAY
+                            .payment-method-card.mb-3
+                                .payment-method-header
+                                    .form-check.form-switch
+                                        input.form-check-input.payment-toggle(
+                                            type="checkbox"
+                                            name="zalopay"
+                                            id="zalopayToggle"
+                                            checked=(item.status == "active" ? true : false)
                                         )
+                                        label.form-check-label.payment-method-title(for="zalopayToggle")
+                                            i.fa-solid.fa-wallet
+                                            span ZaloPay
 
-                                .col-md-6
-                                    .form-group.mb-2
-                                        label.form-label QR Code
-                                        input.form-control.qr-input(
-                                            type="file"
-                                            name="bankingQr"
-                                            accept="image/*"
-                                            id="bankingQrInput"
+                                .payment-method-content(id="zalopayContent")
+                                    .row.mt-3
+                                        .col-md-6
+                                            .form-group.mb-2
+                                                label.form-label Account Name
+                                                input.form-control(
+                                                    type="text"
+                                                    name="accountNameZalopay"
+                                                    value=item.accountName
+                                                    placeholder="Nhập tên tài khoản"
+                                                )
+
+                                        .col-md-6
+                                            .form-group.mb-2
+                                                label.form-label Account Number
+                                                input.form-control(
+                                                    type="text"
+                                                    name="accountNumberPay"
+                                                    value=item.accountNumber
+                                                    placeholder="Nhập số điện thoại"
+                                                )
+
+                                    .row
+                                        .col-md-6
+                                            .form-group.mb-2
+                                                label.form-label QR Code
+                                                input.form-control.qr-input(
+                                                    type="file"
+                                                    name="zalopayQr"
+                                                    accept="image/*"
+                                                    id="zalopayQrInput"
+                                                )
+
+                                        .col-md-6
+                                            if(item.zalopayQr)
+                                                .qr-preview-wrapper
+                                                    img.qr-preview(src=item.zalopayQr alt="ZaloPay QR")
+
+                                    .row
+                                        .col-md-12
+                                            .form-group.mb-2
+                                                label.form-label Instructions
+                                                textarea.form-control(
+                                                    name="descriptionZalopay"
+                                                    rows="2"
+                                                    placeholder="Nhập hướng dẫn thanh toán"
+                                                ) #{item.description}
+                        else if(item.title = "vnpay")
+                            // VNPAY
+                            .payment-method-card.mb-3
+                                .payment-method-header
+                                    .form-check.form-switch
+                                        input.form-check-input.payment-toggle(
+                                            type="checkbox"
+                                            name="vnpay"
+                                            id="vnpayToggle"
+                                            checked=(item.status == "active" ? true : false)
                                         )
+                                        label.form-check-label.payment-method-title(for="vnpayToggle")
+                                            i.fa-solid.fa-credit-card
+                                            span VNPay
 
-                            .row
-                                .col-md-6
-                                    if setting.paymentMethods && setting.paymentMethods.banking && setting.paymentMethods.banking.qrImage
-                                        .qr-preview-wrapper
-                                            img.qr-preview(src=setting.paymentMethods.banking.qrImage alt="Banking QR")
+                                .payment-method-content(id="vnpayContent")
+                                    .row.mt-3
+                                        .col-md-6
+                                            .form-group.mb-2
+                                                label.form-label Merchant Code
+                                                input.form-control(
+                                                    type="text"
+                                                    name="vnpayMerchantCode"
+                                                    value=item.vnpayMerchantCode
+                                                    placeholder="Nhập mã nhà cung cấp"
+                                                )
 
-                                .col-md-12
-                                    .form-group.mb-2
-                                        label.form-label Instructions
-                                        textarea.form-control(
-                                            name="bankingDescription"
-                                            rows="2"
-                                            placeholder="Nhập hướng dẫn thanh toán"
-                                        )= (setting.paymentMethods && setting.paymentMethods.banking && setting.paymentMethods.banking.description) || ''
+                                        .col-md-6
+                                            .form-group.mb-2
+                                                label.form-label Access Key
+                                                input.form-control(
+                                                    type="password"
+                                                    name="vnpayAccess"
+                                                    placeholder="Nhập access key"
+                                                )
 
-                    // MOMO
-                    .payment-method-card.mb-3
-                        .payment-method-header
-                            .form-check.form-switch
-                                input.form-check-input.payment-toggle(
-                                    type="checkbox"
-                                    name="momo"
-                                    id="momoToggle"
-                                    checked=(setting.paymentMethods && setting.paymentMethods.momo && setting.paymentMethods.momo.enabled) || false
-                                )
-                                label.form-check-label.payment-method-title(for="momoToggle")
-                                    i.fa-solid.fa-mobile
-                                    span MOMO
+                                    .row
+                                        .col-md-6
+                                            .form-group.mb-2
+                                                label.form-label Secret Key
+                                                input.form-control(
+                                                    type="password"
+                                                    name="vnpaySecret"
+                                                    placeholder="Nhập secret key"
+                                                )
 
-                        .payment-method-content(id="momoContent")
-                            .row.mt-3
-                                .col-md-6
-                                    .form-group.mb-2
-                                        label.form-label Account Name
-                                        input.form-control(
-                                            type="text"
-                                            name="momoName"
-                                            value=(setting.paymentMethods && setting.paymentMethods.momo && setting.paymentMethods.momo.accountName) || ''
-                                            placeholder="Nhập tên tài khoản"
-                                        )
+                                        .col-md-6
+                                            // Spacer
 
-                                .col-md-6
-                                    .form-group.mb-2
-                                        label.form-label Account Number
-                                        input.form-control(
-                                            type="text"
-                                            name="momoNumber"
-                                            value=(setting.paymentMethods && setting.paymentMethods.momo && setting.paymentMethods.momo.accountNumber) || ''
-                                            placeholder="Nhập số điện thoại"
-                                        )
-
-                            .row
-                                .col-md-6
-                                    .form-group.mb-2
-                                        label.form-label QR Code
-                                        input.form-control.qr-input(
-                                            type="file"
-                                            name="momoQr"
-                                            accept="image/*"
-                                            id="momoQrInput"
-                                        )
-
-                                .col-md-6
-                                    if setting.paymentMethods && setting.paymentMethods.momo && setting.paymentMethods.momo.qrImage
-                                        .qr-preview-wrapper
-                                            img.qr-preview(src=setting.paymentMethods.momo.qrImage alt="MOMO QR")
-
-                            .row
-                                .col-md-12
-                                    .form-group.mb-2
-                                        label.form-label Instructions
-                                        textarea.form-control(
-                                            name="momoDescription"
-                                            rows="2"
-                                            placeholder="Nhập hướng dẫn thanh toán"
-                                        )= (setting.paymentMethods && setting.paymentMethods.momo && setting.paymentMethods.momo.description) || ''
-
-                    // ZALOPAY
-                    .payment-method-card.mb-3
-                        .payment-method-header
-                            .form-check.form-switch
-                                input.form-check-input.payment-toggle(
-                                    type="checkbox"
-                                    name="zalopay"
-                                    id="zalopayToggle"
-                                    checked=(setting.paymentMethods && setting.paymentMethods.zalopay && setting.paymentMethods.zalopay.enabled) || false
-                                )
-                                label.form-check-label.payment-method-title(for="zalopayToggle")
-                                    i.fa-solid.fa-wallet
-                                    span ZaloPay
-
-                        .payment-method-content(id="zalopayContent")
-                            .row.mt-3
-                                .col-md-6
-                                    .form-group.mb-2
-                                        label.form-label Account Name
-                                        input.form-control(
-                                            type="text"
-                                            name="zalopayName"
-                                            value=(setting.paymentMethods && setting.paymentMethods.zalopay && setting.paymentMethods.zalopay.accountName) || ''
-                                            placeholder="Nhập tên tài khoản"
-                                        )
-
-                                .col-md-6
-                                    .form-group.mb-2
-                                        label.form-label Account Number
-                                        input.form-control(
-                                            type="text"
-                                            name="zalopayNumber"
-                                            value=(setting.paymentMethods && setting.paymentMethods.zalopay && setting.paymentMethods.zalopay.accountNumber) || ''
-                                            placeholder="Nhập số điện thoại"
-                                        )
-
-                            .row
-                                .col-md-6
-                                    .form-group.mb-2
-                                        label.form-label QR Code
-                                        input.form-control.qr-input(
-                                            type="file"
-                                            name="zalopayQr"
-                                            accept="image/*"
-                                            id="zalopayQrInput"
-                                        )
-
-                                .col-md-6
-                                    if setting.paymentMethods && setting.paymentMethods.zalopay && setting.paymentMethods.zalopay.qrImage
-                                        .qr-preview-wrapper
-                                            img.qr-preview(src=setting.paymentMethods.zalopay.qrImage alt="ZaloPay QR")
-
-                            .row
-                                .col-md-12
-                                    .form-group.mb-2
-                                        label.form-label Instructions
-                                        textarea.form-control(
-                                            name="zalopayDescription"
-                                            rows="2"
-                                            placeholder="Nhập hướng dẫn thanh toán"
-                                        )= (setting.paymentMethods && setting.paymentMethods.zalopay && setting.paymentMethods.zalopay.description) || ''
-
-                    // VNPAY
-                    .payment-method-card.mb-3
-                        .payment-method-header
-                            .form-check.form-switch
-                                input.form-check-input.payment-toggle(
-                                    type="checkbox"
-                                    name="vnpay"
-                                    id="vnpayToggle"
-                                    checked=(setting.paymentMethods && setting.paymentMethods.vnpay && setting.paymentMethods.vnpay.enabled) || false
-                                )
-                                label.form-check-label.payment-method-title(for="vnpayToggle")
-                                    i.fa-solid.fa-credit-card
-                                    span VNPay
-
-                        .payment-method-content(id="vnpayContent")
-                            .row.mt-3
-                                .col-md-6
-                                    .form-group.mb-2
-                                        label.form-label Merchant Code
-                                        input.form-control(
-                                            type="text"
-                                            name="vnpayMerchant"
-                                            value=(setting.paymentMethods && setting.paymentMethods.vnpay && setting.paymentMethods.vnpay.merchantCode) || ''
-                                            placeholder="Nhập mã nhà cung cấp"
-                                        )
-
-                                .col-md-6
-                                    .form-group.mb-2
-                                        label.form-label Access Key
-                                        input.form-control(
-                                            type="password"
-                                            name="vnpayAccess"
-                                            value=(setting.paymentMethods && setting.paymentMethods.vnpay && setting.paymentMethods.vnpay.accessKey) || ''
-                                            placeholder="Nhập access key"
-                                        )
-
-                            .row
-                                .col-md-6
-                                    .form-group.mb-2
-                                        label.form-label Secret Key
-                                        input.form-control(
-                                            type="password"
-                                            name="vnpaySecret"
-                                            value=(setting.paymentMethods && setting.paymentMethods.vnpay && setting.paymentMethods.vnpay.secretKey) || ''
-                                            placeholder="Nhập secret key"
-                                        )
-
-                                .col-md-6
-                                    // Spacer
-
-                            .row
-                                .col-md-12
-                                    .form-group.mb-2
-                                        label.form-label Instructions
-                                        textarea.form-control(
-                                            name="vnpayDescription"
-                                            rows="2"
-                                            placeholder="Nhập hướng dẫn thanh toán"
-                                        )= (setting.paymentMethods && setting.paymentMethods.vnpay && setting.paymentMethods.vnpay.description) || ''
-
+                                    .row
+                                        .col-md-12
+                                            .form-group.mb-2
+                                                label.form-label Instructions
+                                                textarea.form-control(
+                                                    name="vnpayDescription"
+                                                    rows="2"
+                                                    placeholder="Nhập hướng dẫn thanh toán"
+                                                ) #{item.description}
             // SOCIAL MEDIA SECTION
             .settings-section.card.mb-4
                 .card-header.settings-section-header

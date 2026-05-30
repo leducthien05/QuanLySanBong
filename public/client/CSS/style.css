@@ -1795,3 +1795,74 @@ img {
 .hidden {
     display: none;
 }
+
+/* ===== SLOT VIP ===== */
+
+.booking-slot-card.vip {
+    position: relative;
+
+    border: 1px solid rgba(255, 215, 0, 0.35);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 215, 0, 0.08),
+            rgba(157, 220, 84, 0.05)
+        );
+}
+
+/* hover */
+
+.booking-slot-card.vip:hover {
+    border-color: gold;
+
+    box-shadow:
+        0 0 18px rgba(255, 215, 0, 0.2);
+
+    transform: translateY(-4px);
+}
+
+/* badge VIP */
+
+.booking-slot-card.vip::before {
+    content: "VIP";
+
+    position: absolute;
+    top: 10px;
+    right: 10px;
+
+    padding: 4px 8px;
+
+    border-radius: 999px;
+
+    background: linear-gradient(135deg, #ffd700, #ffb700);
+
+    color: #111;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+}
+
+/* giờ */
+
+.booking-slot-card.vip .booking-slot-time {
+    color: #ffd95e;
+}
+
+/* khi được chọn */
+
+.booking-slot-card.vip.selected {
+    border-color: gold;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 215, 0, 0.16),
+            rgba(157, 220, 84, 0.12)
+        );
+
+    box-shadow:
+        0 0 24px rgba(255, 215, 0, 0.25);
+}
