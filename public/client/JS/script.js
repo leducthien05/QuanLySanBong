@@ -1,10 +1,9 @@
 /* ========== BOOKING PAGE FUNCTIONALITY ========== */
 
 document.addEventListener('DOMContentLoaded', function () {
-    const bookingContainer = document.querySelector('.booking-container');
+    // const bookingContainer = document.querySelector('.booking-container');
 
-    if (!bookingContainer) return;
-    const formBooking = bookingContainer.querySelector('.booking-form');
+    // if (!bookingContainer) return;
     const bookingData = {}
     // ========== FIELD SELECTION ==========
     function initFieldSelection() {
@@ -70,9 +69,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     .then(data => {
                         timeText.textContent = data.date ? `${data.date}` : "Chưa chọn khung giờ";
                         let html = "";
+                        console.log(data.pricings)
                         data.pricings.forEach(item => {
                             if (item.feature == "1") {
-                                if (item.status == "booked") {
+                                if (item.booked == "1") {
                                     html += `
                                         <div class="booking-slot-card booked vip" data-slot-id=${item._id}>
                                             <div class="booking-slot-time">
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     `;
                                 }
                             } else {
-                                if (item.status == "booked") {
+                                if (item.booked == "1") {
                                     html += `
                                         <div class="booking-slot-card booked" data-slot-id=${item._id}>
                                             <div class="booking-slot-time">
@@ -294,19 +294,55 @@ document.addEventListener('DOMContentLoaded', function () {
     serviceCards.forEach(card => {
         card.addEventListener('click', function () {
             const serviceId = card.getAttribute("data-service-id");
-            if (bookingData.service.includes(serviceId)) {
-                // xóa khỏi mảng
-                const index = bookingData.service.indexOf(serviceId);
+            const nameService = card.querySelector(".booking-service-name").textContent;
+            const index = bookingData.service.findIndex(
+                item => item.service_id === serviceId
+            );
+
+            if (index !== -1) {
                 bookingData.service.splice(index, 1);
-                // bỏ class UI
                 card.classList.remove("booking-service-card--selected");
             } else {
-                bookingData.service.push(serviceId);
+                bookingData.service.push({
+                    service_id: serviceId,
+                    name: nameService
+                });
                 card.classList.add("booking-service-card--selected");
             }
         });
     });
+    // Payment method
+    const paymentCard = document.querySelector(".booking-payment-grid");
 
+    if (paymentCard) {
+
+        bookingData.payment = null;
+
+        const listPayment = paymentCard.querySelectorAll(".payment-method-card");
+
+        if (listPayment.length > 0) {
+
+            listPayment.forEach(item => {
+
+                item.addEventListener("click", () => {
+
+                    // remove active cũ
+                    listPayment.forEach(card => {
+                        card.classList.remove("payment-method-card--active");
+                    });
+
+                    // active card mới
+                    item.classList.add("payment-method-card--active");
+
+                    // lưu dữ liệu
+                    bookingData.payment = item.getAttribute("data-payment-method");
+                    bookingData.namePayment = item.querySelector(".payment-method-title").textContent;
+                });
+
+            });
+
+        }
+    }
     // Mở model
     const btnOpenModel = document.querySelector(".booking-confirm-button");
     if (btnOpenModel) {
@@ -316,6 +352,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const valueType = modelForm.querySelector(".booking-modal-field-type");
         const valueDate = modelForm.querySelector(".booking-modal-field-date");
         const valueTime = modelForm.querySelector(".booking-modal-field-times");
+        const valuePayment = modelForm.querySelector(".booking-modal-field-payment");
+        const valueService = modelForm.querySelector(".booking-modal-field-service");
         const valueAmount = modelForm.querySelector(".booking-modal-total-amount");
         btnOpenModel.addEventListener("click", () => {
             if (bookingData.field_name) {
@@ -326,6 +364,16 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             if (bookingData.type) {
                 valueType.textContent = bookingData.type;
+            }
+            if (bookingData.service && bookingData.service.length > 0) {
+                let string = "";
+                bookingData.service.forEach(item=>{
+                    string += item.name;
+                });
+                valueService.textContent = string;
+            }
+            if (bookingData.payment) {
+                valuePayment.textContent = bookingData.namePayment;
             }
             if (bookingData.date) {
                 valueDate.textContent = bookingData.date;
@@ -354,37 +402,52 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
     }
-
-    // Payment method
-    const paymentCard = document.querySelector(".booking-payment-grid");
-
-    if (paymentCard) {
-
-        bookingData.payment = null;
-
-        const listPayment = paymentCard.querySelectorAll(".payment-method-card");
-
-        if (listPayment.length > 0) {
-
-            listPayment.forEach(item => {
-
-                item.addEventListener("click", () => {
-
-                    // remove active cũ
-                    listPayment.forEach(card => {
-                        card.classList.remove("payment-method-card--active");
-                    });
-
-                    // active card mới
-                    item.classList.add("payment-method-card--active");
-
-                    // lưu dữ liệu
-                    bookingData.payment = item.getAttribute("data-payment-method");
-                });
-
-            });
-
-        }
+    const btnBooking = document.querySelector(".booking-modal-pay");
+    if (btnBooking) {
+        const formBooking = document.querySelector('.booking-form');
+        const inputBooking = formBooking.querySelector("input");
+        const modelForm = document.querySelector(".booking-modal-overlay");
+        btnBooking.addEventListener("click", () => {
+            if (!bookingData.field_id) {
+                alert('Vui lòng chọn một sân bóng');
+                return;
+            }
+            if (!bookingData.field_name) {
+                alert('Vui lòng chọn một sân bóng');
+                return;
+            }
+            if (!bookingData.address) {
+                alert('Vui lòng chọn địa điểm');
+                return;
+            }
+            if (!bookingData.type) {
+                alert('Vui lòng chọn loại sân');
+                return;
+            }
+            if (!bookingData.field_name) {
+                alert('Vui lòng chọn một sân bóng');
+                return;
+            }
+            if (!bookingData.date) {
+                const today = new Date().toISOString().split("T")[0];
+                bookingData.date = today;
+            }
+            if (!bookingData.pricing || !bookingData.pricing.length > 0) {
+                alert('Vui lòng chọn slot đặt sân');
+                return;
+            }
+            if (!bookingData.payment) {
+                alert('Vui lòng chọn phương thức thanh toán');
+                return;
+            }
+            const valueNode = modelForm.querySelector(".booking-modal-row-note textarea").value;
+            if(valueNode != ""){
+                bookingData.node = valueNode;
+            }
+            const dataPostBooking = JSON.stringify(bookingData);
+            inputBooking.value = dataPostBooking;
+            formBooking.submit();
+        });
     }
 });
 

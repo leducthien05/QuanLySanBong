@@ -158,6 +158,21 @@ block content
                     .booking-modal-row
                         span.label Giờ
                         span.value.booking-modal-field-times Chưa chọn
+                    .booking-modal-row
+                        span.label Phương thức thanh toán 
+                        span.value.booking-modal-field-payment Chưa chọn
+                    .booking-modal-row
+                        span.label Dịch vụ
+                        span.value.booking-modal-field-service Chưa chọn
+                .booking-modal-row.booking-modal-row-note
+                    label(for="booking-note") Ghi chú
+
+                    textarea(
+                        id="booking-note"
+                        class="booking-modal-note-input"
+                        placeholder="Nhập ghi chú cho đơn đặt sân..."
+                        rows="2"
+                    )
                 .booking-modal-total
                     span Tổng thanh toán
                     strong.booking-modal-total-amount 0 đ
@@ -168,6 +183,7 @@ block content
 
     form.booking-form.hidden(
         method="POST"
+        action="/booking/payment"
     )
 
         .hidden

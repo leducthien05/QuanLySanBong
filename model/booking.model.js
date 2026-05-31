@@ -4,12 +4,15 @@ const crypto = require("crypto");
 const bookingSchema = new mongoose.Schema({
     field_id: String,
     user_id: String,
-    pricing_id: Array,
+    pricing: Array,
     date: Date,
     totalPrice: Number,
     node: String,
     paymentMethod: String,
-    price: Number,
+    status: {
+        type: String,
+        default: "active"
+    },
     service: Array,
     createdAt: Date, 
     updatedAt: Date,
@@ -19,15 +22,5 @@ const bookingSchema = new mongoose.Schema({
     }
 });
 
-bookingSchema.index(
-    {
-        field_id: 1,
-        date: 1,
-        pricing_id: 1
-    },
-    {
-        unique: true
-    }
-);
 const Booking = mongoose.model('Booking', bookingSchema, 'booking');
 module.exports = Booking;
