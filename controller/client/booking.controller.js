@@ -115,6 +115,7 @@ module.exports.getField = async (req, res) => {
     const bookings = await Booking.find({
         deleted: false,
         field_id: req.params.id,
+        status: "paid",
         date: new Date(date)
     });
     const bookingMap = {};
@@ -145,10 +146,10 @@ module.exports.getField = async (req, res) => {
 module.exports.payment = async (req, res) => {
     // Chuyển data sang Object
     const data = JSON.parse(req.body.bookingData);
-
+    
     // Lấy danh sách id và update trạng thái của pricing
     const idPricing = data.pricing.map(item => item.pricing_id);
-
+    console.log(data)
     const dataPricing = await Pricing.find({
         deleted: false,
         _id: { $in: idPricing },
@@ -158,9 +159,9 @@ module.exports.payment = async (req, res) => {
         deleted: false,
         field_id: data.field_id,
         date: new Date(data.date),
-
+        status: "paid",
         // kiểm tra có phần tử nào trùng
-        "pricing.id": {$in: idPricing }
+        "pricing.id": { $in: idPricing }
     });
 
     if (exists) {
@@ -203,9 +204,51 @@ module.exports.payment = async (req, res) => {
         }
         service.push(record);
     });
-
+    
     // Tổng tiền booking 
     const totalPrice = totalPricePricing + totalPriceService;
+
+
+    // Khóa booking khi thanh toán
+    const existingOrder = await Booking.findOne({
+        field_id: data.field_id,
+        user_id: "",
+        pricing: pricing,
+        date: data.date,
+        totalPrice: totalPrice,
+        node: data.node,
+        paymentMethod: data.payment,
+        service: service,
+        status: "pending"
+    });
+
+    if (existingOrder) {
+        // ==============================
+        // 💳 THANH TOÁN MOMO
+        // ==============================   
+        if(data.namePayment === "vnpay") {
+            const url = await paymentHelper.vnpay(existingOrder.id, existingOrder.totalPrice);
+            return res.redirect(url);
+        }
+
+        // ==============================
+        // 💳 THANH TOÁN TIỀN MẶT
+        // ==============================
+        if (data.namePayment === "cash") {
+            const deposit = existingOrder.totalPrice * (30 / 100);
+            const url = await paymentHelper.vnpay(existingOrder.id, deposit);
+            return res.redirect(url);
+        }
+
+        // ==============================
+        // 💳 THANH TOÁN MOMO
+        // ==============================
+        if (data.namePayment === "momo") {
+            const url = await paymentHelper.momo(res, existingOrder.id, existingOrder.totalPrice);
+            return res.redirect(url);
+        }
+    }
+    // Tạo booking
     const dataBooking = new Booking({
         field_id: data.field_id,
         user_id: "",
@@ -239,8 +282,7 @@ module.exports.payment = async (req, res) => {
     // 💳 THANH TOÁN MOMO
     // ==============================
     if (data.namePayment === "momo") {
-        const deposit = totalPrice * (30 / 100);
-        const url = await paymentHelper.vnpay(dataBooking.id, deposit);
+        const url = await paymentHelper.momo(res, dataBooking.id, totalPrice);
         return res.redirect(url);
     }
     res.send("OK");
@@ -282,19 +324,11 @@ module.exports.vnpay = async (req, res) => {
         );
 
         const idPricing = dataBooking.pricing.map(item => item.id);
-
-        await Pricing.updateMany({
-            _id: { $in: idPricing }
-        }, {
-            $set: {
-                status: "booked"
-            }
-        });
         return res.redirect(`/booking`);
     } else {
-        await Booking.updateOne(
+        await Booking.deleteOne(
             { _id: booking_id },
-            { status: "pending" }
+            { status: "failed" }
         );
         return res.redirect("/booking");
     }

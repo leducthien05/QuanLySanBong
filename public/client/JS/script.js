@@ -58,6 +58,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Default today
                 if (!date) {
                     date = new Date().toISOString().split('T')[0];
+                    bookingData.date = date;
+                }else{
+                    bookingData.date = date;
                 }
 
                 // Add query
@@ -408,6 +411,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const inputBooking = formBooking.querySelector("input");
         const modelForm = document.querySelector(".booking-modal-overlay");
         btnBooking.addEventListener("click", () => {
+            btnBooking.disabled = true;
             if (!bookingData.field_id) {
                 alert('Vui lòng chọn một sân bóng');
                 return;

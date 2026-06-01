@@ -1,4 +1,6 @@
 const { VNPay, ignoreLogger, ProductCode, VnpLocale, dateFormat } = require('vnpay');
+const crypto = require("crypto");
+
 // Thanh toán qua VNPAY
 const vnpay = new VNPay({
     tmnCode: 'AEU74WEN',
@@ -18,7 +20,7 @@ module.exports.vnpay = async (booking_id, totalPrice) => {
         vnp_OrderInfo: booking_id,
         vnp_OrderType: ProductCode.Other,
         vnp_ReturnUrl: `http://localhost:3000/booking/payment-vnpay`,
-        // vnp_IpnUrl: "http://localhost:5080/checkout/vnpay_ipn",
+        // vnp_IpnUrl: "http://localhost:5080/booking/payment-vnpay-ipn",
         vnp_Locale: VnpLocale.VN, // 'vn' hoặc 'en'
         vnp_CreateDate: dateFormat(new Date()), // tùy chọn, mặc định là hiện tại
         vnp_ExpireDate: dateFormat(tomorrow), // tùy chọn
@@ -29,8 +31,11 @@ module.exports.verifyReturnUrl = (query) => {
     return vnpay.verifyReturnUrl(query);
 };
 
+module.exports.verifyIpn = (params) => {
+    return vnpay.verifyIpnCall(query);
+};
 // Thanh toán qua MOMO
-module.exports.momo = async (order_id, totalPrice) => {
+module.exports.momo = async (res, order_id, totalPrice) => {
     const partnerCode = "MOMO";
     const accessKey = "F8BBA842ECF85";
     const secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
