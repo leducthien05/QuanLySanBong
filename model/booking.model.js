@@ -19,8 +19,13 @@ const bookingSchema = new mongoose.Schema({
     deleted: {
         type: Boolean,
         default: false
-    }
+    },
+    expiredAt: Date
 });
-
+// index để cron tìm nhanh
+bookingSchema.index({
+    status: 1,
+    expiredAt: 1
+});
 const Booking = mongoose.model('Booking', bookingSchema, 'booking');
 module.exports = Booking;

@@ -6,6 +6,8 @@ const port = process.env.PORT;
 // database
 const database = require('./config/database');
 database.connect();
+// cron booking
+const cronBooking = require("./helper/cron.booking.helper");
 // prefixAdmin
 const systemConfig = require("./config/system");
 app.locals.prefixAdmin = systemConfig.systemConfig.prefixAdmin;

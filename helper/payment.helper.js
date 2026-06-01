@@ -35,17 +35,17 @@ module.exports.verifyIpn = (params) => {
     return vnpay.verifyIpnCall(query);
 };
 // Thanh toán qua MOMO
-module.exports.momo = async (res, order_id, totalPrice) => {
+module.exports.momo = async (booking_id, totalPrice) => {
     const partnerCode = "MOMO";
     const accessKey = "F8BBA842ECF85";
     const secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
-
+    const axios = require("axios");
     const requestId = partnerCode + Date.now();
-    const orderId = order_id;
+    const orderId = booking_id;
     const orderInfo = "pay with MoMo";
 
-    const redirectUrl = "http://localhost:5080/checkout/payment-momo/return?resultCode=0&message=Successful";
-    const ipnUrl = "http://localhost:5080/checkout/payment-momo/notify";
+    const redirectUrl = "http://localhost:3000/booking/payment-momo/return";
+    const ipnUrl = "http://localhost:3000/booking/payment-momo/notify";
 
     const amount = totalPrice.toString(); //Tổng tiền
     const requestType = "captureWallet";
@@ -92,11 +92,12 @@ module.exports.momo = async (res, order_id, totalPrice) => {
         console.log("đã gọi 2")
         // 🔥 Quan trọng nhất
         const payUrl = response.data.payUrl;
-        console.log("đã gọi 3")
-        return res.redirect(payUrl);
+        console.log("đã gọi 3");
+        console.log(response.data);
+        return payUrl;
 
     } catch (error) {
         console.log(error.response?.data || error);
-        return res.send("Lỗi thanh toán MoMo");
+        throw error;
     }
 }

@@ -125,20 +125,34 @@ module.exports.getField = async (req, res) => {
             bookingMap[slot.id.toString()] = true;
         });
     });
+    const toMinute = (time) => {
+        const [h, m] = time.split(":");
+
+        return (Number(h) * 60 + Number(m));
+    };
+    const nowTime = new Date();
+    const hour = nowTime.getHours();
+    const minute = nowTime.getMinutes();
 
     pricing.forEach(item => {
-        if (bookingMap[item._id.toString()]) {
-            item.booked = '1';
+        const now = `${hour}:${minute}`;
+        if (toMinute(item.start_time) - toMinute(now) < 30) {
+            item.disable = "1";
+            if (bookingMap[item._id.toString()]) {
+                item.booked = '1';
+            }
         }
     });
-    pricing.forEach(item => {
-        if (item.booked) {
-            console.log(item.booked)
-        }
-    });
+
+    const rawDate = req.query.date;
+
+    const d = new Date(rawDate);
+    d.setDate(d.getDate() + 1);
+
+    const result = d.toISOString().slice(0, 10);
     res.status(200).json({
         pricings: pricing,
-        date: date
+        date: result    
     });
 }
 
@@ -146,7 +160,7 @@ module.exports.getField = async (req, res) => {
 module.exports.payment = async (req, res) => {
     // Chuyển data sang Object
     const data = JSON.parse(req.body.bookingData);
-    
+
     // Lấy danh sách id và update trạng thái của pricing
     const idPricing = data.pricing.map(item => item.pricing_id);
     console.log(data)
@@ -174,15 +188,31 @@ module.exports.payment = async (req, res) => {
         return sum + item.price;
     }, 0);
     // Tạo mảng pricing
+    const toMinute = (time) => {
+        const [h, m] = time.split(":");
+
+        return (Number(h) * 60 + Number(m));
+    };
+    const nowTime = new Date();
+    const hour = nowTime.getHours();
+    const minute = nowTime.getMinutes();
     let pricing = [];
     dataPricing.forEach(item => {
-        const record = {
-            id: item.id,
-            time: item.start_time,
-            type: item.feature,
-            price: item.price
+        const now = `${hour}:${minute}`;
+        if (toMinute(item.start_time) > toMinute(now) && toMinute(item.start_time) - toMinute(now) > 30) {
+            const record = {
+                id: item.id,
+                time: item.start_time,
+                type: item.feature,
+                price: item.price
+            }
+            pricing.push(record);
+        } else {
+            return res.status(400).json({
+                message: "Không thể đặt sân trong vòng 30 phút tới vì có đã quá giờ đặt sân"
+            });
         }
-        pricing.push(record);
+
     });
 
     // Lấy id và danh sách dịch vụ kèm theo
@@ -204,7 +234,7 @@ module.exports.payment = async (req, res) => {
         }
         service.push(record);
     });
-    
+
     // Tổng tiền booking 
     const totalPrice = totalPricePricing + totalPriceService;
 
@@ -226,7 +256,7 @@ module.exports.payment = async (req, res) => {
         // ==============================
         // 💳 THANH TOÁN MOMO
         // ==============================   
-        if(data.namePayment === "vnpay") {
+        if (data.namePayment === "vnpay") {
             const url = await paymentHelper.vnpay(existingOrder.id, existingOrder.totalPrice);
             return res.redirect(url);
         }
@@ -244,11 +274,17 @@ module.exports.payment = async (req, res) => {
         // 💳 THANH TOÁN MOMO
         // ==============================
         if (data.namePayment === "momo") {
-            const url = await paymentHelper.momo(res, existingOrder.id, existingOrder.totalPrice);
+            const url = await paymentHelper.momo(existingOrder.id, existingOrder.totalPrice);
             return res.redirect(url);
         }
     }
+
     // Tạo booking
+    const maxPricing = dataPricing.reduce((max, item) => {
+        return toMinute(item.start_time) > toMinute(max.start_time) ? item : max;
+    });
+    const expired_at = new Date(`${data.date}T${maxPricing.start_time}:00`);
+
     const dataBooking = new Booking({
         field_id: data.field_id,
         user_id: "",
@@ -258,7 +294,8 @@ module.exports.payment = async (req, res) => {
         node: data.node,
         paymentMethod: data.payment,
         service: service,
-        status: "pending"
+        status: "pending",
+        expireAt: expired_at
     });
     await dataBooking.save();
     // ==============================
@@ -282,10 +319,12 @@ module.exports.payment = async (req, res) => {
     // 💳 THANH TOÁN MOMO
     // ==============================
     if (data.namePayment === "momo") {
-        const url = await paymentHelper.momo(res, dataBooking.id, totalPrice);
+        const url = await paymentHelper.momo(dataBooking.id, totalPrice);
+
         return res.redirect(url);
     }
-    res.send("OK");
+
+    return res.send("OK");
 }
 
 // [GET] /booking/payment-vnpay
@@ -335,17 +374,23 @@ module.exports.vnpay = async (req, res) => {
 }
 // [GET] /booking/payment-momo/return
 module.exports.return = async (req, res) => {
+    const booking_id = req.query.orderId;
     if (req.query.resultCode == 0) {
-        res.redirect(`/booking/payment/notify?reusultCode=0&&order_id=${order.order_id}`);
+        res.redirect(`/booking/?booking_id=${booking_id}`);
     } else {
-        res.send("Thanh toán thất bại");
+        await Booking.updateOne({
+            _id: booking_id
+        }, {
+            status: "failed"
+        });
+        res.redirect("/booking");
     }
 }
 
-// [POST] /booking/payment-momo/notify
+// [GET] /booking/payment-momo/notify
 module.exports.notify = async (req, res) => {
-    const { resultCode, booking_id } = req.params;
-
+    const { resultCode, booking_id } = req.query;
+    console.log("Đã gọi notify");
     if (resultCode == 0) {
         const booking = await Booking.findOne({ _id: booking_id });
 

@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         console.log(data.pricings)
                         data.pricings.forEach(item => {
                             if (item.feature == "1") {
-                                if (item.booked == "1") {
+                                if (item.booked == "1" || item.disable == "1") {
                                     html += `
                                         <div class="booking-slot-card booked vip" data-slot-id=${item._id}>
                                             <div class="booking-slot-time">
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     `;
                                 }
                             } else {
-                                if (item.booked == "1") {
+                                if (item.booked == "1" || item.disable == "1") {
                                     html += `
                                         <div class="booking-slot-card booked" data-slot-id=${item._id}>
                                             <div class="booking-slot-time">
