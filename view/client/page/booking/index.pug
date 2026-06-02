@@ -47,6 +47,16 @@ block content
                             option(value="") Tất cả
                             each item in address
                                 option(value=item) #{item}
+                .gf-form-group.search-field-group
+                    label Tìm kiếm tên sân
+                    input(
+                        type="text"
+                        name="fieldName"
+                        placeholder="Nhập tên sân..."
+                    )
+                    .search-result.hidden
+                        ul.search-result-list
+
         //- FIELD SELECTION SECTION
         section(class="booking-fields")
             .gf-container
@@ -191,4 +201,31 @@ block content
                 type="text"
                 name="bookingData"
             )
+
+    .payment-success-modal-overlay.hidden
+        .payment-success-modal
+            .payment-success-icon
+                svg(width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg")
+                    circle(cx="12" cy="12" r="11" stroke="#d3f6c8" stroke-width="2")
+                    path(d="M7.5 12.5L10.5 15.5L16.5 9.5" stroke="#1b5e20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round")
+            h2.payment-success-title Booking Successful!
+            p.payment-success-message Your booking has been confirmed and sent to your email.
+            .payment-success-summary
+                .payment-success-summary-row
+                    span.summary-label Field name
+                    span.summary-value.payment-success-field-name Chưa rõ
+                .payment-success-summary-row
+                    span.summary-label Location
+                    span.summary-value.payment-success-field-location Chưa rõ
+                .payment-success-summary-row
+                    span.summary-label Date and time
+                    span.summary-value.payment-success-field-datetime Chưa rõ
+                .payment-success-summary-row
+                    span.summary-label Total price
+                    span.summary-value.payment-success-field-total Chưa rõ
+            .payment-success-actions
+                button.payment-success-home(type="button") Back to Home
+                button.payment-success-close(type="button") Close
+
+    script#paymentSuccessPayload(type="application/json") !{JSON.stringify(successData || {})}
     script(src="/client/JS/script.js")

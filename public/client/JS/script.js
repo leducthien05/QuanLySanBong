@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (!date) {
                     date = new Date().toISOString().split('T')[0];
                     bookingData.date = date;
-                }else{
+                } else {
                     bookingData.date = date;
                 }
 
@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     initFieldSelection();
 
-    // Tìm kiếm sân
+    // Tìm kiếm sân theo select
     const searchBox = document.querySelector(".gf-search-box");
 
     if (searchBox) {
@@ -190,17 +190,15 @@ document.addEventListener('DOMContentLoaded', function () {
         inputs.forEach(input => {
 
             input.addEventListener("change", async () => {
+                // Lấy giá trị ngày
+                const date = searchBox.querySelector("input[name='date']").value;
 
-                const date = searchBox.querySelector(
-                    "input[name='date']"
-                ).value;
+                // Lấy giá trị loại sân
+                const type = searchBox.querySelector("select[name='type']").value;
 
-                const type = searchBox.querySelector(
-                    "select[name='type']"
-                ).value;
-                const address = searchBox.querySelector(
-                    "select[name='address']"
-                ).value;
+                // Lấy địa chỉ
+                const address = searchBox.querySelector("select[name='address']").value;
+
                 dataQuery = {};
                 if (date) {
                     dataQuery.date = date;
@@ -209,13 +207,19 @@ document.addEventListener('DOMContentLoaded', function () {
                     const today = new Date().toISOString().split("T")[0];
                     bookingData.data = today;
                 }
+
                 if (type) {
                     dataQuery.type = type;
                     bookingData.type = type
                 }
+
                 if (address) {
                     dataQuery.address = address;
                     bookingData.address = address
+                }
+
+                if (fieldName) {
+                    dataQuery.field_name = fieldName;
                 }
                 const query = new URLSearchParams(dataQuery);
                 try {
@@ -270,8 +274,77 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
         });
-
     }
+
+    // ========== FIELD NAME SEARCH ==========
+
+    const inputName = document.querySelector("input[name='fieldName']");
+    const searchResultContainer = document.querySelector(".search-result");
+    const searchResultList = document.querySelector(".search-result-list");
+
+    if (inputName && searchResultContainer) {
+
+        inputName.addEventListener("keyup", () => {
+            const keyword = inputName.value;
+
+            if (!keyword) {
+                searchResultContainer.classList.add("hidden");
+                return;
+            }
+
+            try {
+                const link = `/booking/filter?keyword=${keyword}`;
+                fetch(link)
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log(data);
+                        const fields = data;
+                        if (!fields || fields.length === 0) {
+                            searchResultList.innerHTML = `<div class="search-result-empty">Không tìm thấy sân phù hợp</div>`;
+                            searchResultContainer.classList.remove("hidden");
+                            return;
+                        }
+                        let html = "";
+                        fields.forEach(field => {
+                            html += `
+                                <a href="/fields/${field.slug}" class="search-result-item">
+                                    <div class="search-result-item-thumbnail">
+                                        <img src="${field.thumbnail}" alt="${field.title}">
+                                    </div>
+                                    <div class="search-result-item-content">
+                                        <div class="search-result-item-title">${field.title}</div>
+                                        <div class="search-result-item-address">${field.address}</div>
+                                    </div>
+                                </a>
+                            `;
+                        });
+
+                        searchResultList.innerHTML = html;
+                        searchResultContainer.classList.remove("hidden");
+                    
+                });
+
+            } catch (error) {
+                console.error("Search error:", error);
+                searchResultList.innerHTML = `<div class="search-result-empty">Có lỗi khi tìm kiếm</div>`;
+                searchResultContainer.classList.remove("hidden");
+            }
+        });
+
+        inputName.addEventListener("focus", () => {
+            if (inputName.value.trim() && !searchResultContainer.classList.contains("hidden")) {
+                searchResultContainer.classList.remove("hidden");
+            }
+        });
+    };
+
+
+    // Click outside to hide search results
+    document.addEventListener("click", (e) => {
+        if (searchResultContainer && !inputName.contains(e.target) && !searchResultContainer.contains(e.target)) {
+            searchResultContainer.classList.add("hidden");
+        }
+    });
 
     // Cấu hình thời gian tối thiểu cho input date
     const dataInput = document.querySelector("input[name='date']");
@@ -370,7 +443,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             if (bookingData.service && bookingData.service.length > 0) {
                 let string = "";
-                bookingData.service.forEach(item=>{
+                bookingData.service.forEach(item => {
                     string += item.name;
                 });
                 valueService.textContent = string;
@@ -445,7 +518,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
             const valueNode = modelForm.querySelector(".booking-modal-row-note textarea").value;
-            if(valueNode != ""){
+            if (valueNode != "") {
                 bookingData.node = valueNode;
             }
             const dataPostBooking = JSON.stringify(bookingData);
@@ -453,6 +526,55 @@ document.addEventListener('DOMContentLoaded', function () {
             formBooking.submit();
         });
     }
+
+    function initPaymentSuccessModal() {
+        const overlay = document.querySelector('.payment-success-modal-overlay');
+        const payloadEl = document.querySelector('#paymentSuccessPayload');
+        if (!overlay) return;
+
+        const url = new URL(window.location.href);
+        const status = url.searchParams.get('status');
+        if (status !== 'success') return;
+
+        let payload = {};
+        try {
+            payload = payloadEl ? JSON.parse(payloadEl.textContent || '{}') : {};
+        } catch (error) {
+            payload = {};
+        }
+
+        const fieldNameElement = overlay.querySelector('.payment-success-field-name');
+        const locationElement = overlay.querySelector('.payment-success-field-location');
+        const datetimeElement = overlay.querySelector('.payment-success-field-datetime');
+        const totalElement = overlay.querySelector('.payment-success-field-total');
+
+        fieldNameElement.textContent = payload.fieldName || 'Không xác định';
+        locationElement.textContent = payload.location || 'Không xác định';
+        datetimeElement.textContent = payload.date && payload.timeRange ? `${payload.date} • ${payload.timeRange}` : 'Không xác định';
+        totalElement.textContent = payload.totalPrice || 'Không xác định';
+
+        overlay.classList.remove('hidden');
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+
+        const closeButtons = overlay.querySelectorAll('.payment-success-close, .payment-success-home');
+        closeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                overlay.classList.remove('active');
+                overlay.classList.add('hidden');
+                document.body.style.overflow = '';
+                if (button.classList.contains('payment-success-home')) {
+                    window.location.href = '/';
+                    return;
+                }
+                url.searchParams.delete('status');
+                url.searchParams.delete('booking_id');
+                window.history.replaceState({}, document.title, url.pathname + url.search);
+            });
+        });
+    }
+
+    initPaymentSuccessModal();
 });
 
 

@@ -24,13 +24,38 @@ module.exports.index = async (req, res) => {
     const payment = await Payment.find({
         status: "active"
     });
+    let successData = null;
+    if (req.query.status === "success" && req.query.booking_id) {
+        const booking = await Booking.findOne({ _id: req.query.booking_id });
+        if (booking) {
+            const field = await Field.findOne({ _id: booking.field_id });
+            const times = booking.pricing
+                .map(slot => slot.time)
+                .filter(Boolean)
+                .sort((a, b) => {
+                    const [ah, am] = a.split(":").map(Number);
+                    const [bh, bm] = b.split(":").map(Number);
+                    return ah * 60 + am - (bh * 60 + bm);
+                });
+            const timeRange = times.length > 1 ? `${times[0]} - ${times[times.length - 1]}` : times[0] || "";
+            successData = {
+                fieldName: field?.name || "N/A",
+                location: field?.address?.titleAddress || "N/A",
+                date: booking.date ? booking.date.toISOString().split("T")[0] : "N/A",
+                timeRange: timeRange || "N/A",
+                totalPrice: booking.totalPrice ? booking.totalPrice.toLocaleString("vi-VN") + " đ" : "N/A"
+            };
+        }
+    }
+
     res.render("client/page/booking/index", {
         pageTitle: "Đặt Sân Bóng - Quản Lý Sân Bóng",
         fields: fields,
         services: services,
         pricings: pricings,
         address: uniqueAddresses,
-        payment: payment
+        payment: payment,
+        successData: successData
     });
 }
 
@@ -40,12 +65,40 @@ module.exports.filter = async (req, res) => {
         deleted: false,
         status: "active"
     };
+
+    // Tìm kiếm theo loại sân
     if (req.query.type) {
         find.type = req.query.type;
     }
+
+    // Tìm kiếm theo địa chỉ
     if (req.query.address) {
         find["address.titleAddress"] = new RegExp(req.query.address, "i");
     }
+
+    const keyword = req.query.keyword || "";
+
+    if (req.query.keyword) {
+        if (!keyword.trim()) return res.status(200).json([]);
+        const fields = await Field.find({
+            deleted: false,
+            status: "active",
+            $or: [
+                { name: { $regex: keyword, $options: "i" } },
+                { "address.titleAddress": { $regex: keyword, $options: "i" } }
+            ]
+        }).select("name image address slug").limit(8).lean();
+        const results = fields.map(f => ({
+            _id: f._id,
+            title: f.name,
+            address: f.address?.titleAddress || "Không rõ",
+            thumbnail: f.image || "/default-field.jpg",
+            slug: f.slug || f._id
+        }));
+        res.status(200).json(results);
+
+    }
+
     const fields = await Field.find(find);
 
     res.status(200).json({
@@ -126,33 +179,39 @@ module.exports.getField = async (req, res) => {
         });
     });
     const toMinute = (time) => {
-        const [h, m] = time.split(":");
-
-        return (Number(h) * 60 + Number(m));
+        const [h, m] = time.split(":").map(Number);
+        return h * 60 + m;
     };
-    const nowTime = new Date();
-    const hour = nowTime.getHours();
-    const minute = nowTime.getMinutes();
 
-    pricing.forEach(item => {
-        const now = `${hour}:${minute}`;
-        if (toMinute(item.start_time) - toMinute(now) < 30) {
-            item.disable = "1";
-            if (bookingMap[item._id.toString()]) {
-                item.booked = '1';
+    const nowDate = new Date();
+
+    // format giờ hiện tại chuẩn HH:mm
+    const hour = String(nowDate.getHours()).padStart(2, "0");
+    console.log(hour);
+    const minute = String(nowDate.getMinutes()).padStart(2, "0");
+    const now = `${hour}:${minute}`;
+
+    const nowMin = toMinute(now);
+    if (date == new Date().toISOString().split("T")[0]) {
+        pricing.forEach(item => {
+            const startMin = toMinute(item.start_time);
+            // 🔥 disable nếu cách giờ hiện tại < 30 phút hoặc đã qua giờ
+            if (startMin - nowMin < 30) {
+                item.disable = "1";
             }
+        });
+    }
+    pricing.forEach(item => {
+        // booked check
+        const key = item._id.toString();
+        if (bookingMap[key]) {
+            item.booked = "1";
         }
     });
 
-    const rawDate = req.query.date;
-
-    const d = new Date(rawDate);
-    d.setDate(d.getDate() + 1);
-
-    const result = d.toISOString().slice(0, 10);
     res.status(200).json({
         pricings: pricing,
-        date: result    
+        date: date
     });
 }
 
@@ -363,7 +422,7 @@ module.exports.vnpay = async (req, res) => {
         );
 
         const idPricing = dataBooking.pricing.map(item => item.id);
-        return res.redirect(`/booking`);
+        return res.redirect(`/booking?status=success&booking_id=${booking_id}`);
     } else {
         await Booking.deleteOne(
             { _id: booking_id },
@@ -376,7 +435,7 @@ module.exports.vnpay = async (req, res) => {
 module.exports.return = async (req, res) => {
     const booking_id = req.query.orderId;
     if (req.query.resultCode == 0) {
-        res.redirect(`/booking/?booking_id=${booking_id}`);
+        res.redirect(`/booking?status=success&booking_id=${booking_id}`);
     } else {
         await Booking.updateOne({
             _id: booking_id
