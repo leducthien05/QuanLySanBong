@@ -67,8 +67,8 @@ module.exports.createPost = async (req, res) => {
             priceVip: req.body.priceVip
         },
         address: {
-            titleAddress: req.body.titleAddress,
-            googleMapUrl: req.body.googleMapUrl
+            titleAddress: req.body.titleAddress.trim(),
+            googleMapUrl: req.body.googleMapUrl.trim()
         },
         image: req.body.image,
         status: req.body.status
@@ -278,8 +278,8 @@ module.exports.editPatch = async (req, res) => {
             priceVip: req.body.priceVip
         }
         req.body.address = {
-            titleAddress: req.body.titleAddress,
-            googleMapUrl: req.body.googleMapUrl
+            titleAddress: req.body.titleAddress.trim(),
+            googleMapUrl: req.body.googleMapUrl.trim()
         }
 
         req.body.timeactive = {

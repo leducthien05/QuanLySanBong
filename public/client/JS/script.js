@@ -1,9 +1,7 @@
 /* ========== BOOKING PAGE FUNCTIONALITY ========== */
 
 document.addEventListener('DOMContentLoaded', function () {
-    // const bookingContainer = document.querySelector('.booking-container');
 
-    // if (!bookingContainer) return;
     const bookingData = {}
     // ========== FIELD SELECTION ==========
     function initFieldSelection() {
@@ -218,9 +216,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     bookingData.address = address
                 }
 
-                if (fieldName) {
-                    dataQuery.field_name = fieldName;
-                }
                 const query = new URLSearchParams(dataQuery);
                 try {
 
@@ -321,8 +316,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         searchResultList.innerHTML = html;
                         searchResultContainer.classList.remove("hidden");
-                    
-                });
+
+                    });
 
             } catch (error) {
                 console.error("Search error:", error);
@@ -337,14 +332,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     };
-
-
-    // Click outside to hide search results
-    document.addEventListener("click", (e) => {
-        if (searchResultContainer && !inputName.contains(e.target) && !searchResultContainer.contains(e.target)) {
-            searchResultContainer.classList.add("hidden");
-        }
-    });
 
     // Cấu hình thời gian tối thiểu cho input date
     const dataInput = document.querySelector("input[name='date']");
@@ -575,6 +562,331 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     initPaymentSuccessModal();
+
+
+    // =================================================/field===========================================
+
+    // Vẽ bản ghi ra giao diện
+
+    // 1. Vẽ dạng danh sách
+    function renderFields(fields) {
+        const container = document.querySelector(".field-list");
+
+        container.innerHTML = fields.map(item => `
+            <div class="field-card">
+
+                <div class="field-card-image">
+                    <a href="${item.address.googleMapUrl}">
+                        <img
+                            src="${item.image}"
+                            alt="${item.name}"
+                        >
+                    </a>
+                </div>
+
+                <div class="field-card-content">
+
+                    <div class="field-card-header">
+                        <h3 class="field-card-title">
+                            ${item.name}
+                        </h3>
+
+                        ${item.available ? `
+                            <span class="field-status">
+                                Còn trống
+                            </span>
+                        ` : ""}
+                    </div>
+
+                    <div class="field-address">
+                        <a
+                            href="${item.address.googleMapUrl}"
+                            target="_blank"
+                        >
+                            📍 ${item.address.titleAddress}
+                        </a>
+                    </div>
+
+                    <div class="field-description">
+                        ${item.description || ""}
+                    </div>
+
+                    <div class="field-card-footer">
+
+                        <div class="field-rating">
+                            ⭐ ${item.rating.totalRating}
+                            (${item.rating.totalReviews} đánh giá)
+                        </div>
+
+                        <div class="field-price">
+                            ${Number(item.price.price).toLocaleString("vi-VN")}
+                            <span> đ/giờ</span>
+                        </div>
+
+                        <a
+                            class="field-book-btn"
+                            href="/field/${item._id}"
+                        >
+                            Đặt ngay
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+        `).join("");
+    }
+
+    // 2. Vẽ dạng lưới
+    function renderGrid(fields) {
+        const container = document.querySelector(".booking-fields-grid");
+
+        container.innerHTML = fields.map(item => `
+            <div
+                class="booking-field-card"
+                data-field-id="${item._id}"
+            >
+
+                <div class="booking-field-image">
+                    <img src="${item.image}">
+                </div>
+
+                <div class="booking-field-content">
+
+                    <h3 class="booking-field-name">
+                        ${item.name}
+                    </h3>
+
+                    <div class="booking-field-type">
+                        Loại: ${item.type}v${item.capacity}
+                    </div>
+
+                    <div class="booking-field-location">
+                        <a href="${item.address.googleMapUrl}">
+                            📍 ${item.address.titleAddress}
+                        </a>
+                    </div>
+
+                    <div class="booking-field-rating">
+                        <span class="booking-stars">
+                            ${"⭐".repeat(item.rating.totalRating)}
+                        </span>
+
+                        <span class="booking-rating-number">
+                            (${item.rating.totalRating})
+                        </span>
+                    </div>
+
+                    <div class="booking-field-footer">
+
+                        <div class="booking-field-price">
+                            <span class="booking-price-number">
+                                ${Number(item.price.price)
+                .toLocaleString("vi-VN")}
+                            </span>
+
+                            <span class="booking-price-unit">
+                                đ/giờ
+                            </span>
+                        </div>
+
+                        <div class="booking-field-status booking-field-status--available">
+                            <span>Sẵn sàng</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        `).join("");
+    }
+
+    // Hiển thị danh sách sân
+    const frontField = document.querySelectorAll(".field-view-switch .view-btn");
+    if (frontField.length > 0) {
+        const viewGrid = document.querySelector(".field-page .field-grid-page");
+        const viewList = document.querySelector(".field-page .field-list");
+
+        // Style hiển thị danh sách sân
+        const view = localStorage.getItem("view");
+
+        if (view == "view-list") {
+            const btnList = document.querySelector(".field-hero .field-view-switch .list").classList.add("active");
+            const btnGrid = document.querySelector(".field-hero .field-view-switch .grid").classList.remove("active");
+            viewGrid.classList.add("hidden");
+            viewList.classList.remove("hidden");
+        } else {
+            const btnList = document.querySelector(".field-hero .field-view-switch .list").classList.remove("active");
+            const btnGrid = document.querySelector(".field-hero .field-view-switch .grid").classList.add("active");
+            viewList.classList.add("hidden");
+            viewGrid.classList.remove("hidden");
+        }
+
+        // const viewMap = document.querySelector("")
+        frontField.forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                frontField.forEach(item => {
+                    item.classList.remove("active");
+                });
+                btn.classList.add("active")
+                const valueStyle = btn.getAttribute("value-style");
+                if (valueStyle == "view-grid") {
+                    viewGrid.classList.remove("hidden");
+                    viewList.classList.add("hidden");
+                }
+
+                if (valueStyle == "view-list") {
+                    viewGrid.classList.add("hidden");
+                    viewList.classList.remove("hidden");
+                }
+                localStorage.setItem("view", valueStyle);
+            });
+        });
+    }
+
+
+    let dataQuery = {};
+    function loadField(dataQuery) {
+        const query = new URLSearchParams(dataQuery);
+        let link = `/field/search?${query.toString()}`;
+        fetch(link)
+            .then(res => res.json())
+            .then(data => {
+                if (data.data) {
+                    renderFields(data.data);
+                    renderGrid(data.data);
+                }
+            });
+    }
+    // Lọc sân theo loại
+    const typeSearch = document.querySelectorAll(".field-tags .field-tag");
+    if (typeSearch.length > 0) {
+        typeSearch.forEach(item => {
+            item.addEventListener("click", (e) => {
+                typeSearch.forEach(btn => {
+                    btn.classList.remove("active");
+                });
+                item.classList.add("active");
+                const valueType = item.getAttribute("data-type");
+                if (valueType) {
+                    dataQuery.type = valueType;
+                } else {
+                    delete dataQuery.type;
+                }
+                loadField(dataQuery);
+            });
+        });
+    }
+
+    // Lọc sân theo tiêu chí
+    const sortField = document.querySelector(".field-sort");
+    if (sortField) {
+        sortField.addEventListener("change", (e) => {
+            const value = sortField.value;
+            const [sortKey, sortValue] = value.split("-");
+
+            if (sortKey && sortValue) {
+                dataQuery.sortKey = sortKey;
+                dataQuery.sortValue = sortValue;
+            }
+            loadField(dataQuery);
+        });
+    }
+
+    // Phân trang
+    const itemPage = document.querySelectorAll(".pagination .page-link");
+    if (itemPage.length > 0) {
+        const liList = document.querySelectorAll(".page-item");
+        itemPage.forEach(btn => {
+            btn.addEventListener("click", () => {
+                liList.forEach(item => {
+                    item.classList.remove("active");
+                });
+                const parentLi = btn.closest("li");
+                if (parentLi) {
+                    parentLi.classList.add("active");
+                }
+                const value = btn.getAttribute("number-page");
+                
+                if (value) {
+                    dataQuery.page = value;
+                }
+                loadField(dataQuery);
+            });
+        });
+    }
+
+
+    // Tìm kiếm sân theo tên
+    const inputNameFieldPage = document.querySelector(".field-page .field-search .field-search-input");
+    const searchResultFieldPage = document.querySelector(".field-page .field-search .search-result");
+    const searchResultListFieldPage = document.querySelector(".field-page .field-search .search-result-list");
+
+    if (inputNameFieldPage && searchResultFieldPage) {
+
+        inputNameFieldPage.addEventListener("keyup", () => {
+            const keyword = inputNameFieldPage.value;
+
+            if (!keyword) {
+                searchResultFieldPage.classList.add("hidden");
+                return;
+            }
+
+            try {
+                const link = `/field/search?keyword=${keyword}`;
+                fetch(link)
+                    .then(res => res.json())
+                    .then(data => {
+                        const fields = data.data;
+                        console.log(fields)
+                        if (!fields || fields.length === 0) {
+                            searchResultListFieldPage.innerHTML = `<div class="search-result-empty">Không tìm thấy sân phù hợp</div>`;
+                            searchResultFieldPage.classList.remove("hidden");
+                            return;
+                        }
+                        let html = "";
+                        fields.forEach(field => {
+                            html += `
+                                <a href="/field/${field.slug}" class="search-result-item">
+                                    <div class="search-result-item-thumbnail">
+                                        <img src="${field.image}" alt="${field.name}">
+                                    </div>
+                                    <div class="search-result-item-content">
+                                        <div class="search-result-item-title">${field.name}</div>
+                                        <div class="search-result-item-address">${field.address.addressTitle}</div>
+                                    </div>
+                                </a>
+                            `;
+                        });
+
+                        searchResultListFieldPage.innerHTML = html;
+                        searchResultFieldPage.classList.remove("hidden");
+
+                    });
+
+            } catch (error) {
+                console.error("Search error:", error);
+                searchResultListFieldPage.innerHTML = `<div class="search-result-empty">Có lỗi khi tìm kiếm</div>`;
+                searchResultFieldPage.classList.remove("hidden");
+            }
+        });
+
+        inputNameFieldPage.addEventListener("focus", () => {
+            if (inputNameFieldPage.value.trim() && !searchResultFieldPage.classList.contains("hidden")) {
+                searchResultFieldPage.classList.remove("hidden");
+            }
+        });
+        document.addEventListener("click", (e) => {
+            const fieldSearch = document.querySelector(".field-page .field-search");
+
+            if (!fieldSearch.contains(e.target)) {
+                searchResultFieldPage.classList.add("hidden");
+            }
+        });
+    };
+
 });
 
 

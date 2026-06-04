@@ -1,0 +1,37 @@
+mixin field-sidebar(area, typeField, services)
+    aside.field-sidebar
+        .field-filter
+            .field-filter-title
+                span 📍 Khu vực
+
+            .field-filter-list
+                each item in area
+                    .field-filter-item
+                        label
+                            input(type="checkbox")
+                            span #{item.title.split(", ")[0]}
+                            span.field-filter-count #{item.count}
+
+            
+        .field-filter
+            .field-filter-title
+                span ⚽ Loại sân
+
+            .field-filter-list
+                each item in typeField 
+                    .field-filter-item
+                        label
+                            input(type="checkbox")
+                            span Sân #{item} người
+
+        .field-filter
+            .field-filter-title
+                span ✨ Tiện ích
+
+            .field-filter-list
+                each item in services
+                     .field-filter-item
+                        label
+                            input(type="checkbox")
+                            span #{item.name}
+                

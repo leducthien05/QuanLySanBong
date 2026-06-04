@@ -1,0 +1,10 @@
+mixin pagination(pagination)
+    nav(class="pagination-nav")
+        ul(class="pagination justify-content-center")
+            - for(var i = 1; i <= pagination.totalPage; i ++)
+                li(class=`page-item ${pagination.currentPage == i ? "active" : ""}`)
+                    button(
+                        class="page-link"
+                        number-page=`${i}`
+                    ) #{i}
+            

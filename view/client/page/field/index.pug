@@ -1,0 +1,165 @@
+extends ../../layout/default.pug
+include ../../mixin/sidebar.pug
+include ../../mixin/pagination.pug
+
+block content
+    section.field-hero
+        .gf-container
+
+            .field-breadcrumb
+                a(href="/") Trang chủ
+                span ›
+                span Danh sách sân bóng
+
+            .field-hero-top
+
+                .field-hero-content
+                    h1.field-hero-title Sân bóng tại Hà Nội
+
+                    p.field-hero-desc
+                        | Tìm và đặt sân bóng chất lượng —
+                        | nhanh chóng, dễ dàng
+
+                .field-view-switch
+                    button(
+                        class="view-btn grid"
+                        value-style = "view-grid"
+                    )
+                        i.fa-solid.fa-grip
+                        |Lưới
+
+                    button(
+                        class="view-btn active view-list list"
+                        value-style = "view-list"
+                    )
+                        i.fa-solid.fa-list
+                        | Danh sách
+
+                    select(
+                        class="field-sort"
+                        name = "sortCriteria"
+                    )                       
+                        option(value="price-desc") Giá cao → thấp
+                        option(value="price-asc") Giá thấp → cao
+                        option(value="rating-desc") Đánh giá cao nhất
+    .gf-container
+        .field-page
+            .field-layout
+                +field-sidebar(area, typeField, services)
+                section.field-content
+
+                    .field-toolbar
+
+                        .field-search
+                            input.field-search-input(
+                                type="text"
+                                placeholder="Tìm kiếm sân bóng..."
+                            )
+                            .search-result.hidden
+                                ul.search-result-list
+                        .field-tags
+                            button(class="field-tag active") Tất cả
+                            button(
+                                class="field-tag"
+                                data-type = "5"
+                            ) Sân 5 người
+                            button(
+                                class="field-tag"
+                                data-type = "7"
+                            ) Sân 7 người
+                            button(
+                                class="field-tag"
+                                data-type = "11"
+                            ) Sân 11 người
+                    section(class="booking-fields field-grid-page hidden")
+                        .gf-container
+                            .booking-fields-grid
+                                each item in fields
+                                    //- Field Card 1
+                                    div(
+                                        class="booking-field-card"
+                                        data-field-id=item._id 
+                                        data-field = item
+                                    )
+                                        .booking-field-image
+                                            img(
+                                                src=item.image
+                                            )
+                                        
+                                        .booking-field-content
+                                            h3.booking-field-name #{item.name}
+                                            
+                                            .booking-field-type Loại: #{item.type}v#{item.capacity}
+                                            
+                                            .booking-field-location
+                                                a(
+                                                    href=item.address.googleMapUrl
+                                                )
+                                                | 📍 #{item.address.titleAddress}
+                                            
+                                            .booking-field-rating
+                                                span.booking-stars 
+                                                    - for(const i = 0; i < item.rating.totalRating; i++)
+                                                        | ⭐
+                                                span.booking-rating-number (#{item.rating.totalRating})
+                                            
+                                            .booking-field-footer
+                                                .booking-field-price
+                                                    span.booking-price-number #{item.price.price}
+                                                    span.booking-price-unit đ/giờ
+                                                
+                                                .booking-field-status.booking-field-status--available
+                                                    span Sẵn sàng
+
+                    .field-list
+
+                        each item in fields
+
+                            .field-card
+
+                                .field-card-image
+                                    a(
+                                        href=item.address.googleMapUrl
+                                    )
+                                        img(
+                                            src=item.image
+                                            alt=item.name
+                                        )
+
+                                .field-card-content
+
+                                    .field-card-header
+                                        h3.field-card-title= item.name
+
+                                        if item.available
+                                            span.field-status Còn trống
+
+                                    .field-address
+                                        a(
+                                            href=item.address.googleMapUrl
+                                            target="_blank"
+                                        ) 📍 #{item.address.titleAddress}
+                                            
+
+                                    .field-description= item.description
+
+                                    .field-features
+                                        //- each feature in item.features
+                                        //-     span.field-feature= feature
+
+                                    .field-card-footer
+
+                                        .field-rating
+                                            | ⭐ #{item.rating.totalRating} (#{item.rating.totalReviews} đánh giá)
+
+                                        .field-price
+                                            = item.price.price.toLocaleString("vi-VN")
+                                            span  đ/giờ
+
+                                        a.field-book-btn(
+                                            href=`/field/${item._id}`
+                                        )
+                                            | Đặt ngay
+    +pagination(pagination)
+
+    script(src="/client/JS/script.js")
