@@ -85,45 +85,33 @@ module.exports.createPost = async (req, res) => {
     const field = new Field(dataField);
     await field.save();
     const slot = [];
-    if (openTime && closeTime) {
-        // Tạo các slot thời gian
-        const toMinuters = (time) => {
-            const [hour, minute] = time.split(":").map(Number);
-            return hour * 60 + minute;
-        }
-        let currentTime = openTime;
-        while (toMinuters(currentTime) < toMinuters(closeTime)) {
-            slot.push(currentTime);
-            // Tính thời gian kết thúc của slot hiện tại
-            const [hour, minute] = currentTime.split(":").map(Number);
-            let nextHour = hour;
-            let nextMinute = minute + field.timeactive.slotDuration;
-            if (nextMinute >= 60) {
-                nextHour += Math.floor(nextMinute / 60);
-                nextMinute = nextMinute % 60 + 15;
+    if (req.body.timeactive) {
+        if (openTime && closeTime) {
+            const toMinuters = (tiem) => {
+                const [hour, minute] = tiem.split(":").map(Number);
+                return hour * 60 + minute;
             }
-            if (nextHour >= 24) {
-                nextHour = nextHour % 24;
+            let currentTime = openTime;
+            while (toMinuters(currentTime) <= toMinuters(closeTime)) {
+                slot.push(currentTime);
+                // Tính thời gian kết thúc của slot hiện tại
+                const [hour, minute] = currentTime.split(":").map(Number);
+                let nextHour = hour;
+                let nextMinute = minute + field.timeactive.slotDuration;
+                if (nextMinute >= 60) {
+                    nextHour += Math.floor(nextMinute / 60);
+                    nextMinute = nextMinute % 60;
+                }
+                console.log(field.timeactive.slotDuration)
+                currentTime = `${nextHour.toString().padStart(2, "0")}:${nextMinute.toString().padStart(2, "0")}`;
             }
-            currentTime = `${nextHour.toString().padStart(2, "0")}:${nextMinute.toString().padStart(2, "0")}`;
-        }
-        console.log(slot);
-        // Lưu thông tin giá cho từng slot thời gian
-        const dayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-        let schedules = [];
-        dayOfWeek.forEach(day => {
-            const daySchedules = slot.map(time => {
-                const [hour, minute] = time.split(":").map(Number);
-                if (day === "Saturday" || day === "Sunday") {
-                    return {
-                        field_id: field._id,
-                        day_of_week: day,
-                        start_time: time,
-                        feature: "1",
-                        price: field.price.priceVip
-                    }
-                } else {
-                    if (hour >= 18 && hour <= 24) {
+            // Lưu thông tin giá cho từng slot thời gian
+            const dayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            let schedules = [];
+            dayOfWeek.forEach(day => {
+                const daySchedules = slot.map(time => {
+                    const [hour, minute] = time.split(":").map(Number);
+                    if (day === "Saturday" || day === "Sunday") {
                         return {
                             field_id: field._id,
                             day_of_week: day,
@@ -131,21 +119,34 @@ module.exports.createPost = async (req, res) => {
                             feature: "1",
                             price: field.price.priceVip
                         }
-                    }
-                    else {
-                        return {
-                            field_id: field._id,
-                            day_of_week: day,
-                            start_time: time,
-                            feature: "0",
-                            price: field.price.price
+                    } else {
+                        if (hour >= 18 && hour <= 24) {
+                            return {
+                                field_id: field._id,
+                                day_of_week: day,
+                                start_time: time,
+                                feature: "1",
+                                price: field.price.priceVip
+                            }
+                        }
+                        else {
+                            return {
+                                field_id: field._id,
+                                day_of_week: day,
+                                start_time: time,
+                                feature: "0",
+                                price: field.price.price
+                            }
                         }
                     }
-                }
+                });
+                schedules.push(...daySchedules);
             });
-            schedules.push(...daySchedules);
-        });
-        await Pricing.insertMany(schedules);
+            await Pricing.deleteMany({ field_id: req.params.id });
+            await Pricing.insertMany(schedules);
+        }
+    } else {
+        await Pricing.deleteMany({ field_id: req.params.id });
     }
     res.redirect(`${systemConfig.systemConfig.prefixAdmin}/fields`);
 }
@@ -250,6 +251,9 @@ module.exports.deleteField = async (req, res) => {
         $set: {
             deleted: true
         }
+    });
+    await Pricing.deleteMany({
+        field_id: req.params.id
     });
     res.json({
         code: 200,
@@ -371,6 +375,7 @@ module.exports.detail = async (req, res) => {
         _id: req.params.id,
         deleted: false
     });
+    
     res.render("admin/page/field/detail", {
         titlePage: field.name,
         field: field

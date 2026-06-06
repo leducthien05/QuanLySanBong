@@ -1,0 +1,609 @@
+extends ../../layout/default
+
+block content
+    section.field-detail
+
+        .field-container
+
+            .field-detail__wrapper
+
+                // LEFT
+                .field-detail__content
+
+                    .field-tags
+                        span.tag Còn trống hôm nay
+                        span.tag Sân 5 người
+                        span.tag Cỏ nhân tạo 4G
+
+                    h1.field-title= field.name
+
+                    .field-meta
+
+                        .meta-item
+                            span.icon 📍
+                            span= field.address.titleAddress
+
+                        .dot
+
+                        .meta-item
+                            span.star ⭐⭐⭐⭐⭐
+                            span
+                                b #{field.rating.totalRating}
+                                |  (#{field.rating.totalReviews} đánh giá)
+
+                    .field-time
+                        span.icon 🕒
+                        span #{field.timeactive.openTime} - #{field.timeactive.closeTime}
+
+                    .price-box
+
+                        .price-item
+                            p.label Giờ thường
+                            h3 #{field.price.price.toLocaleString("vi-VN")}
+                                span đ / giờ
+
+                        .price-item
+                            p.label Cao điểm (17-22H)
+                            h3.highlight #{field.price.priceVip.toLocaleString("vi-VN")}
+                                span đ / giờ
+
+                        .price-item
+                            p.label Cuối tuần
+                            h3 #{field.price.priceVip.toLocaleString("vi-VN")}
+                                span đ / giờ
+
+                    .field-actions
+                        a.btn-book(
+                            href=`/booking/${field._id}`
+                        ) Đặt sân ngay
+
+                        button.btn-save
+                            i.fa-regular.fa-heart
+                            |  Lưu sân
+
+                // RIGHT
+                .field-gallery
+
+                    .gallery-main
+                        img(
+                            src=field.image[0]
+                            alt=field.name
+                        )
+
+                    .gallery-grid
+
+                        each item,index in field.image.slice(1,3)
+                            .gallery-item
+                                img(
+                                    src=item
+                                    alt=field.title
+                                )
+
+    section.field-info-section
+        .gf-container
+
+            .field-info-layout
+
+                // LEFT
+                .field-info-content
+
+                    h2.section-title
+                        span.line
+                        | Thông tin sân
+
+                    .field-info-grid
+
+                        .info-card
+                            .info-icon ⚽
+                            .info-content
+                                span.label Loại sân
+                                h4= field.type
+
+                        .info-card
+                            .info-icon 📐
+                            .info-content
+                                span.label Kích thước
+                                h4= field.size
+
+                        .info-card
+                            .info-icon 🌿
+                            .info-content
+                                span.label Loại cỏ
+                                h4= field.grasstype
+
+                        .info-card
+                            .info-icon 💡
+                            .info-content
+                                span.label Ánh sáng
+                                h4= field.light
+
+                        .info-card
+                            .info-icon 🕒
+                            .info-content
+                                span.label Giờ hoạt động
+                                h4 #{field.timeactive.openTime} - #{field.timeactive.closeTime}
+
+                        .info-card
+                            .info-icon 📞
+                            .info-content
+                                span.label Liên hệ
+                                h4= field.phone
+
+                    .field-description
+                        p= field.description
+
+                // RIGHT
+                .booking-sidebar
+
+                    .booking-header
+
+                        .booking-price
+                            h3 #{field.price.price.toLocaleString("vi-VN")}
+                                span đ / giờ
+
+                            p
+                                | Cao điểm:
+                                strong #{field.price.priceVip.toLocaleString("vi-VN")}đ
+                                |  (17-22h)
+
+                        .booking-rating
+                            span ⭐
+                            | #{field.totalRating} (#{field.totalReviews})
+
+                    form(
+                        class="booking-form"
+                        method="POST"
+                        action="/booking/payment"
+                        data-field = field
+                    )
+                        .hidden 
+                            input(
+                                name="bookingData"
+                                type="text"
+                            )
+                        .form-group
+                            label Ngày đặt sân
+
+                            input(
+                                class="date-pricing"
+                                type="date"
+                                name="date"
+                                data-slug = field.slug
+                            )
+
+                        .form-group
+                            label Chọn khung giờ
+
+                            div(
+                                class="time-slots"
+                                
+                            )
+
+                                each slot in pricing
+                                    button.time-slot(
+                                        data-price = slot.price
+                                        type="button"
+                                        class=[
+                                            slot.booked == "1" || slot.disable == "1" ? "booked" : ""
+                                        ]
+                                        data-pricing = slot._id
+                                        data-time = slot.start_time
+                                        disabled=(slot.booked == "1" || slot.disable == "1")
+                                    )
+                                        | #{slot.start_time}
+                                        if slot.feature == "1"
+                                            small Cao điểm
+
+                        button(
+                            class="btn-book-full"
+                            type="button"
+                        )
+                            | Chọn dịch vụ
+    // Modal chọn dịch vụ
+    .modal.modal-service
+        .modal-content
+            h3 Chọn dịch vụ
+
+            .service-list
+                each item in service 
+                    label.service-item
+                        input(
+                            type="checkbox" 
+                            value=item._id
+                            data-price = item.price
+                            data-title = item.name
+                        )
+                        span #{item.name}
+                        strong #{item.price}
+
+            button.btn-next-service Tiếp tục
+    // Modal thanh toán
+    .modal.modal-payment
+        .modal-content
+            h3 Chọn phương thức thanh toán
+
+            .payment-list
+                each item in payment
+                    button.payment-item(data-method="vnpay" data-method-id = item._id)
+                        | #{item.title}
+
+    .modal.modal-confirm
+        .modal-content
+            h3 Xác nhận đặt sân
+
+            .booking-info
+                .booking-row
+                    span
+                        i.fa-solid.fa-futbol
+                        |  Thời gian
+
+                    strong.slot-result Thuê bóng
+                .booking-row
+                    span
+                        i.fa-solid.fa-futbol
+                        |  Dịch vụ
+
+                    strong.service-result Chưa chọn
+
+                .booking-row
+                    span
+                        i.fa-solid.fa-credit-card
+                        |  Thanh toán
+
+                    strong.payment-result VNPay
+
+                .total-box
+                    p Tổng thanh toán
+
+                    h2.total-price 470.000đ
+
+            button.btn-payment Thanh toán ngay
+    
+    section.field-amenities
+        .gf-container
+
+            h2.section-title
+                span.line
+                | Tiện ích & Dịch vụ
+
+            .amenities-list
+
+                each item in service
+                    .amenity-item
+                        span.icon= item.image
+                        span.text= item.name
+
+    section.field-rules
+        .gf-container
+
+            h2.section-title
+                span.line
+                | Quy định sân
+
+            .rules-list
+
+                .rule-item
+                    .rule-icon.success
+                        i.fa-solid.fa-check
+
+                    p
+                        | Đặt sân trước tối thiểu
+                        strong  1 giờ.
+                        |  Hủy sân được hoàn 80% nếu hủy trước
+                        strong  24 giờ.
+
+                .rule-item
+                    .rule-icon.danger
+                        i.fa-solid.fa-ban
+
+                    p
+                        | Không mang thức ăn, đồ uống có cồn vào khu vực sân thi đấu.
+                        | Không hút thuốc trong khuôn viên sân.
+
+                .rule-item
+                    .rule-icon.warning
+                        i.fa-solid.fa-stopwatch
+
+                    p
+                        | Mỗi lượt thuê tối thiểu
+                        strong  1 giờ.
+                        |  Vui lòng có mặt trước 5 phút để làm thủ tục nhận sân.
+
+                .rule-item
+                    .rule-icon.info
+                        i.fa-solid.fa-shoe-prints
+
+                    p
+                        | Chỉ sử dụng
+                        strong  giày đế mềm (futsal)
+                        |  trên sân. Không sử dụng giày đinh, giày cứng gây hỏng mặt cỏ.
+
+                .rule-item
+                    .rule-icon.primary
+                        i.fa-solid.fa-credit-card
+
+                    p
+                        | Thanh toán trực tuyến qua ví điện tử hoặc chuyển khoản.
+                        | Cũng có thể thanh toán tiền mặt trực tiếp tại sân.
+
+    //- section.field-review
+    //-     .gf-container
+
+    //-         h2.section-title
+    //-             span.line
+    //-             | Đánh giá từ khách hàng
+
+    //-         // Tổng quan
+    //-         .review-summary
+
+    //-             .summary-score
+    //-                 h3 4.9
+
+    //-                 .stars ⭐⭐⭐⭐⭐
+
+    //-                 p 128 đánh giá
+
+    //-             .summary-bars
+
+    //-                 .bar-row
+    //-                     span 5
+    //-                     .bar
+    //-                         .fill.star5(style="width:85%")
+    //-                     span 109
+
+    //-                 .bar-row
+    //-                     span 4
+    //-                     .bar
+    //-                         .fill.star4(style="width:12%")
+    //-                     span 14
+
+    //-                 .bar-row
+    //-                     span 3
+    //-                     .bar
+    //-                         .fill.star3(style="width:4%")
+    //-                     span 4
+
+    //-                 .bar-row
+    //-                     span 2
+    //-                     .bar
+    //-                         .fill.star2(style="width:1%")
+    //-                     span 1
+
+    //-                 .bar-row
+    //-                     span 1
+    //-                     .bar
+    //-                         .fill.star1(style="width:0%")
+    //-                     span 0
+
+    //-         // Form đánh giá
+    //-         .review-form-card
+
+    //-             h3 Viết đánh giá
+
+    //-             form(
+    //-                 action=`/review/create/${field._id}`
+    //-                 method="POST"
+    //-             )
+
+    //-                 .rating-select
+
+    //-                     label Chọn số sao
+
+    //-                     .rating-stars
+
+    //-                         each star in [5,4,3,2,1]
+    //-                             label.star-option
+    //-                                 input(
+    //-                                     type="radio"
+    //-                                     name="rating"
+    //-                                     value=star
+    //-                                     required
+    //-                                 )
+    //-                                 span #{star}★
+
+    //-                 .form-group
+    //-                     label Nội dung đánh giá
+
+    //-                     textarea(
+    //-                         name="content"
+    //-                         rows="5"
+    //-                         placeholder="Chia sẻ trải nghiệm của bạn khi sử dụng sân..."
+    //-                         required
+    //-                     )
+
+    //-                 button.btn-review-submit(
+    //-                     type="submit"
+    //-                 )
+    //-                     i.fa-solid.fa-paper-plane
+    //-                     |  Gửi đánh giá
+
+    //-         // Danh sách review
+
+    //-         .review-list
+
+    //-             each item in reviews
+
+    //-                 .review-card
+
+    //-                     .review-header
+
+    //-                         .review-user
+
+    //-                             .review-avatar
+    //-                                 = item.fullName.charAt(0)
+
+    //-                             .review-info
+    //-                                 h4= item.fullName
+    //-                                 span= item.createdAt
+
+    //-                         .review-rating
+    //-                             = "⭐".repeat(item.rating)
+
+    //-                     p.review-content= item.content
+
+    //-                     .review-tags
+
+    //-                         if item.rating >= 5
+    //-                             span.review-tag Rất tốt
+
+    //-                         if item.rating >= 4
+    //-                             span.review-tag Sân đẹp
+
+    //-                         if item.rating >= 4
+    //-                             span.review-tag Đặt sân nhanh
+    section.field-review
+        .gf-container
+
+            h2.section-title
+                span.line
+                | Đánh giá từ khách hàng
+
+            // Tổng quan
+            .review-summary
+
+                .summary-score
+                    h3 4.9
+
+                    .stars
+                        | ⭐⭐⭐⭐⭐
+
+                    p 128 đánh giá
+
+                .summary-bars
+
+                    .bar-row
+                        span 5
+                        .bar
+                            .fill.star5(style="width:85%")
+                        span 109
+
+                    .bar-row
+                        span 4
+                        .bar
+                            .fill.star4(style="width:12%")
+                        span 14
+
+                    .bar-row
+                        span 3
+                        .bar
+                            .fill.star3(style="width:3%")
+                        span 4
+
+                    .bar-row
+                        span 2
+                        .bar
+                            .fill.star2(style="width:1%")
+                        span 1
+
+                    .bar-row
+                        span 1
+                        .bar
+                            .fill.star1(style="width:0%")
+                        span 0
+
+            // Form đánh giá
+
+            .review-form-card
+
+                h3 Viết đánh giá
+
+                form
+
+                    .rating-stars
+
+                        each star in [5,4,3,2,1]
+                            label.star-option
+                                input(
+                                    type="radio"
+                                    name="rating"
+                                    value=star
+                                )
+                                span #{star}★
+
+                    .form-group
+                        textarea(
+                            rows="5"
+                            placeholder="Chia sẻ trải nghiệm của bạn về sân bóng..."
+                        )
+
+                    button.btn-review-submit(type="button")
+                        i.fa-solid.fa-paper-plane
+                        |  Gửi đánh giá
+
+            // Review mẫu
+
+            .review-list
+
+                .review-card
+
+                    .review-header
+
+                        .review-user
+
+                            .review-avatar
+                                | NA
+
+                            .review-info
+                                h4 Nguyễn Văn A
+                                span 12/05/2026
+
+                        .review-rating ⭐⭐⭐⭐⭐
+
+                    p.review-content
+                        | Sân rất tốt, cỏ mới, đèn sáng.
+                        | Nhân viên nhiệt tình, giá cả hợp lý.
+                        | Đặt sân qua app rất tiện, chỉ mất 2 phút là xong.
+                        | Sẽ quay lại vào tuần sau!
+
+                    .review-tags
+                        span.review-tag Cỏ tốt
+                        span.review-tag Nhân viên thân thiện
+                        span.review-tag Đặt sân nhanh
+
+                .review-card
+
+                    .review-header
+
+                        .review-user
+
+                            .review-avatar
+                                | TT
+
+                            .review-info
+                                h4 Trần Thành
+                                span 08/05/2026
+
+                        .review-rating ⭐⭐⭐⭐
+
+                    p.review-content
+                        | Sân sạch sẽ, bãi gửi xe rộng.
+                        | Tuy nhiên cuối tuần khá đông nên cần đặt trước.
+
+                    .review-tags
+                        span.review-tag Sân đẹp
+                        span.review-tag Bãi xe rộng
+
+                .review-card
+
+                    .review-header
+
+                        .review-user
+
+                            .review-avatar
+                                | LM
+
+                            .review-info
+                                h4 Lê Minh
+                                span 02/05/2026
+
+                        .review-rating ⭐⭐⭐⭐⭐
+
+                    p.review-content
+                        | Chất lượng sân rất ổn, ánh sáng tốt.
+                        | Giá hợp lý so với khu vực Cầu Giấy.
+
+                    .review-tags
+                        span.review-tag Giá hợp lý
+                        span.review-tag Đèn sáng
+
+    script(src="/client/JS/script.js")

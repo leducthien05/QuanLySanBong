@@ -14,8 +14,12 @@ router.get("/create", permission.checkPermission("fields_create"), controller.cr
 router.post(
     "/create",
     permission.checkPermission("fields_create"),
-    upload.single("image"),
-    uploadImage.uploadSingle,
+    upload.fields(
+        [
+            { name: "image", maxCount: 8 }
+        ]
+    ),
+    uploadImage.uploadMulti,
     validate.create,
     controller.createPost
 );
@@ -26,8 +30,12 @@ router.get("/edit/:id", permission.checkPermission("fields_edit"), controller.ed
 router.patch(
     "/edit/:id",
     permission.checkPermission("fields_edit"),
-    upload.single("image"),
-    uploadImage.uploadSingle,
+    upload.fields(
+        [
+            { name: "image", maxCount: 8 }
+        ]
+    ),
+    uploadImage.uploadMulti,
     validate.create,
     controller.editPatch
 );

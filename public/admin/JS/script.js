@@ -281,6 +281,36 @@ if(dateElement){
     dateElement.textContent = fullDate;
 }
 
+// Priview ảnh
+const imageInput = document.getElementById("image");
+const imagePreview = document.getElementById("imagePreview");
+
+if (imageInput) {
+    imageInput.addEventListener("change", (e) => {
+        imagePreview.innerHTML = "";
+
+        const files = Array.from(e.target.files);
+
+        files.forEach(file => {
+            if (!file.type.startsWith("image/")) return;
+
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                const div = document.createElement("div");
+                div.classList.add("preview-item");
+
+                div.innerHTML = `
+                    <img src="${event.target.result}" alt="">
+                `;
+
+                imagePreview.appendChild(div);
+            };
+
+            reader.readAsDataURL(file);
+        });
+    });
+}
 
 
 

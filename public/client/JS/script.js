@@ -232,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 html += `
                                     <div class="booking-field-card" data-field-id=${item._id} data-field='${dataField}'>
                                         <div class="booking-field-image">
-                                            <img src=${item.image}>
+                                            <img src=${item.image[0]}>
                                         </div>
                                         <div class="booking-field-content">
                                             <h3 class="booking-field-name">${item.name}</h3>
@@ -471,7 +471,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const inputBooking = formBooking.querySelector("input");
         const modelForm = document.querySelector(".booking-modal-overlay");
         btnBooking.addEventListener("click", () => {
-            btnBooking.disabled = true;
+
             if (!bookingData.field_id) {
                 alert('Vui lòng chọn một sân bóng');
                 return;
@@ -499,6 +499,8 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!bookingData.pricing || !bookingData.pricing.length > 0) {
                 alert('Vui lòng chọn slot đặt sân');
                 return;
+            }else {
+                bookingData.pricing = bookingData.pricing.map(item => item.pricing_id);
             }
             if (!bookingData.payment) {
                 alert('Vui lòng chọn phương thức thanh toán');
@@ -809,7 +811,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     parentLi.classList.add("active");
                 }
                 const value = btn.getAttribute("number-page");
-                
+
                 if (value) {
                     dataQuery.page = value;
                 }
@@ -887,6 +889,199 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
+    // Đặt lịch
+    const formPricingDetail = document.querySelector(".booking-sidebar .booking-form");
+    if (formPricingDetail) {
+        const inputPricing = formPricingDetail.querySelector("input[name='bookingData']");
+        const dataPricingDetail = {};
+        const selectDate = document.querySelector(".date-pricing");
+        if (selectDate) {
+            const listBtnPricing = document.querySelectorAll(".time-slots .time-slot")
+            selectDate.addEventListener("change", (e) => {
+                const date = selectDate.value;
+                const slug = selectDate.getAttribute("data-slug");
+                const link = `/field/pricing/${slug}?date=${date}`;
+                console.log(link)
+                fetch(link)
+                    .then(res => res.json())
+                    .then(data => {
+                        const divPricing = document.querySelector(".time-slots")
+                        let html = "";
+                        data.pricing.forEach(slot => {
+                            const isDisabled = slot.booked === "1" || slot.disable === "1";
+
+                            html += `
+                            <button
+                                type="button"
+                                class="time-slot ${isDisabled ? "booked" : ""}"
+                                data-pricing="${slot._id}"
+                                ${isDisabled ? "disabled" : ""}
+                            >
+                                ${slot.start_time}
+                                ${slot.feature === "1"
+                                    ? "<small>Cao điểm</small>"
+                                    : ""
+                                }
+                            </button>
+                        `;
+                        });
+
+                        divPricing.innerHTML = html;
+                    });
+            });
+        }
+        const listBtnPricing = document.querySelectorAll(".time-slots .time-slot")
+        if (listBtnPricing.length > 0) {
+            dataPricingDetail.pricing = [];
+            listBtnPricing.forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    if (btn.classList.contains("selected")) {
+                        btn.classList.remove("selected");
+                    } else {
+                        btn.classList.add("selected");
+                    }
+                    const id = btn.getAttribute("data-pricing");
+                    if (dataPricingDetail.pricing.includes(id)) {
+                        const index = dataPricingDetail.indexOf(id);
+                        dataPricingDetail.pricing.splice(index, 1);
+                    } else {
+                        dataPricingDetail.pricing.push(id);
+                    }
+
+                });
+            });
+        }
+
+        // Chọn Dịch vụ và Thanh toán
+        const btnShow = formPricingDetail.querySelector(".btn-book-full");
+        if (btnShow) {
+            const modalService = document.querySelector(".modal-service");
+            const modalPayment = document.querySelector(".modal-payment");
+            const modalConfirm = document.querySelector(".modal-confirm");
+
+            const btnService = modalService.querySelector(".btn-next-service");
+            const btnPayment = modalPayment.querySelectorAll(".payment-item");
+
+            btnShow.addEventListener("click", () => {
+                if (!dataPricingDetail.pricing || dataPricingDetail.pricing.length === 0) {
+                    return;
+                }
+                modalService.classList.add("show");
+            });
+
+            btnService.addEventListener("click", () => {
+                dataPricingDetail.service = [];
+                const inputService = modalService.querySelectorAll("input:checked");
+                inputService.forEach(input => {
+                    const value = input.value;
+                    const price = parseInt(input.getAttribute("data-price"));
+                    const data = {
+                        id: value,
+                        price: price,
+                        title: input.getAttribute("data-title")
+                    };
+                    dataPricingDetail.service.push(data)
+                });
+                modalService.classList.remove("show");
+                modalPayment.classList.add("show");
+            });
+
+            btnPayment.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    dataPricingDetail.namePayment = btn.getAttribute("data-method");
+                    dataPricingDetail.payment = btn.getAttribute("data-method-id");
+                    modalPayment.classList.remove("show");
+                    modalConfirm.classList.add("show");
+                    let time = "";
+                    let totalPrice = 0;
+                    if (dataPricingDetail.pricing || dataPricingDetail.pricing.length > 0) {
+                        const dataPricingPrice = document.querySelectorAll(".time-slots .time-slot");
+
+                        if (dataPricingPrice.length > 0) {
+                            dataPricingPrice.forEach(item => {
+                                const id = item.getAttribute("data-pricing");
+                                if (dataPricingDetail.pricing.includes(id)) {
+                                    const price = item.getAttribute("data-price");
+                                    totalPrice += parseInt(price);
+                                    time += item.getAttribute("data-time");
+                                }
+
+                            });
+                            modalConfirm.querySelector(".slot-result").textContent = time;
+                            modalConfirm.querySelector(".total-price").textContent = `${totalPrice}Đ`;
+                        }
+                    }
+                    if (dataPricingDetail.service && dataPricingDetail.service.length > 0) {
+                        let textService = ""
+                        dataPricingDetail.service.forEach(service => {
+                            totalPrice += service.price;
+                            textService += service.name
+
+                        });
+                        modalConfirm.querySelector(".service-result").textContent = textService;
+                    }
+
+                });
+            });
+        }
+
+        // Thanh toán
+        const btnConfirm = document.querySelector(".modal-confirm .btn-payment");
+        if (btnConfirm) {
+            const dataField = JSON.parse(formPricingDetail.getAttribute("data-field"));
+            btnConfirm.addEventListener("click", () => {
+                if (!dataPricingDetail.field_id) {
+                    dataPricingDetail.field_id = dataField._id;
+                }
+
+                if (!dataPricingDetail.pricing || dataPricingDetail.pricing.length <= 0) {
+                    alert('Vui lòng chọn slot đặt sân');
+                    return;
+                } else {
+                    const dataPricingPrice = document.querySelectorAll(".time-slots .time-slot");
+                    let time = "";
+                    let totalPrice = 0;
+                    if (dataPricingPrice.length > 0) {
+                        dataPricingPrice.forEach(item => {
+                            const id = item.getAttribute("data-pricing");
+                            if (dataPricingDetail.pricing.includes(id)) {
+                                const price = item.getAttribute("data-price");
+                                totalPrice += parseInt(price);
+                                time += item.getAttribute("data-time");
+                            }
+
+                        });
+
+                    }
+                }
+
+                if (!dataPricingDetail.namePayment) {
+                    alert('Vui lòng chọn phương thức thanh toán');
+                    return;
+                }
+                const date = formPricingDetail.querySelector("input[name='date']").value;
+                if (date) {
+                    dataPricingDetail.date = date;
+                } else {
+                    const now = new Date();
+                    const today =
+                        now.getFullYear() +
+                        "-" +
+                        String(now.getMonth() + 1).padStart(2, "0") +
+                        "-" +
+                        String(now.getDate()).padStart(2, "0");
+                    dataPricingDetail.date = today
+                }
+                console.log(dataPricingDetail)
+                const dataPostBooking = JSON.stringify(dataPricingDetail);
+                inputPricing.value = dataPostBooking;
+                formPricingDetail.submit();
+            });
+        }
+
+    }
+
 });
+
 
 

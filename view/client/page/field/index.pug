@@ -83,13 +83,13 @@ block content
                                     )
                                         .booking-field-image
                                             img(
-                                                src=item.image
+                                                src=item.image[0]
                                             )
                                         
                                         .booking-field-content
                                             h3.booking-field-name #{item.name}
                                             
-                                            .booking-field-type Loại: #{item.type}v#{item.capacity}
+                                            .booking-field-type Loại: #{item.type}v#{item.type}
                                             
                                             .booking-field-location
                                                 a(
@@ -122,7 +122,7 @@ block content
                                         href=item.address.googleMapUrl
                                     )
                                         img(
-                                            src=item.image
+                                            src=item.image[0]
                                             alt=item.name
                                         )
 
@@ -157,9 +157,9 @@ block content
                                             span  đ/giờ
 
                                         a.field-book-btn(
-                                            href=`/field/${item._id}`
+                                            href=`/field/detail/${item.slug}`
                                         )
                                             | Đặt ngay
     +pagination(pagination)
-
+    
     script(src="/client/JS/script.js")

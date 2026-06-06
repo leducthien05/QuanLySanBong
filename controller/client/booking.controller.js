@@ -5,6 +5,7 @@ const Pricing = require("../../model/pricing.model");
 const Payment = require("../../model/payment.model");
 
 const paymentHelper = require("../../helper/payment.helper");
+const prcingHelper = require("../../helper/getPricing.helper");
 
 // [GET] /booking
 module.exports.index = async (req, res) => {
@@ -109,109 +110,11 @@ module.exports.filter = async (req, res) => {
 // [GET] /booking/field/:id
 module.exports.getField = async (req, res) => {
     const date = req.query.date;
-    const dayOfWeek = new Date(date).getDay();
-    let pricing;
-    switch (dayOfWeek) {
-        case 0:
-            pricing = await Pricing.find({
-                deleted: false,
-                field_id: req.params.id,
-                day_of_week: "Sunday"
-            }).lean();
-            break;
-        case 1:
-            pricing = await Pricing.find({
-                deleted: false,
-                field_id: req.params.id,
-                day_of_week: "Monday"
-            }).lean();
-            break;
-        case 2:
-            pricing = await Pricing.find({
-                deleted: false,
-                field_id: req.params.id,
-                day_of_week: "Tuesday"
-            }).lean();
-            break;
-        case 3:
-            pricing = await Pricing.find({
-                deleted: false,
-                field_id: req.params.id,
-                day_of_week: "Wednesday"
-            }).lean();
-            break;
-        case 4:
-            pricing = await Pricing.find({
-                deleted: false,
-                field_id: req.params.id,
-                day_of_week: "Thursday"
-            }).lean();
-            break;
-        case 5:
-            pricing = await Pricing.find({
-                deleted: false,
-                field_id: req.params.id,
-                day_of_week: "Friday"
-            }).lean();
-            break;
-        case 6:
-            pricing = await Pricing.find({
-                deleted: false,
-                field_id: req.params.id,
-                day_of_week: "Saturday"
-            }).lean();
-            break;
-        default:
-            break;
-    }
-    const idPricing = pricing.map(item => item.id);
-    const bookings = await Booking.find({
-        deleted: false,
-        field_id: req.params.id,
-        status: "paid",
-        date: new Date(date)
-    });
-    const bookingMap = {};
-
-    bookings.forEach(item => {
-        item.pricing.forEach(slot => {
-            bookingMap[slot.id.toString()] = true;
-        });
-    });
-    const toMinute = (time) => {
-        const [h, m] = time.split(":").map(Number);
-        return h * 60 + m;
-    };
-
-    const nowDate = new Date();
-
-    // format giờ hiện tại chuẩn HH:mm
-    const hour = String(nowDate.getHours()).padStart(2, "0");
-    console.log(hour);
-    const minute = String(nowDate.getMinutes()).padStart(2, "0");
-    const now = `${hour}:${minute}`;
-
-    const nowMin = toMinute(now);
-    if (date == new Date().toISOString().split("T")[0]) {
-        pricing.forEach(item => {
-            const startMin = toMinute(item.start_time);
-            // 🔥 disable nếu cách giờ hiện tại < 30 phút hoặc đã qua giờ
-            if (startMin - nowMin < 30) {
-                item.disable = "1";
-            }
-        });
-    }
-    pricing.forEach(item => {
-        // booked check
-        const key = item._id.toString();
-        if (bookingMap[key]) {
-            item.booked = "1";
-        }
-    });
-
+    const field_id = req.params.id;
+    const pricing = await prcingHelper.getPricing(date, field_id);
     res.status(200).json({
-        pricings: pricing,
-        date: date
+        pricings: pricing.pricing,
+        date: pricing.date
     });
 }
 
@@ -219,15 +122,15 @@ module.exports.getField = async (req, res) => {
 module.exports.payment = async (req, res) => {
     // Chuyển data sang Object
     const data = JSON.parse(req.body.bookingData);
-
     // Lấy danh sách id và update trạng thái của pricing
-    const idPricing = data.pricing.map(item => item.pricing_id);
     console.log(data)
+    const idPricing = data.pricing;
     const dataPricing = await Pricing.find({
         deleted: false,
         _id: { $in: idPricing },
-        status: "active"
     });
+
+    console.log(dataPricing)
     const exists = await Booking.findOne({
         deleted: false,
         field_id: data.field_id,

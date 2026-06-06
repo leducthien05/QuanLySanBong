@@ -9,6 +9,7 @@ const fieldSchema = new mongoose.Schema({
         slug: "name",
         unique: true
     },
+    phone: String,
     size: String,
     grasstype: String,
     timeactive: {
@@ -46,8 +47,8 @@ const fieldSchema = new mongoose.Schema({
         type: String,
         default: "0"
     },
-    category_id: String,
-    image: String,
+    regulations: String,
+    image: Array,
     status: {
         type: String,
         default: 'active'
@@ -58,12 +59,6 @@ const fieldSchema = new mongoose.Schema({
         createdAt: {
             type: Date,
             default: Date.now
-        }
-    },
-    deletedBy: {
-        account_id: String,
-        deletedBy: {
-            type: Date
         }
     },
     updatedBy: [

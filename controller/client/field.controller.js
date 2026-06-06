@@ -1,7 +1,11 @@
 const Field = require("../../model/field.model");
 const Service = require("../../model/service.model");
+const Pricing = require("../../model/pricing.model");
+const Booking = require("../../model/booking.model");
+const Payment = require("../../model/payment.model");
 
 const paginationHelper = require("../../helper/pagination.helper");
+const pricingHelper = require("../../helper/getPricing.helper");
 
 // [GET] /field
 module.exports.index = async (req, res) => {
@@ -68,7 +72,7 @@ module.exports.index = async (req, res) => {
     });
 }
 
-// [GET] /search
+// [GET] /field/search
 module.exports.search = async (req, res) => {
     try {
         const find = {
@@ -124,5 +128,76 @@ module.exports.search = async (req, res) => {
             success: false,
             message: error.message
         });
+    }
+}
+
+// [GET] /field/detail/:slug
+module.exports.detail = async (req, res) => {
+    try {
+        const { slug } = req.params;
+
+        // Fetch the field by slug
+        const field = await Field.findOne({
+            slug: slug,
+            deleted: false,
+            status: 'active'
+        });
+
+        if (!field) {
+            return res.render('client/page/404', {
+                pageTitle: 'Sân bóng không tồn tại'
+            });
+        }
+
+        // Dịch vụ
+        const idService = field.service.map(item => item);
+        const service = await Service.find({
+            deleted: false,
+            status: "status",
+            _id: { $in: idService }
+        });
+
+        // Lịch giờ
+        const date = new Date().toISOString().split("T")[0]
+        const pricing = await pricingHelper.getPricing(date, field.id);
+
+        // Phương thức thanh toán
+        const payment = await Payment.find({
+            status: "active"
+        });
+
+        // Render the detail page
+        res.render('client/page/field/detail', {
+            pageTitle: `${field.name} | Đặt Sân Bóng`,
+            field: field,
+            service: service,
+            pricing: pricing.pricing,
+            payment: payment,
+        });
+
+    } catch (error) {
+        console.error('Error in field detail:', error);
+        res.status(500).render('client/page/500', {
+            pageTitle: 'Lỗi Server'
+        });
+    }
+};
+
+// [GET] /field/pricing/:slug
+module.exports.pricing = async (req, res) => {
+    const slug = req.params.slug;
+    const field = await Field.findOne({
+        deleted: false,
+        status: "active",
+        slug: slug
+    });
+    let date = req.query.date;
+    if (date) {
+        const pricing = await pricingHelper.getPricing(date, field.id);
+        return res.json(pricing);
+    } else {
+        date = new Date().toISOString().split("T")[0]
+        const pricing = await pricingHelper.getPricing(date, field.id);
+        return res.json(pricing);
     }
 }
