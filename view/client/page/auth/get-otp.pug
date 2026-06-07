@@ -1,0 +1,39 @@
+extends ../../layout/auth
+
+block content
+    .auth-page
+        .auth-box
+
+            .auth-icon
+                i.fa-solid.fa-shield-halved
+
+            h1.auth-title Xác thực OTP
+
+            p.auth-desc
+                | Nhập mã gồm 6 chữ số đã gửi tới email
+
+            form(method="POST")
+                .form-group
+                    label.form-label Email
+
+                    .input-box
+                        input(
+                            type="text"
+                            name="email"
+                            value=email
+                            readonly
+                        )
+
+                .form-group
+                    label.form-label OTP
+
+                    .input-box
+                        input(
+                            type="text"
+                            name="otp"
+                            maxlength="6"
+                            placeholder="123456"
+                        )
+
+                button.auth-btn(type="submit")
+                    | Xác nhận

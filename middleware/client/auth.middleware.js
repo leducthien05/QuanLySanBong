@@ -1,51 +1,18 @@
 const User = require("../../model/user.model");
-
-module.exports.auth = async (req, res) => {
-    const refreshToken =
-        req.cookies.refreshToken;
-
-    if (!refreshToken) {
-        return res.sendStatus(401);
+const jwt = require("jsonwebtoken");
+module.exports.auth = async (req, res, next) => {
+    const tokenUser = req.cookies.tokenUser;
+    if (!tokenUser) {
+        req.flash("error", "Vui lòng đăng nhập để tiếp tục!");
+        return res.redirect("/auth");
     }
-
     try {
         const decoded = jwt.verify(
-            refreshToken,
+            tokenUser,
             process.env.JWT_ACCESS_SECRET
         );
-
-        const user =
-            await User.findById(decoded.id);
-
-        if (!user || user.refreshToken !== refreshToken) {
-            return res.sendStatus(403);
-        }
-
-        const newAccessToken = jwt.sign(
-            {
-                id: user._id,
-                username: user.userName
-            },
-            process.env.JWT_ACCESS_SECRET,
-            {
-                expiresIn: "15m"
-            }
-        )
-
-        res.cookie(
-            "accessToken",
-            newAccessToken,
-            {
-                httpOnly: true,
-                maxAge: 15 * 60 * 1000
-            }
-        );
-
-        res.json({
-            success: true
-        });
-
+        return next();
     } catch (error) {
-        res.sendStatus(403);
+        return res.sendStatus(403);
     }
 }

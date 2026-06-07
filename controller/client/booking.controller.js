@@ -200,11 +200,11 @@ module.exports.payment = async (req, res) => {
     // Tổng tiền booking 
     const totalPrice = totalPricePricing + totalPriceService;
 
-
+    const user_id = req.user.id;
     // Khóa booking khi thanh toán
     const existingOrder = await Booking.findOne({
         field_id: data.field_id,
-        user_id: "",
+        user_id: user_id,
         pricing: pricing,
         date: data.date,
         totalPrice: totalPrice,
@@ -249,7 +249,7 @@ module.exports.payment = async (req, res) => {
 
     const dataBooking = new Booking({
         field_id: data.field_id,
-        user_id: "",
+        user_id: user_id,
         pricing: pricing,
         date: data.date,
         totalPrice: totalPrice,

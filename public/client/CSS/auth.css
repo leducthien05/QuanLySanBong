@@ -353,3 +353,143 @@ label{
 .hidden {
     display: none;
 }
+
+/* Quên mật khẩu */
+.auth-page{
+    width:100%;
+    min-height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    padding:40px 20px;
+}
+
+.auth-box{
+    width:100%;
+    max-width:500px;
+
+    background:rgba(5,20,14,.95);
+
+    border:1px solid rgba(153,246,61,.2);
+
+    border-radius:24px;
+
+    padding:40px;
+
+    backdrop-filter:blur(20px);
+
+    box-shadow:
+        0 0 40px rgba(153,246,61,.08);
+}
+
+.auth-icon{
+    width:90px;
+    height:90px;
+
+    margin:0 auto 24px;
+
+    border-radius:50%;
+
+    background:rgba(153,246,61,.12);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:36px;
+    color:#99f63d;
+}
+
+.auth-title{
+    font-size:38px;
+    font-weight:700;
+
+    text-align:center;
+
+    margin-bottom:10px;
+}
+
+.auth-desc{
+    color:#7b8d83;
+    text-align:center;
+
+    margin-bottom:30px;
+}
+
+.form-group{
+    margin-bottom:20px;
+}
+
+.form-label{
+    display:block;
+
+    margin-bottom:8px;
+
+    color:#cfd6d2;
+
+    font-size:14px;
+}
+
+.input-box{
+    height:56px;
+
+    display:flex;
+    align-items:center;
+
+    padding:0 16px;
+
+    background:#152219;
+
+    border:1px solid rgba(153,246,61,.12);
+
+    border-radius:16px;
+}
+
+.input-box input{
+    width:100%;
+
+    border:none;
+    outline:none;
+
+    background:transparent;
+
+    color:white;
+
+    font-size:15px;
+}
+
+.auth-btn{
+    width:100%;
+    height:56px;
+
+    border:none;
+    border-radius:16px;
+
+    background:#99f63d;
+
+    color:#081109;
+
+    font-size:16px;
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;
+}
+
+.auth-btn:hover{
+    transform:translateY(-2px);
+}
+
+.auth-link{
+    text-align:center;
+
+    margin-top:20px;
+}
+
+.auth-link a{
+    color:#99f63d;
+    text-decoration:none;
+}

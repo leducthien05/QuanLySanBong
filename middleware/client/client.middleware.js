@@ -8,14 +8,14 @@ module.exports.settingMiddleware = async (req, res, next) => {
         const setting = await Setting.findOne();
         res.locals.settingGeneral = setting;
 
-        const refreshToken = req.cookies.refreshToken;
+        const tokenUser = req.cookies.tokenUser;
 
-        if (!refreshToken) {
+        if (!tokenUser) {
             return next();
         }
 
         const decoded = jwt.verify(
-            refreshToken,
+            tokenUser,
             process.env.JWT_ACCESS_SECRET
         );
 
