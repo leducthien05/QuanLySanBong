@@ -1,0 +1,31 @@
+doctype html
+html(lang="vi")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        title #{titlePage}
+
+        link(
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        )
+
+        link(
+            rel="stylesheet"
+            href="/client/CSS/auth.css"
+        )
+
+    body
+        .auth-wrapper
+
+            // Background sân bóng
+            .auth-background
+                .field
+                    .center-circle
+                    .mid-line
+                    .goal.goal-left
+                    .goal.goal-right
+                    .penalty.penalty-left
+                    .penalty.penalty-right
+
+            block content

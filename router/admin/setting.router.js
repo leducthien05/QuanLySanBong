@@ -16,7 +16,8 @@ router.patch(
     upload.fields(
         [
             { name: "logo", maxCount: 1 },
-            { name: "favicon", maxCount: 1 }
+            { name: "favicon", maxCount: 1 },
+            { name: "avatarUser", maxCount: 5 }
         ]
     ),
     permission.checkPermission("settings"),

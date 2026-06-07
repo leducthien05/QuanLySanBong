@@ -299,3 +299,37 @@ window.addEventListener('beforeunload', function (event) {
 document.getElementById('settingForm')?.addEventListener('submit', function () {
     formDirty = false;
 });
+
+
+const imagesInput = document.querySelector("#imagesInput");
+const previewWrapper = document.querySelector(".images-preview-wrapper");
+
+if (imagesInput) {
+    imagesInput.addEventListener("change", (e) => {
+
+        previewWrapper.innerHTML = "";
+
+        [...e.target.files].forEach(file => {
+
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+
+                const item = document.createElement("div");
+                item.className = "image-preview-item";
+
+                item.innerHTML = `
+                    <img
+                        src="${event.target.result}"
+                        class="image-preview"
+                    >
+                `;
+
+                previewWrapper.appendChild(item);
+            };
+
+            reader.readAsDataURL(file);
+        });
+
+    });
+}

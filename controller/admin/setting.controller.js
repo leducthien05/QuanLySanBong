@@ -50,6 +50,10 @@ module.exports.editPatch = async (req, res) => {
         if (req.body.favicon) {
             data.favicon = req.body.favicon[0];
         }
+
+        if(req.body.avatarUser) {
+            data.avatarUser = req.body.avatarUser;
+        }
         // CASH
         if (req.body.cash) {
             const data = {

@@ -19,6 +19,7 @@ const settingSchema = new mongoose.Schema({
         type: String,
         default: null
     },
+    avatarUser: Array,
     phone: {
         type: String,
         default: null

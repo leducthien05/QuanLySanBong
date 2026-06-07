@@ -624,9 +624,23 @@ img {
     color: var(--dark);
     font-weight: 700;
     transition: 0.3s;
+    margin-right: 2px;
 }
 
 .gf-login-btn:hover {
+    opacity: 0.85;
+}
+
+.gf-logout-btn {
+    padding: 12px 22px;
+    border-radius: 999px;
+    background: rgb(213, 125, 125);
+    color: white;
+    font-weight: 700;
+    transition: 0.3s;
+}
+
+.gf-logout-btn:hover {
     opacity: 0.85;
 }
 

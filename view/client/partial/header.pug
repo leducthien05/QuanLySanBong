@@ -37,6 +37,11 @@ header.gf-header
             if user
                 a.gf-login-btn(href="/account")
                     | Tài khoản
+
+                a.gf-logout-btn(href="/auth/logout")
+                    | Đăng xuất
             else
-                a.gf-login-btn(href="/login")
+                a.gf-login-btn(href="/auth")
                     | Đăng nhập
+                
+                

@@ -1,0 +1,224 @@
+extends ../../layout/auth
+
+block content
+
+    .auth-container
+
+        .logo
+            span.green Green
+            span.whiteField Field
+
+        a.back-home(href="/")
+            i.fa-solid.fa-arrow-left
+            |  Về trang chủ
+
+        .auth-card
+
+            .auth-tabs
+                button(
+                    class="tab-btn active"
+                    type="button"
+                    data-tab = "login"
+                )
+                    | Đăng nhập
+
+                button(
+                    class="tab-btn" 
+                    type="button"
+                    data-tab = "register"
+                )
+                    | Đăng ký
+
+            .auth-body
+
+                // LOGIN
+                .login-form
+
+                    h1
+                        | Chào mừng
+                        span.highlight  trở lại!
+
+                    p.sub-title
+                        | Đăng nhập để đặt sân nhanh hơn và theo dõi lịch đặt của bạn
+
+                    .social-login
+                        button.social-btn(type="button")
+                            i.fa-brands.fa-google
+                            span Google
+
+                        button.social-btn(type="button")
+                            i.fa-brands.fa-facebook
+                            span Facebook
+
+                    .divider
+                        span hoặc đăng nhập bằng email
+
+                    form(
+                        class="form-group"
+                        method = "POST"
+                        action = "/auth/login"
+                    )
+                        label EMAIL
+
+                        .input-box
+                            i.fa-solid.fa-envelope
+
+                            input(
+                                type="text"
+                                name="email"
+                                placeholder="email@domain.com"
+                            )
+
+                        .form-group
+
+                            .label-row
+                                label MẬT KHẨU
+
+                                a(href="#")
+                                    | Quên mật khẩu?
+
+                            .input-box
+                                i.fa-solid.fa-lock
+
+                                input(
+                                    name="password"
+                                    type="password"
+                                    placeholder="••••••••"
+                                )
+
+                                i.fa-solid.fa-eye
+
+                        button.submit-btn(type="submit")
+                            | Đăng nhập
+
+
+
+                // REGISTER
+                .register-form.hidden
+
+                    h1
+                        | Tạo tài khoản
+                        span.highlight GreenField
+
+                    p.sub-title
+                        | Đăng ký miễn phí – nhận ưu đãi 10% đơn đặt sân đầu tiên
+
+                    .social-login
+                        button.social-btn(type="button")
+                            i.fa-brands.fa-google
+                            span Google
+
+                        button.social-btn(type="button")
+                            i.fa-brands.fa-facebook
+                            span Facebook
+
+                    .divider
+                        span hoặc đăng ký bằng email
+                    form(
+                        class="form-group"
+                        method="POST"
+                        action="/auth/register"
+                    )
+                        .avatar-picker
+
+                            label CHỌN ẢNH ĐẠI DIỆN
+
+                            .form-group
+
+                                .avatars
+                                    each avatar in settingGeneral.avatarUser
+                                        .avatar-item(data-avatar=avatar)
+                                            img(src=avatar)
+
+                                    .avatar-upload
+                                        input(
+                                            type="file"
+                                            id="avatarFile"
+                                            name="avatar"
+                                            accept="image/*"
+                                            class="hidden"
+                                        )
+
+                                        button.avatar-add(
+                                            type="button"
+                                            id="btnChooseAvatar"
+                                        ) +
+
+                                input(
+                                    type="hidden"
+                                    name="avatarUser"
+                                    id="avatarSelected"
+                                )
+
+                                .avatar-preview
+                                    img(
+                                        class="hidden"
+                                        id="avatarPreview"
+                                        src="/images/default-avatar.png"
+                                        alt="Avatar Preview"
+                                    )
+
+                        .row
+
+                            .form-group
+                                label HỌ
+
+                                .input-box
+                                    i.fa-solid.fa-user
+                                    input(
+                                        name="surname"
+                                        type="text"
+                                        placeholder="Nguyễn"
+                                    )
+
+                            .form-group
+                                label TÊN
+
+                                .input-box
+                                    i.fa-solid.fa-user
+                                    input(
+                                        name = "name"
+                                        type="text"
+                                        placeholder="Văn A"
+                                    )
+
+                        .form-group
+                            label SỐ ĐIỆN THOẠI
+
+                            .input-box
+                                i.fa-solid.fa-phone
+
+                                input(
+                                    name="phone"
+                                    type="text"
+                                    placeholder="09xxxxxxxx"
+                                )
+
+                        .form-group
+                            label EMAIL
+
+                            .input-box
+                                i.fa-solid.fa-envelope
+
+                                input(
+                                    name="email"
+                                    type="email"
+                                    placeholder="example@gmail.com"
+                                )
+
+                        .form-group
+                            label MẬT KHẨU
+
+                            .input-box
+                                i.fa-solid.fa-lock
+
+                                input(
+                                    name="password"
+                                    type="password"
+                                    placeholder="********"
+                                )
+
+                        button.submit-btn(type="submit")
+                            | Đăng ký tài khoản
+
+    script(src="/client/JS/auth.js") 

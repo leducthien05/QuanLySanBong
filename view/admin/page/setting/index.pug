@@ -122,7 +122,6 @@ block content
                                             .favicon-placeholder
                                                 i.fa-solid.fa-image
                                                 span No favicon
-
             // WEBSITE CONFIGURATION SECTION
             .settings-section.card.mb-4
                 .card-header.settings-section-header
@@ -158,6 +157,33 @@ block content
                                     rows="2"
                                     placeholder="Nhập thông báo bảo trì"
                                 ) #{setting.maintenanceMessage || '' } 
+            // AVATAR USER
+            .settings-section.card.mb-4
+                .card-header.settings-section-header
+                    i.fa-solid.fa-sliders
+                    span Avatar 
+                
+                .card-body
+                    .row
+                        .col-md-12
+                            .form-group.mb-3
+                                label.form-label Hình ảnh
+
+                                input.form-control(
+                                    type="file"
+                                    name="avatarUser"
+                                    id="imagesInput"
+                                    accept="image/*"
+                                    multiple
+                                )
+
+                                .images-preview-wrapper
+                                    each image in setting.avatarUser
+                                        .image-preview-item
+                                            img.image-preview(
+                                                src=image
+                                                alt="Image"
+                                            )
 
             // PAYMENT METHODS SECTION
             .settings-section.card.mb-4
