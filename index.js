@@ -15,9 +15,8 @@ app.locals.prefixAdmin = systemConfig.systemConfig.prefixAdmin;
 const methodOverride = require("method-override");
 app.use(methodOverride('_method'));
 // req.body
-// app.use(express.urlencoded({ extended: true }));
-const bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 // cookie-parser
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());

@@ -2,13 +2,13 @@ const mongoose = require('mongoose');
 
 const reviewSchema = new mongoose.Schema({
     user_id: String,
-    feild_id: String,
+    field_id: String,
     fieldName: String,
     address: String,
     booking_id: String,
     rating: Number,
     comment: String,
-    date: String,
+    date: Date,
     deleted: {
         type: Boolean,
         default: false

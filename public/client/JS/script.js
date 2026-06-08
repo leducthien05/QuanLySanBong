@@ -1166,24 +1166,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Submit thay đổi 
     const formChangeInfo = document.querySelector("[form-chang-infouser]");
-    if(formChangeInfo){
+    if (formChangeInfo) {
         const inputForm = formChangeInfo.querySelector("input[name='infoUser']");
         const btnSubmit = document.querySelector(".profile-main .profile-card .card-header .save-btn");
-        if(btnSubmit){
-            btnSubmit.addEventListener("click", (e)=>{
+        if (btnSubmit) {
+            btnSubmit.addEventListener("click", (e) => {
                 const userName = document.querySelector(".profile-main input[name='userName']").value;
                 const displayName = document.querySelector(".profile-main input[name='displayName']").value;
                 const phone = document.querySelector(".profile-main input[name='phone']").value;
                 const email = document.querySelector(".profile-main input[name='email']").value;
                 const sex = document.querySelector(".profile-main select[name='sex']").value;
                 const address = document.querySelector(".profile-main select[name='address']").value;
-                
-                if(!userName){
+
+                if (!userName) {
                     alert("Vui lòng nhập họ tên!");
                     return;
                 }
 
-                if(!email){
+                if (!email) {
                     alert("Vui lòng nhập email!");
                     return;
                 }
@@ -1199,6 +1199,74 @@ document.addEventListener('DOMContentLoaded', function () {
                 formChangeInfo.submit();
             });
         }
+    }
+
+    // Đánh giá sân
+    const btnReview = document.querySelector(".btn-review-submit");
+    if (btnReview) {
+        const idField = document.querySelector(".field-info-section").getAttribute("data-id");
+        btnReview.addEventListener("click", (e) => {
+            const ratingInput = document.querySelector(".review-form-card input[name='rating']");
+            const commentText = document.querySelector(".review-form-card textarea[name='comment']");
+            const rating = ratingInput.value;
+            const comment = commentText.value;
+            const link = `/review/create/${idField}`;
+            fetch(link, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    rating,
+                    comment
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    ratingInput.checked = false;
+                    commentText.value = "";
+                    const review = data.data;
+                    const user = data.user;
+                    let countRating = "";
+                    for (let i = 0; i < review.rating; i++) {
+                        countRating += "⭐";
+                    }
+                    const date = new Date(review.date);
+
+                    const format = date.toISOString().split("T")[0];
+                    const html = `
+                        <div class="review-card">
+                            <div class="review-header">
+                                <div class="review-user">
+                                    <div class="review-avatar">
+                                        ${user.userName}
+                                    </div>
+
+                                    <div class="review-info">
+                                        <h4>${user.userName}</h4>
+                                        <span>${format}</span>
+                                    </div>
+                                </div>
+
+                                <div class="review-rating">
+                                    ${countRating}
+                                </div>
+                            </div>
+
+                            <p class="review-content">
+                                ${review.comment}
+                            </p>
+                        </div>
+                        `;
+                    const reviewList = document.querySelector(".review-list");
+
+                    reviewList.insertAdjacentHTML(
+                        "afterbegin",
+                        html
+                    );
+
+                });
+        });
     }
 });
 

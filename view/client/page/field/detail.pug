@@ -1,4 +1,5 @@
 extends ../../layout/default
+include ../../mixin/convertTime.pug
 
 block content
     section.field-detail
@@ -79,7 +80,10 @@ block content
                                     alt=field.title
                                 )
 
-    section.field-info-section
+    section(
+        class="field-info-section"
+        data-id=field._id
+    )
         .gf-container
 
             .field-info-layout
@@ -326,131 +330,6 @@ block content
                         | Thanh toán trực tuyến qua ví điện tử hoặc chuyển khoản.
                         | Cũng có thể thanh toán tiền mặt trực tiếp tại sân.
 
-    //- section.field-review
-    //-     .gf-container
-
-    //-         h2.section-title
-    //-             span.line
-    //-             | Đánh giá từ khách hàng
-
-    //-         // Tổng quan
-    //-         .review-summary
-
-    //-             .summary-score
-    //-                 h3 4.9
-
-    //-                 .stars ⭐⭐⭐⭐⭐
-
-    //-                 p 128 đánh giá
-
-    //-             .summary-bars
-
-    //-                 .bar-row
-    //-                     span 5
-    //-                     .bar
-    //-                         .fill.star5(style="width:85%")
-    //-                     span 109
-
-    //-                 .bar-row
-    //-                     span 4
-    //-                     .bar
-    //-                         .fill.star4(style="width:12%")
-    //-                     span 14
-
-    //-                 .bar-row
-    //-                     span 3
-    //-                     .bar
-    //-                         .fill.star3(style="width:4%")
-    //-                     span 4
-
-    //-                 .bar-row
-    //-                     span 2
-    //-                     .bar
-    //-                         .fill.star2(style="width:1%")
-    //-                     span 1
-
-    //-                 .bar-row
-    //-                     span 1
-    //-                     .bar
-    //-                         .fill.star1(style="width:0%")
-    //-                     span 0
-
-    //-         // Form đánh giá
-    //-         .review-form-card
-
-    //-             h3 Viết đánh giá
-
-    //-             form(
-    //-                 action=`/review/create/${field._id}`
-    //-                 method="POST"
-    //-             )
-
-    //-                 .rating-select
-
-    //-                     label Chọn số sao
-
-    //-                     .rating-stars
-
-    //-                         each star in [5,4,3,2,1]
-    //-                             label.star-option
-    //-                                 input(
-    //-                                     type="radio"
-    //-                                     name="rating"
-    //-                                     value=star
-    //-                                     required
-    //-                                 )
-    //-                                 span #{star}★
-
-    //-                 .form-group
-    //-                     label Nội dung đánh giá
-
-    //-                     textarea(
-    //-                         name="content"
-    //-                         rows="5"
-    //-                         placeholder="Chia sẻ trải nghiệm của bạn khi sử dụng sân..."
-    //-                         required
-    //-                     )
-
-    //-                 button.btn-review-submit(
-    //-                     type="submit"
-    //-                 )
-    //-                     i.fa-solid.fa-paper-plane
-    //-                     |  Gửi đánh giá
-
-    //-         // Danh sách review
-
-    //-         .review-list
-
-    //-             each item in reviews
-
-    //-                 .review-card
-
-    //-                     .review-header
-
-    //-                         .review-user
-
-    //-                             .review-avatar
-    //-                                 = item.fullName.charAt(0)
-
-    //-                             .review-info
-    //-                                 h4= item.fullName
-    //-                                 span= item.createdAt
-
-    //-                         .review-rating
-    //-                             = "⭐".repeat(item.rating)
-
-    //-                     p.review-content= item.content
-
-    //-                     .review-tags
-
-    //-                         if item.rating >= 5
-    //-                             span.review-tag Rất tốt
-
-    //-                         if item.rating >= 4
-    //-                             span.review-tag Sân đẹp
-
-    //-                         if item.rating >= 4
-    //-                             span.review-tag Đặt sân nhanh
     section.field-review
         .gf-container
 
@@ -464,8 +343,7 @@ block content
                 .summary-score
                     h3 4.9
 
-                    .stars
-                        | ⭐⭐⭐⭐⭐
+                    .stars ⭐⭐⭐⭐⭐
 
                     p 128 đánh giá
 
@@ -486,7 +364,7 @@ block content
                     .bar-row
                         span 3
                         .bar
-                            .fill.star3(style="width:3%")
+                            .fill.star3(style="width:4%")
                         span 4
 
                     .bar-row
@@ -501,109 +379,63 @@ block content
                             .fill.star1(style="width:0%")
                         span 0
 
-            // Form đánh giá
-
             .review-form-card
 
                 h3 Viết đánh giá
 
-                form
+                .rating-stars
 
-                    .rating-stars
+                    each star in [5,4,3,2,1]
+                        label.star-option
+                            input(
+                                type="radio"
+                                name="rating"
+                                value=star
+                            )
+                            span #{star}★
 
-                        each star in [5,4,3,2,1]
-                            label.star-option
-                                input(
-                                    type="radio"
-                                    name="rating"
-                                    value=star
-                                )
-                                span #{star}★
+                .form-group
+                    textarea(
+                        name="comment"
+                        rows="5"
+                        placeholder="Chia sẻ trải nghiệm của bạn về sân bóng..."
+                    )
 
-                    .form-group
-                        textarea(
-                            rows="5"
-                            placeholder="Chia sẻ trải nghiệm của bạn về sân bóng..."
-                        )
-
-                    button.btn-review-submit(type="button")
-                        i.fa-solid.fa-paper-plane
-                        |  Gửi đánh giá
-
-            // Review mẫu
-
+                button.btn-review-submit(type="button")
+                    i.fa-solid.fa-paper-plane
+                    |  Gửi đánh giá
             .review-list
 
-                .review-card
+                each item in reviews
 
-                    .review-header
+                    .review-card
 
-                        .review-user
+                        .review-header
 
-                            .review-avatar
-                                | NA
+                            .review-user
 
-                            .review-info
-                                h4 Nguyễn Văn A
-                                span 12/05/2026
+                                .review-avatar
+                                    = item.user.userName
 
-                        .review-rating ⭐⭐⭐⭐⭐
+                                .review-info
+                                    h4= item.user.userName
+                                    +date(item.date)
 
-                    p.review-content
-                        | Sân rất tốt, cỏ mới, đèn sáng.
-                        | Nhân viên nhiệt tình, giá cả hợp lý.
-                        | Đặt sân qua app rất tiện, chỉ mất 2 phút là xong.
-                        | Sẽ quay lại vào tuần sau!
+                            .review-rating
+                                = "⭐".repeat(item.rating)
 
-                    .review-tags
-                        span.review-tag Cỏ tốt
-                        span.review-tag Nhân viên thân thiện
-                        span.review-tag Đặt sân nhanh
+                        p.review-content= item.comment
 
-                .review-card
+                        .review-tags
 
-                    .review-header
+                            if item.rating >= 5
+                                span.review-tag Rất tốt
 
-                        .review-user
+                            if item.rating >= 4
+                                span.review-tag Sân đẹp
 
-                            .review-avatar
-                                | TT
-
-                            .review-info
-                                h4 Trần Thành
-                                span 08/05/2026
-
-                        .review-rating ⭐⭐⭐⭐
-
-                    p.review-content
-                        | Sân sạch sẽ, bãi gửi xe rộng.
-                        | Tuy nhiên cuối tuần khá đông nên cần đặt trước.
-
-                    .review-tags
-                        span.review-tag Sân đẹp
-                        span.review-tag Bãi xe rộng
-
-                .review-card
-
-                    .review-header
-
-                        .review-user
-
-                            .review-avatar
-                                | LM
-
-                            .review-info
-                                h4 Lê Minh
-                                span 02/05/2026
-
-                        .review-rating ⭐⭐⭐⭐⭐
-
-                    p.review-content
-                        | Chất lượng sân rất ổn, ánh sáng tốt.
-                        | Giá hợp lý so với khu vực Cầu Giấy.
-
-                    .review-tags
-                        span.review-tag Giá hợp lý
-                        span.review-tag Đèn sáng
+                            if item.rating >= 4
+                                span.review-tag Đặt sân nhanh
+    
 
     script(src="/client/JS/script.js")

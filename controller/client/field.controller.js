@@ -3,6 +3,8 @@ const Service = require("../../model/service.model");
 const Pricing = require("../../model/pricing.model");
 const Booking = require("../../model/booking.model");
 const Payment = require("../../model/payment.model");
+const Review = require("../../model/review.model");
+const User = require("../../model/user.model");
 
 const paginationHelper = require("../../helper/pagination.helper");
 const pricingHelper = require("../../helper/getPricing.helper");
@@ -166,6 +168,29 @@ module.exports.detail = async (req, res) => {
             status: "active"
         });
 
+        // Đánh giá
+        const review = await Review.find({
+            field_id: field.id
+        });
+        // lấy danh sách user_id từ review
+        const idUser = review.map(item => item.user_id);
+
+        // lấy user
+        const user = await User.find({
+            _id: { $in: idUser }
+        }).select("userName avatar address");
+
+        // map user theo _id
+        const userMap = {};
+        user.forEach(item => {
+            userMap[item._id] = item;
+        });
+
+        // gắn user vào review
+        review.forEach(item => {
+            item.user = userMap[item.user_id];
+        });
+
         // Render the detail page
         res.render('client/page/field/detail', {
             pageTitle: `${field.name} | Đặt Sân Bóng`,
@@ -173,6 +198,7 @@ module.exports.detail = async (req, res) => {
             service: service,
             pricing: pricing.pricing,
             payment: payment,
+            reviews: review
         });
 
     } catch (error) {
