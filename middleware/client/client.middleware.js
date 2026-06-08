@@ -18,9 +18,13 @@ module.exports.settingMiddleware = async (req, res, next) => {
             tokenUser,
             process.env.JWT_ACCESS_SECRET
         );
-
+        const user = await User.findOne({
+            deleted: false,
+            status: "active",
+            _id: decoded.id
+        }).select("-password");
         req.user = decoded;
-        res.locals.user = decoded;
+        res.locals.user = user;
 
     } catch (error) {
         console.error(error);

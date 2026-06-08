@@ -28,7 +28,6 @@ router.patch(
     permission.checkPermission("accounts_edit"),
     upload.single("avatar"),
     uploadImage.uploadSingle,
-    validate.create,
     controller.editPatch
 );
 router.get("/detail/:id", permission.checkPermission("accounts_view"), controller.detail);

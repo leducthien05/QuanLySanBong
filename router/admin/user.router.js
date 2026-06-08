@@ -16,7 +16,6 @@ router.post(
     permission.checkPermission("users_create"),
     upload.single("avatar"),
     uploadImage.uploadSingle,
-    validate.create,
     controller.createPost
 );
 router.patch("/change-status/:status/:id", permission.checkPermission("users_edit"), controller.changeStatus);
@@ -28,7 +27,6 @@ router.patch(
     permission.checkPermission("users_edit"),
     upload.single("avatar"),
     uploadImage.uploadSingle,
-    validate.create,
     controller.editPatch
 );
 router.get("/detail/:id", permission.checkPermission("users_view"), controller.detail);

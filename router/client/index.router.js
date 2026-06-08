@@ -2,6 +2,7 @@ const homeRouter = require("./home.router");
 const bookingRouter = require("./booking.router");
 const fieldRouter = require("./field.router");
 const authRouter = require("./auth.router");
+const userRouter = require("./user.router");
 
 const settingMiddleware = require("../../middleware/client/client.middleware");
 
@@ -11,4 +12,5 @@ module.exports = (app) => {
     app.use("/field", fieldRouter);
     app.use("/booking", bookingRouter);
     app.use("/auth", authRouter);
+    app.use("/user", userRouter);
 };

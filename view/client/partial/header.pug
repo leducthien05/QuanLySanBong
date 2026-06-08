@@ -22,10 +22,10 @@ header.gf-header
             li
                 a(href="/booking")
                     | Đặt sân
-
-            li
-                a(href="/booking-history")
-                    | Lịch sử
+            if(user)
+                li
+                    a(href="/booking-history")
+                        | Lịch sử
 
             li
                 a(href="/contact")
@@ -35,7 +35,7 @@ header.gf-header
         .gf-header__action
 
             if user
-                a.gf-login-btn(href="/account")
+                a.gf-login-btn(href="/user/info")
                     | Tài khoản
 
                 a.gf-logout-btn(href="/auth/logout")

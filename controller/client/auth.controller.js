@@ -36,7 +36,7 @@ module.exports.register = async (req, res) => {
         status: "active",
         avatar: req.body.avatarUser,
     }
-
+    
     const dataUser = new User(data);
     await dataUser.save();
 

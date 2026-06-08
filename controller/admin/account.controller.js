@@ -221,6 +221,7 @@ module.exports.editPatch = async (req, res) => {
             req.flash("error", "Email đã tồn tại!");
             return res.redirect(req.get("referer") || "/");
         }
+        console.log(req.body);
         if (!req.body.password) {
             delete req.body.password;
         }else{

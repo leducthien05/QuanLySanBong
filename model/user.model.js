@@ -6,10 +6,13 @@ const userSchema = new mongoose.Schema({
     email: String,
     phone: String,
     password: String,
+    displayName: String,
+    sex: String,
     status: {
         type: String,
         default: "active"
     },
+    address: String,
     avatar: String,
     createdAt: Date, 
     updatedAt: Date,
@@ -17,6 +20,8 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     }
+}, {
+    timestamps: true
 });
 const User = mongoose.model('User', userSchema, 'user');
 module.exports = User;

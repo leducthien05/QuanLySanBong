@@ -32,7 +32,7 @@ module.exports.uploadSingle = async (req, res, next) => {
     if (req.file) {
         async function upload(req) {
             let result = await uploadCloudinary(req.file.buffer);
-            req.body[req.file.fieldname] = result.secure_url;
+            req.body[req.file.fieldname] = result;
             next();
         }
 

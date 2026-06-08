@@ -1,0 +1,382 @@
+extends ../../layout/default.pug
+include ../../mixin/convertTime.pug
+
+block content
+
+    .account-page
+
+        // PROFILE HEADER
+        .profile-header
+
+            .profile-info
+
+                .avatar
+                    img(
+                        src=user.avatar
+                    )
+                .user-info
+
+                    h1 Nguyễn Văn A
+
+                    .user-meta
+
+                        span
+                            i.fa-solid.fa-at
+                            |  #{user.info}
+
+                        span
+                            i.fa-solid.fa-mobile-screen
+                            |  #{user.phone}
+
+                        span
+                            i.fa-solid.fa-calendar
+                            | Thành viên từ 
+                            +date(user.createdAt)
+
+            .profile-actions
+
+                a.btn-primary(href="/booking")
+                    i.fa-solid.fa-plus
+                    |  Đặt sân mới
+
+
+        // TABS
+
+        .account-tabs
+
+            button(
+                class="tab-btn active"
+                type="button"
+                data-tab = "history"
+            )
+                i.fa-solid.fa-clipboard-list
+                |  Lịch sử đặt sân
+                span.badge #{booking.length}
+
+            button(
+                class="tab-btn"
+                type="button"
+                data-tab = "favorite"
+            )
+                i.fa-solid.fa-heart
+                |  Sân yêu thích
+                span.badge #{favorite.length}
+
+            button(
+                class="tab-btn"
+                type="button"
+                data-tab = "profile"
+            )
+                i.fa-solid.fa-user
+                |  Hồ sơ
+
+            button(
+                class="tab-btn"
+                type="button"
+                data-tab = "review"
+            )
+                i.fa-solid.fa-star
+                |  Đánh giá của tôi
+        // STATS
+
+        .stats-grid
+
+            .stat-card
+                h2 #{booking.length}
+                p Lần đặt sân
+
+            .stat-card.blue
+                h2 #{amount}
+                p Tổng chi tiêu
+
+            .stat-card.green
+                h2 #{favorite.length}
+                p Sân yêu thích
+
+
+        // FILTER
+
+        .booking-filter
+
+            button.active
+                | Tất cả (#{booking.length})
+
+            button
+                | ⏳ Sắp tới (2)
+
+            button
+                | ✅ Đã hoàn thành (18)
+
+            button
+                | ❌ Đã hủy (4)
+
+
+        // BOOKING ITEM
+
+        .booking-list
+
+            each item in booking
+
+                .booking-card
+
+                    .booking-left
+
+                        .booking-image
+                            img(
+                                src=item.field.image[0]
+                            )
+
+                        .booking-content
+                            a(href=`/field/detail/${item.field.slug}`)
+                                h3 #{item.field.name}
+
+                            p
+                                i.fa-solid.fa-location-dot
+                                | #{item.field.address.titleAddress}
+
+                            .booking-info
+
+                                span
+                                    i.fa-solid.fa-calendar
+                                    +date(item.date)
+
+                                span
+                                    i.fa-solid.fa-clock
+                                    |  #{item.pricing.map(slot => `${slot.time}`).join("-")}
+
+                    .booking-right
+
+                        .booking-code
+                            | #{item._id}
+
+                        .booking-status.upcoming
+                            | Sắp tới
+
+                        .booking-price
+                            | #{item.totalPrice.toLocaleString("vi-VN")}đ
+                        .booking-actions    
+                            if(item.status == "completed" || item.status == "cancel")
+
+                                button.btn-booking.btn-reschedule(
+                                    type="button"
+                                )
+                                    i.fa-solid.fa-rotate-right
+                                    |  Đặt lại
+                            if(item.status == "paid" || item.confirmed == "confirmed")
+                                button.btn-booking.btn-cancel(
+                                    type="button"
+                                )
+                                    i.fa-solid.fa-xmark
+                                    |  Hủy lịch
+
+        //- Sân yêu thích
+        .booking-fields-grid.hidden
+            each item in favorite
+                //- Field Card 1
+                div(
+                    class="booking-field-card"
+                    data-field-id=item._id 
+                    data-field = item
+                )
+                    .booking-field-image
+                        img(
+                            src=item.image[0]
+                        )
+                    
+                    .booking-field-content
+                        h3.booking-field-name #{item.name}
+                        
+                        .booking-field-type Loại: #{item.type}v#{item.type}
+                        
+                        .booking-field-location
+                            a(
+                                href=item.address.googleMapUrl
+                            )
+                            | 📍 #{item.address.titleAddress}
+                        
+                        .booking-field-rating
+                            span.booking-stars 
+                                - for(const i = 0; i < item.rating.totalRating; i++)
+                                    | ⭐
+                            span.booking-rating-number (#{item.rating.totalRating})
+                        
+                        .booking-field-footer
+                            .booking-field-price
+                                span.booking-price-number #{item.price.price}
+                                span.booking-price-unit đ/giờ
+                            
+                            .booking-field-status.booking-field-status--available
+                                span Sẵn sàng
+
+        //- Hồ sơ
+        .profile-layout.hidden
+            form(
+                class="hidden"
+                action = "/user/info/edit?_method=PATCH"
+                method = "POST"
+                enctype="multipart/form-data"
+                form-chang-infouser
+            )
+                .hidden     
+                    input(
+                        name="infoUser"
+                    )
+
+                    input(
+                        type="file"
+                        id="avatarInput"
+                        name="avatar"
+                        accept="image/*"
+                        hidden
+                    )
+            // LEFT
+
+            .profile-main
+
+                .profile-card
+
+                    .card-header
+                        .header-title
+                            i.fa-solid.fa-user
+                            span Thông tin cá nhân
+
+                        button.save-btn(type="button")
+                            | Lưu thay đổi
+
+                    .card-body
+
+                        .form-grid
+
+                            .form-group
+                                label HỌ VÀ TÊN *
+
+                                input(
+                                    name="userName"
+                                    type="text"
+                                    value=user.userName
+                                )
+
+                            .form-group
+                                label TÊN HIỂN THỊ
+
+                                input(
+                                    name="displayName"
+                                    type="text"
+                                    value=user.displayName
+                                )
+
+                            .form-group
+                                label SỐ ĐIỆN THOẠI *
+
+                                .input-icon
+                                    i.fa-solid.fa-mobile-screen
+
+                                    input(
+                                        name="phone"
+                                        type="text"
+                                        value=user.phone
+                                    )
+
+                            .form-group
+                                label EMAIL
+
+                                .input-icon
+                                    i.fa-solid.fa-at
+
+                                    input(
+                                        name="email"
+                                        type="email"
+                                        value=user.email
+                                    )
+
+                            .form-group
+                                label GIỚI TÍNH
+
+                                select(name="sex")
+                                    option(value="1") Nam
+                                    option(value="0") Nữ
+                                    option(value="2") Khác
+
+                            .form-group
+                                label KHU VỰC
+
+                                select(
+                                    name="address"
+                                )
+                                    option(value="Hà Nội" selected = (user.address == "Hà Nội")) Hà Nội
+                                    option(value="Hồ Chí Minh" selected = (user.address == "Hồ Chí Minh")) Hồ Chí Minh
+
+
+            // RIGHT
+
+            .profile-sidebar
+
+                // AVATAR
+
+                .profile-card
+
+                    .card-header
+                        .header-title
+                            i.fa-solid.fa-camera
+                            span Ảnh đại diện
+
+                    .card-body.avatar-body
+
+                        .profile-avatar
+                            img(
+                                id="avatarPreview"
+                                src=user.avatar
+                            )
+
+                        button.change-avatar-btn(
+                            type="button"
+                        )
+                            | Đổi ảnh đại diện
+
+        //- review
+        .review-card.hidden
+
+            .review-header
+
+                .header-title
+                    i.fa-solid.fa-star
+                    span Đánh giá của tôi (#{review.length})
+
+                a.view-all(href="#")
+                    | Xem tất cả
+                    i.fa-solid.fa-arrow-right
+
+            .review-body
+
+                each item in review
+
+                    .review-item
+
+                        .review-left
+
+                            .review-icon
+                                | #{item.icon}
+
+                            .review-content
+
+                                .review-top
+
+                                    .review-info
+
+                                        h3= item.fieldName
+
+                                        span.review-date= item.date
+
+                                    .review-rating
+
+                                        - for(let i = 0; i < item.rating; i++)
+                                            i.fa-solid.fa-star
+
+                                p.review-text= item.comment
+
+                                button.edit-review-btn(
+                                    type="button"
+                                )
+                                    i.fa-solid.fa-pen
+                                    span Chỉnh sửa đánh giá
+    script(src="/client/JS/script.js") 

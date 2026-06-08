@@ -499,7 +499,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!bookingData.pricing || !bookingData.pricing.length > 0) {
                 alert('Vui lòng chọn slot đặt sân');
                 return;
-            }else {
+            } else {
                 bookingData.pricing = bookingData.pricing.map(item => item.pricing_id);
             }
             if (!bookingData.payment) {
@@ -1081,6 +1081,125 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
+    // ===============================================Info========================================
+    const btnTabInfo = document.querySelectorAll(".tab-btn");
+    if (btnTabInfo.length > 0) {
+        const tabHistory = document.querySelector(".account-page .booking-list");
+        const tabFavorite = document.querySelector(".account-page .booking-fields-grid");
+        const tabProfile = document.querySelector(".account-page .profile-layout");
+        const tabReview = document.querySelector(".account-page .review-card");
+        const cardStatistical = document.querySelector(".booking-filter");
+        btnTabInfo.forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                const dataTab = btn.getAttribute("data-tab");
+                btnTabInfo.forEach(item => {
+                    item.classList.remove("active");
+                });
+
+                btn.classList.add("active");
+
+                // Tab lịch sử đặt lịch
+                if (dataTab == "history") {
+                    cardStatistical.classList.remove("hidden");
+                    tabHistory.classList.remove("hidden");
+                    tabFavorite.classList.add("hidden");
+                    tabProfile.classList.add("hidden");
+                    tabReview.classList.add("hidden");
+                }
+
+                // Tab sân bóng yêu thích
+                if (dataTab == "favorite") {
+                    tabFavorite.classList.remove("hidden");
+                    tabHistory.classList.add("hidden");
+                    cardStatistical.classList.add("hidden");
+                    tabProfile.classList.add("hidden");
+                    tabReview.classList.add("hidden");
+                }
+
+                // Tab hồ sơ
+                if (dataTab == "profile") {
+                    tabProfile.classList.remove("hidden");
+                    tabFavorite.classList.add("hidden");
+                    tabHistory.classList.add("hidden");
+                    cardStatistical.classList.add("hidden");
+                    tabReview.classList.add("hidden");
+                }
+
+                // Tab đánh giá
+                if (dataTab == "review") {
+                    tabReview.classList.remove("hidden");
+                    tabFavorite.classList.add("hidden");
+                    tabProfile.classList.add("hidden");
+                    tabHistory.classList.add("hidden");
+                    cardStatistical.classList.add("hidden");
+                }
+            });
+        });
+    }
+
+    // Chọn ảnh đại diện
+    const btnChangeAvatar = document.querySelector(".change-avatar-btn");
+    const avatarInput = document.getElementById("avatarInput");
+    const avatarPreview = document.getElementById("avatarPreview");
+
+    if (btnChangeAvatar) {
+        btnChangeAvatar.addEventListener("click", () => {
+            avatarInput.click();
+        });
+    }
+
+    if (avatarInput) {
+        avatarInput.addEventListener("change", (e) => {
+            const file = e.target.files[0];
+
+            if (!file) return;
+
+            const reader = new FileReader();
+
+            reader.onload = function (event) {
+                avatarPreview.src = event.target.result;
+            };
+
+            reader.readAsDataURL(file);
+        });
+    }
+
+    // Submit thay đổi 
+    const formChangeInfo = document.querySelector("[form-chang-infouser]");
+    if(formChangeInfo){
+        const inputForm = formChangeInfo.querySelector("input[name='infoUser']");
+        const btnSubmit = document.querySelector(".profile-main .profile-card .card-header .save-btn");
+        if(btnSubmit){
+            btnSubmit.addEventListener("click", (e)=>{
+                const userName = document.querySelector(".profile-main input[name='userName']").value;
+                const displayName = document.querySelector(".profile-main input[name='displayName']").value;
+                const phone = document.querySelector(".profile-main input[name='phone']").value;
+                const email = document.querySelector(".profile-main input[name='email']").value;
+                const sex = document.querySelector(".profile-main select[name='sex']").value;
+                const address = document.querySelector(".profile-main select[name='address']").value;
+                
+                if(!userName){
+                    alert("Vui lòng nhập họ tên!");
+                    return;
+                }
+
+                if(!email){
+                    alert("Vui lòng nhập email!");
+                    return;
+                }
+                const data = {
+                    userName: userName,
+                    displayName: displayName,
+                    phone: phone,
+                    email: email,
+                    sex: sex,
+                    address: address
+                }
+                inputForm.value = JSON.stringify(data);
+                formChangeInfo.submit();
+            });
+        }
+    }
 });
 
 
