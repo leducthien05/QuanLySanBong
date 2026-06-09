@@ -33,6 +33,8 @@ module.exports.create = async (req, res) => {
                 timeZone: "Asia/Ho_Chi_Minh"
             }
         );
+
+        console.log(rating);
         // Dữ liệu đánh giá
         const data = {
             user_id: req.user.id,

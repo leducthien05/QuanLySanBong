@@ -355,7 +355,10 @@ block content
                         .review-left
 
                             .review-icon
-                                | #{item.icon}
+                                img(
+                                    src=user.avatar
+                                    style="border-radius: 50%"
+                                )
 
                             .review-content
 
@@ -365,7 +368,8 @@ block content
 
                                         h3= item.fieldName
 
-                                        span.review-date= item.date
+                                        span.review-dat
+                                        +date(item.date)
 
                                     .review-rating
 

@@ -341,43 +341,24 @@ block content
             .review-summary
 
                 .summary-score
-                    h3 4.9
+                    h3 #{avgRating}
 
                     .stars ⭐⭐⭐⭐⭐
 
-                    p 128 đánh giá
+                    p #{totalReview} đánh giá
 
                 .summary-bars
+                    each star in [5, 4, 3, 2, 1]
+                        .rating-row
+                            span= star
 
-                    .bar-row
-                        span 5
-                        .bar
-                            .fill.star5(style="width:85%")
-                        span 109
+                            .progress
+                                .progress-fill(
+                                    style=`width: ${percent[star]}%`
+                                )
 
-                    .bar-row
-                        span 4
-                        .bar
-                            .fill.star4(style="width:12%")
-                        span 14
+                            span= stats[star]
 
-                    .bar-row
-                        span 3
-                        .bar
-                            .fill.star3(style="width:4%")
-                        span 4
-
-                    .bar-row
-                        span 2
-                        .bar
-                            .fill.star2(style="width:1%")
-                        span 1
-
-                    .bar-row
-                        span 1
-                        .bar
-                            .fill.star1(style="width:0%")
-                        span 0
 
             .review-form-card
 

@@ -1206,9 +1206,15 @@ document.addEventListener('DOMContentLoaded', function () {
     if (btnReview) {
         const idField = document.querySelector(".field-info-section").getAttribute("data-id");
         btnReview.addEventListener("click", (e) => {
-            const ratingInput = document.querySelector(".review-form-card input[name='rating']");
+            const ratingInput = document.querySelectorAll(".review-form-card input[name='rating']");
             const commentText = document.querySelector(".review-form-card textarea[name='comment']");
-            const rating = ratingInput.value;
+            let rating = 0;
+            ratingInput.forEach(item => {
+                if(item.checked == true){
+                    rating = item.value;
+                }
+            });
+            console.log(rating);
             const comment = commentText.value;
             const link = `/review/create/${idField}`;
             fetch(link, {
