@@ -12,4 +12,7 @@ router.get("/payment-vnpay", controller.vnpay);
 router.get("/payment-momo/return", authMiddleware.auth, controller.return);
 router.post("/payment-momo/notify", controller.notify);
 
+// Cancel booking (AJAX)
+router.patch('/cancel/:id/:idAccount', authMiddleware.auth, controller.cancelBooking);
+
 module.exports = router;

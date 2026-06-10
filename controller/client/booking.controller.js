@@ -4,6 +4,9 @@ const Service = require("../../model/service.model");
 const Pricing = require("../../model/pricing.model");
 const Payment = require("../../model/payment.model");
 
+const Refund = require("../../model/refund.model");
+const User = require("../../model/user.model");
+
 const paymentHelper = require("../../helper/payment.helper");
 const prcingHelper = require("../../helper/getPricing.helper");
 
@@ -130,7 +133,6 @@ module.exports.payment = async (req, res) => {
         _id: { $in: idPricing },
     });
 
-    console.log(dataPricing)
     const exists = await Booking.findOne({
         deleted: false,
         field_id: data.field_id,
@@ -334,6 +336,7 @@ module.exports.vnpay = async (req, res) => {
         return res.redirect("/booking");
     }
 }
+
 // [GET] /booking/payment-momo/return
 module.exports.return = async (req, res) => {
     const booking_id = req.query.orderId;
@@ -382,4 +385,52 @@ module.exports.notify = async (req, res) => {
     }
 
     res.status(200).json({ message: "OK" });
+}
+
+// [POST] /booking/cancel/:id (AJAX)
+module.exports.cancelBooking = async (req, res) => {
+    try {
+        const bookingId = req.params.id;
+        const accountId = req.params.idAccount;
+        const userId = req.user.id;
+
+        const booking = await Booking.findOne({ _id: bookingId, deleted: false });
+        if (!booking) return res.status(404).json({ message: "Booking không tồn tại." });
+        if (String(booking.user_id) !== String(userId)) return res.status(403).json({ message: "Không được phép hủy booking này." });
+
+        // Prevent cancelling already cancelled/completed/failed
+        if (booking.status === "canceled" || booking.status === "completed" || booking.status === "failed") {
+            return res.status(400).json({ message: "Không thể hủy booking ở trạng thái hiện tại." });
+        }
+
+        // Get user's bank info (prefer saved bankInfo, otherwise accept payload)
+        const user = await User.findOne({ _id: userId });
+        const bankInfo =user.bankInfo
+
+        if (!bankInfo || !bankInfo.accountName || !bankInfo.accountNumber || !bankInfo.bankName) {
+            return res.status(400).json({ message: "Thiếu thông tin ngân hàng để hoàn tiền." });
+        }
+
+        // Update booking status to canceled (note: existing enum uses 'canceled')
+        await Booking.updateOne({ _id: bookingId }, { status: "canceled" });
+
+        // Create Refund document
+        const refund = new Refund({
+            booking_id: bookingId,
+            user_id: userId,
+            amount: booking.totalPrice || 0,
+            bankName: bankInfo.bankName,
+            accountNumber: bankInfo.accountNumber,
+            accountName: bankInfo.accountName,
+            status: "pending",
+            processingBy: accountId,
+            createdAt: new Date()
+        });
+        await refund.save();
+
+        return res.status(200).json({ message: "Hủy lịch thành công. Yêu cầu hoàn tiền đã được tạo." });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Có lỗi khi hủy booking." });
+    }
 }

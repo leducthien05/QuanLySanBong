@@ -12,6 +12,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "active"
     },
+    bankInfo: {
+        accountName: String,
+        accountNumber: String,
+        bankName: String
+    },
     address: String,
     avatar: String,
     createdAt: Date, 

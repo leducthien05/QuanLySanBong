@@ -26,6 +26,11 @@ aside.sidebar
                     a(href=`${prefixAdmin}/fields`)
                         i.fa-regular.fa-futbol
                         span Sân bóng
+            if(accountRole.permission.includes("refund_manage"))
+                li
+                    a(href=`${prefixAdmin}/refunds`)
+                        i.fa-solid.fa-money-bill-transfer
+                        span Hoàn tiền
             if(accountRole.permission.includes("services_view"))
                 li
                     a(href=`${prefixAdmin}/services`)

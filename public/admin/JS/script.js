@@ -100,9 +100,11 @@ if (btnChangeStatus.length > 0) {
                     if (data.status == "active") {
                         btn.textContent = "● Mở cửa";
                         btn.classList.add("open");
+                        btn.classList.remove("closed");
                     } else if (data.status == "inactive") {
                         btn.textContent = "● Đóng cửa";
-                        btn.classList.remove("open");
+                        btn.classList.remove("open")
+                        btn.classList.add("closed");
                     }
                 });
         });
@@ -276,7 +278,8 @@ const fullDate = `${weekday}, ${today.getDate()}/${
     today.getMonth() + 1
 }/${today.getFullYear()}`;
 
-const dateElement = document.querySelector(".date");
+const dateElement = document.querySelector(".header .date");
+console.log(dateElement)
 if(dateElement){
     dateElement.textContent = fullDate;
 }

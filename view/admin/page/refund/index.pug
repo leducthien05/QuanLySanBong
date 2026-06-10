@@ -1,0 +1,73 @@
+extends ../../layout/default.pug
+include ../../mixin/pagination.pug
+include ../../mixin/search.pug
+include ../../mixin/buttonStatus.pug
+include ../../mixin/sort.pug
+include ../../mixin/change-multi.pug
+
+block content
+    .card.mb-3
+        .card-header Bộ lọc và Tìm kiếm
+        .card-body
+            .row
+                //- if(role.permission.includes("products_edit"))
+                .col-6
+                    +buttonStatus(filterStatus)
+                .col-6 
+                    +search(keyword)
+    
+    div(class="field-table")
+        table(
+            table-view
+            checkbox-multi
+        )
+            thead
+                tr
+                    th MDH
+                    th NGƯỜI HỦY
+                    th SỐ ĐIỆN THOẠI
+                    th NGÂN HÀNG
+                    th TÊN TÀI KHOẢN
+                    th SỐ TÀI KHOẢN
+                    th NGƯƠI THỤ LÝ
+                    th GIÁ THANH TOÁN
+                    th GIÁ HOÀN
+                    th TRẠNG THÁI
+            tbody
+                each item in refunds
+                    tr
+                        td #{item.booking_id}
+                        td #{item.user.userName}
+                        td #{item.user.phone}
+                        td #{item.bankName}
+                        td #{item.accountName} 
+                        td #{item.accountNumber} 
+                        td #{item.processingByName}
+                        td #{item.amount}
+                        td #{item.priceRefund}
+                        td
+                            if(item.status == "pending")
+                                if(accountRole.permission.includes("refund_manage"))
+                                    span(
+                                        status = item.status
+                                        data-status = item._id
+                                        class="status closed"
+                                        ) ● Chưa xử lý
+                                else
+                                    span(class="status open") ● Chưa xử lý
+                            else 
+                                if(accountRole.permission.includes("refund_manage"))
+                                    span(
+                                        status = item.status
+                                        data-status = item._id
+                                        class="status open"
+                                        ) ● Đã xử lý
+                                else
+                                    span(class="status closed") ● Đã xử lý
+            //- +pagination(pagination) 
+    form(
+        action = `${prefixAdmin}/refunds`
+        form-change-status
+    )  
+    
+    script(src="/admin/JS/refund.js") 

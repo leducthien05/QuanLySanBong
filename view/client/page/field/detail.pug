@@ -228,7 +228,7 @@ block content
 
             .payment-list
                 each item in payment
-                    button.payment-item(data-method="vnpay" data-method-id = item._id)
+                    button.payment-item(data-method=item.title data-method-id = item._id)
                         | #{item.title}
 
     .modal.modal-confirm

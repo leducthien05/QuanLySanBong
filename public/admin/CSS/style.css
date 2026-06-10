@@ -3206,3 +3206,129 @@ td {
     height: 100%;
     object-fit: cover;
 }
+
+/* Chi tiết booking */
+.booking-detail {
+    padding: 20px;
+}
+
+.booking-detail__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.booking-detail__header h1 {
+    margin: 0;
+    font-size: 38px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.booking-detail__back {
+    color: #3498db;
+    text-decoration: none;
+}
+
+.booking-detail__summary {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.summary-card {
+    background: #02470b;
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.summary-card .label {
+    display: block;
+    color: #8bb6ad;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.summary-card .value {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    word-break: break-word;
+}
+
+.summary-card .price {
+    color: #27ae60;
+}
+
+.detail-card {
+    background: #013106;
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 20px;
+}
+
+.detail-card h3 {
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.detail-item {
+    margin-bottom: 15px;
+}
+
+.detail-item .title {
+    color: #8bb6ad;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.detail-item .content {
+    color: #fff;
+}
+
+.tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tag {
+    padding: 8px 15px;
+    border-radius: 20px;
+    color: white;
+    font-size: 14px;
+}
+
+.time-tag {
+    background: #2980b9;
+}
+
+.service-tag {
+    background: #27ae60;
+}
+
+.status {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    display: inline-block;
+}
+
+.status.success {
+    background: #27ae60;
+    color: white;
+}
+
+.status.warning {
+    background: #f39c12;
+    color: white;
+}
+
+.status.danger {
+    background: #e74c3c;
+    color: white;
+}

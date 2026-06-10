@@ -367,6 +367,25 @@ block content
                                                 type="checkbox"
                                             )
                                             span.checkmark
+
+                            //- Group title
+                            tr.group-row
+                                td(colspan="6")
+                                    .group-title
+                                        i.fa-regular.fa-futbol
+                                        span Hoàn tiền hủy sân
+
+                            //- Row 1
+                            tr(data-role="refund_manage")
+                                td.permission-name Thụ lý hoàn tiền
+                                each item in roles
+                                    td("refund_manage")
+                                        label.checkbox-custom
+                                            input(
+                                                type="checkbox"
+                                            )
+                                            span.checkmark
+
                             //- Group title
                             tr.group-row
                                 td(colspan="6")

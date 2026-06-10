@@ -1,40 +1,71 @@
 extends ../../layout/default.pug
+include ../../mixin/convertTime.pug
 
 block content
-    .field-detail-page
-        .field-detail-container
-            h1.field-detail-title Chi tiết đặt sân
+    .booking-detail
+        .booking-detail__header
+            h1 Chi tiết đặt sân
 
-            .field-detail-card
-                .field-detail-top
-                    .field-detail-info
-                        h2.field-detail-name #{booking ? booking.node : "Không có dữ liệu"}
-                        .field-detail-item
-                            span.field-detail-label ID:
-                            span #{booking ? booking._id : ""}
-                        .field-detail-item
-                            span.field-detail-label Người đặt ID:
-                            span #{booking ? booking.user_id : ""}
-                        .field-detail-item
-                            span.field-detail-label Sân ID:
-                            span #{booking ? booking.field_id : ""}
-                        .field-detail-item
-                            span.field-detail-label Khung giờ ID:
-                            span #{booking ? booking.slot_id : ""}
-                        .field-detail-item
-                            span.field-detail-label Dịch vụ ID:
-                            span #{booking ? booking.service_id : ""}
-                        .field-detail-item
-                            span.field-detail-label Tổng tiền:
-                            span #{booking ? booking.totalPrice : ""}
-                        .field-detail-item
-                            span.field-detail-label Giá đơn vị:
-                            span #{booking ? booking.price : ""}
-                        .field-detail-item
-                            span.field-detail-label Nội dung:
-                            span #{booking ? booking.node : ""}
-                        .field-detail-item
-                            span.field-detail-label Ngày tạo:
-                            span #{booking && booking.createdAt ? booking.createdAt.toLocaleString() : ""}
-                .field-detail-actions
-                    a.field-detail-btn.field-detail-btn-back(href=`${prefixAdmin}/bookings`) Quay lại
+            a.booking-detail__back(
+                href=`${prefixAdmin}/bookings`
+            )
+                i.fa-solid.fa-arrow-left
+                |  Quay lại
+
+        .booking-detail__summary
+            .summary-card
+                span.label Mã đơn
+                span.value= booking._id
+
+            .summary-card
+                span.label Người đặt
+                span.value= booking.userInfo.userName || "Không xác định"
+
+            .summary-card
+                span.label Sân
+                span.value= booking.fieldInfo.name || "Không xác định"
+
+            .summary-card
+                span.label Tổng tiền
+                span.value.price= booking.totalPrice.toLocaleString("vi-VN") + " VNĐ"
+
+            .summary-card
+                span.label Trạng thái
+
+                if booking.status == "paid"
+                    span.status.success Đã thanh toán
+                else if booking.status == "canceled"
+                    span.status.danger Đã hủy
+                else
+                    span.status.warning= booking.status
+
+        .detail-card
+            h3 Thông tin đặt sân
+
+            .detail-grid
+                .detail-item
+                    .title Nội dung
+                    .content= booking.node || "Không có"
+
+                .detail-item
+                    .title Thời gian
+                    .content    
+                        +date(booking.date)
+                        
+
+        .detail-card
+            h3 Khung giờ đặt
+
+            .tag-list
+                each pricing in booking.pricing
+                    .tag.time-tag= pricing.time
+
+        .detail-card
+            h3 Dịch vụ đi kèm
+
+            if booking.service.length > 0
+                .tag-list
+                    each service in booking.service
+                        .tag.service-tag= service.name
+            else
+                p Không có dịch vụ

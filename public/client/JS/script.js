@@ -1177,6 +1177,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 const email = document.querySelector(".profile-main input[name='email']").value;
                 const sex = document.querySelector(".profile-main select[name='sex']").value;
                 const address = document.querySelector(".profile-main select[name='address']").value;
+                const accountName = document.querySelector(".refund-card input[name='accountName']").value;
+                const accountNumber = document.querySelector(".refund-card input[name='accountNumber']").value;
+                const bankName = document.querySelector(".refund-card select[name='bankName']").value;
 
                 if (!userName) {
                     alert("Vui lòng nhập họ tên!");
@@ -1193,7 +1196,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     phone: phone,
                     email: email,
                     sex: sex,
-                    address: address
+                    address: address,
+                    accountName: accountName,
+                    accountNumber: accountNumber,
+                    bankName: bankName
                 }
                 inputForm.value = JSON.stringify(data);
                 formChangeInfo.submit();
@@ -1210,7 +1216,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const commentText = document.querySelector(".review-form-card textarea[name='comment']");
             let rating = 0;
             ratingInput.forEach(item => {
-                if(item.checked == true){
+                if (item.checked == true) {
                     rating = item.value;
                 }
             });
@@ -1274,6 +1280,123 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
         });
     }
+
+    // Hủy lịch
+    // ========== CANCEL BOOKING + BANK INFO MODALS ==========
+    // Handlers for user bookings page cancel buttons
+    const cancelButtons = document.querySelector('.booking-list .btn-cancel');
+
+    function openModal(id) {
+        document.getElementById(id).classList.add("show");
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).classList.remove("show");
+    }
+
+    document.querySelectorAll("[data-close-modal]").forEach(btn => {
+        btn.addEventListener("click", () => {
+            btn.closest(".refund-modal").classList.remove("show");
+        });
+    });
+    if (cancelButtons) {
+        cancelButtons.addEventListener("click", () => {
+            const userInfoBank = document.querySelector("#refundBankModal").getAttribute("data-bank");
+            if (userInfoBank) {
+                const dataBankRefund = JSON.parse(userInfoBank);
+                const price = cancelButtons.getAttribute("data-price");
+                const idBooking = cancelButtons.getAttribute("data-id");
+                document.getElementById("refundAmount").textContent =
+                    `${price}Đ`;
+
+                document.getElementById("refundBank").textContent =
+                    dataBankRefund.bankName;
+
+                document.getElementById("refundAccount").textContent =
+                    dataBankRefund.accountNumber;
+
+                document.getElementById("refundOwner").textContent =
+                    dataBankRefund.accountName;
+
+                openModal("cancelBookingModal");
+                const btnComfirmCacel = document.getElementById("btnConfirmCancel");
+                if (btnComfirmCacel) {
+                    btnComfirmCacel.addEventListener("click", (e) => {
+                        const idAccountRefund = document.querySelector("#cancelBookingModal .refund-modal-content select[name='adminNameRefund']").value;
+                        console.log(idAccountRefund);
+                        const link = `/booking/cancel/${idBooking}/${idAccountRefund}`;
+                        fetch(link, {
+                            method: "PATCH"
+                        })
+                            .then(async (res) => {
+                                const data = await res.json();
+
+                                if (res.status === 300) {
+                                    console.log("Status 300");
+                                    console.log(data);
+                                }
+
+                                return data;
+                            })
+                            .then(data => {
+                                if (data.code === 200) {
+                                    closeModal(cancelBookingModal);
+                                    const btnCancel = document.querySelector(
+                                        `.btn-cancel[data-id="${bookingId}"]`
+                                    );
+
+                                    btnCancel.outerHTML = `
+                                        <button
+                                            type="button"
+                                            class="btn-booking btn-reschedule"
+                                        >
+                                            <i class="fa-solid fa-rotate-right"></i>
+                                            Đặt lại
+                                        </button>
+                                    `;
+                                }
+                            });
+                    });
+                }
+            } else {
+
+                openModal("refundBankModal");
+                const accountNameInput = document.querySelector(".refund-modal .refund-modal-body input[name='accountName']");
+                const accountNumberInput = document.querySelector(".refund-modal .refund-modal-body input[name='accountNumber']");
+                const bankNameSelect = document.querySelector(".refund-modal .refund-modal-body select[name='bankName']");
+
+                const btnSave = document.getElementById("btnSaveBankInfo");
+                if (btnSave) {
+                    btnSave.addEventListener("click", (e) => {
+                        const accountName = accountNameInput.value;
+                        const accountNumber = accountNumberInput.value;
+                        const bankName = bankNameSelect.value;
+                        const link = `/user/bank-refund/edit`;
+                        fetch(link, {
+                            method: "PATCH",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                bankInfo: {
+                                    accountName,
+                                    accountNumber,
+                                    bankName: bankName
+                                }
+
+                            })
+                        })
+                            .then(res => res.json())
+                            .then(data => {
+                                console.log(data)
+                            });
+                    });
+                }
+            }
+
+        });
+    }
+
 });
 
 

@@ -4245,6 +4245,7 @@ img {
 
 /* profile user */
 .profile-layout{
+    margin-top: 20px;
     display:grid;
     grid-template-columns:2fr 420px;
     gap:30px;
@@ -4523,7 +4524,7 @@ img {
 /* Đánh giá của user */
 .review-card{
     background:#04150d;
-
+    margin-top: 20px;
     border:1px solid rgba(153,246,61,.15);
 
     border-radius:32px;
@@ -4737,4 +4738,260 @@ img {
     height: 100%;
     background: #9BE443;
     border-radius: 999px;
+}
+
+/* Tài khoản hoàn tiền */
+.refund-card{
+    background:#04150d;
+    margin-top: 20px;
+    border:1px solid rgba(153,246,61,.15);
+
+    border-radius:28px;
+
+    overflow:hidden;
+}
+
+.refund-alert{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+
+    padding:16px 20px;
+
+    background:rgba(59,130,246,.08);
+
+    border:1px solid rgba(59,130,246,.15);
+
+    border-radius:16px;
+
+    margin-bottom:30px;
+}
+
+.refund-alert i{
+    color:#60a5fa;
+    margin-top:2px;
+}
+
+.refund-alert span{
+    color:#b9c7bf;
+    line-height:1.6;
+}
+
+.refund-card .form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px;
+}
+
+.refund-card input,
+.refund-card select{
+    width:100%;
+    height:60px;
+
+    border:none;
+    outline:none;
+
+    background:#132019;
+
+    color:white;
+
+    border-radius:18px;
+
+    padding:0 20px;
+
+    border:1px solid rgba(153,246,61,.12);
+}
+
+.refund-card input:focus,
+.refund-card select:focus{
+    border-color:#99f63d;
+}
+
+/* Modal hủy lịch */
+.refund-modal{
+    position:fixed;
+    inset:0;
+
+    display:none;
+
+    justify-content:center;
+    align-items:center;
+
+    z-index:9999;
+}
+
+.refund-modal.show{
+    display:flex;
+}
+
+.refund-modal-overlay{
+    position:absolute;
+    inset:0;
+
+    background:rgba(0,0,0,.75);
+
+    backdrop-filter:blur(4px);
+}
+
+.refund-modal-content{
+    position:relative;
+
+    width:100%;
+    max-width:600px;
+
+    background:#07160f;
+
+    border:1px solid rgba(153,246,61,.15);
+
+    border-radius:24px;
+
+    overflow:hidden;
+
+    z-index:2;
+}
+
+.refund-modal-header{
+    padding:24px 30px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    border-bottom:1px solid rgba(153,246,61,.1);
+}
+
+.refund-modal-header h3{
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    color:#fff;
+}
+
+.refund-modal-header h3 i{
+    color:#99f63d;
+}
+
+.modal-close{
+    border:none;
+    background:none;
+
+    color:#999;
+
+    font-size:22px;
+
+    cursor:pointer;
+}
+
+.refund-modal-body{
+    padding:30px;
+}
+
+.refund-modal-footer{
+    padding:20px 30px;
+
+    display:flex;
+    justify-content:flex-end;
+    gap:12px;
+
+    border-top:1px solid rgba(153,246,61,.1);
+}
+
+.form-group{
+    margin-bottom:20px;
+}
+
+.form-group label{
+    display:block;
+
+    margin-bottom:8px;
+
+    color:#b9c5bd;
+}
+
+.form-group input,
+.form-group select{
+    width:100%;
+    height:52px;
+
+    border:none;
+    outline:none;
+
+    border-radius:14px;
+
+    background:#132019;
+
+    color:#fff;
+
+    padding:0 16px;
+}
+
+.refund-alert,
+.cancel-warning{
+    display:flex;
+    gap:12px;
+
+    padding:16px;
+
+    border-radius:12px;
+
+    margin-bottom:25px;
+}
+
+.refund-alert{
+    background:rgba(59,130,246,.12);
+    color:#60a5fa;
+}
+
+.cancel-warning{
+    background:rgba(239,68,68,.12);
+    color:#fb7185;
+}
+
+.summary-row{
+    display:flex;
+    justify-content:space-between;
+
+    padding:12px 0;
+
+    border-bottom:1px solid rgba(255,255,255,.05);
+}
+
+.summary-row strong{
+    color:#fff;
+}
+
+.text-success{
+    color:#99f63d;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-danger{
+    height:46px;
+
+    padding:0 20px;
+
+    border:none;
+
+    border-radius:12px;
+
+    cursor:pointer;
+
+    font-weight:600;
+}
+
+.btn-primary{
+    background:#99f63d;
+    color:#07160f;
+}
+
+.btn-secondary{
+    background:#1b2b22;
+    color:#fff;
+}
+
+.btn-danger{
+    background:#ef4444;
+    color:#fff;
 }

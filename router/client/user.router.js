@@ -13,7 +13,7 @@ router.patch(
     middlewareUpload.uploadSingle,
     controller.editPatch
 );
-// router.get("/detail/:slug", controller.detail);
+router.patch("/bank-refund/edit", controller.refund);
 // router.get("/pricing/:slug", controller.pricing);
 // router.get("/payment-vnpay", controller.vnpay);
 // router.get("/payment-momo/return", controller.return);

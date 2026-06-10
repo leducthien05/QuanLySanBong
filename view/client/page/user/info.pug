@@ -117,7 +117,7 @@ block content
 
             each item in booking
 
-                .booking-card
+                .booking-card(data-booking-id=item._id)
 
                     .booking-left
 
@@ -155,19 +155,189 @@ block content
                         .booking-price
                             | #{item.totalPrice.toLocaleString("vi-VN")}đ
                         .booking-actions    
-                            if(item.status == "completed" || item.status == "cancel")
+                            if(item.status == "completed" || item.status == "canceled")
 
-                                button.btn-booking.btn-reschedule(
+                                a.btn-booking.btn-reschedule(
                                     type="button"
+                                    href=`/field/detail/${item.field.slug}`
                                 )
                                     i.fa-solid.fa-rotate-right
                                     |  Đặt lại
                             if(item.status == "paid" || item.confirmed == "confirmed")
                                 button.btn-booking.btn-cancel(
                                     type="button"
+                                    data-price = item.totalPrice
+                                    data-id = item._id
                                 )
                                     i.fa-solid.fa-xmark
                                     |  Hủy lịch
+        .refund-modal(
+            id="refundBankModal"
+            data-bank = user.bankInfo
+        )
+
+            .refund-modal-overlay
+
+            .refund-modal-content
+
+                .refund-modal-header
+
+                    h3
+                        i.fa-solid.fa-building-columns
+                        |  Thông tin nhận hoàn tiền
+
+                    button.modal-close(
+                        type="button"
+                        data-close-modal
+                    )
+                        i.fa-solid.fa-xmark
+
+                .refund-modal-body
+
+                    .refund-alert
+
+                        i.fa-solid.fa-circle-info
+
+                        span
+                            | Vui lòng cung cấp tài khoản nhận tiền hoàn.
+
+                    .form-group
+
+                        label Tên chủ tài khoản *
+
+                        input(
+                            type="text"
+                            name="accountName"
+                            id="refundAccountName"
+                            placeholder="NGUYEN VAN A"
+                        )
+
+                    .form-group
+
+                        label Số tài khoản *
+
+                        input(
+                            type="text"
+                            name="accountNumber"
+                            id="accountNumber"
+                            placeholder="0123456789"
+                        )
+
+                    .form-group
+
+                        label Ngân hàng *
+
+                        select(id="bankName" name="bankName")
+
+                            option(value="")
+                                | Chọn ngân hàng
+
+                            option(value="Vietcombank")
+                                | Vietcombank
+
+                            option(value="BIDV")
+                                | BIDV
+
+                            option(value="Techcombank")
+                                | Techcombank
+
+                            option(value="MB Bank")
+                                | MB Bank
+
+                            option(value="ACB")
+                                | ACB
+
+                            option(value="VPBank")
+                                | VPBank
+
+                .refund-modal-footer
+
+                    button.btn-secondary(
+                        type="button"
+                        data-close-modal
+                    )
+                        | Đóng
+
+                    button.btn-primary(
+                        type="button"
+                        id="btnSaveBankInfo"
+                    )
+                        i.fa-solid.fa-floppy-disk
+                        | Lưu và tiếp tục
+
+
+
+        // =====================
+        // MODAL XÁC NHẬN HỦY
+        // =====================
+
+        .refund-modal#cancelBookingModal
+
+            .refund-modal-overlay
+
+            .refund-modal-content
+
+                .refund-modal-header
+
+                    h3
+                        i.fa-solid.fa-triangle-exclamation
+                        |  Xác nhận hủy lịch
+
+                    button.modal-close(
+                        type="button"
+                        data-close-modal
+                    )
+                        i.fa-solid.fa-xmark
+
+                .refund-modal-body
+
+                    .cancel-warning
+
+                        i.fa-solid.fa-circle-exclamation
+
+                        p
+                            | Bạn có chắc chắn muốn hủy lịch đặt sân này?
+
+                    .refund-summary
+
+                        .summary-row
+                            span Số tiền hoàn:
+                            strong.text-success#refundAmount
+                                | 0đ
+
+                        .summary-row
+                            span Ngân hàng:
+                            strong#refundBank
+
+                        .summary-row
+                            span Số tài khoản:
+                            strong#refundAccount
+
+                        .summary-row
+                            span Chủ tài khoản:
+                            strong#refundOwner
+                .form-group
+
+                    label Người thụ lý hoàn tiền
+
+                    select(name="adminNameRefund")
+                        each item in accountRefund
+                            option(value=item._id) #{`${item.fullName}-${item.displayName}`}
+
+                .refund-modal-footer
+
+                    button.btn-secondary(
+                        type="button"
+                        data-close-modal
+                    )
+                        | Quay lại
+
+                    button.btn-danger(
+                        type="button"
+                        id="btnConfirmCancel"
+                    )
+                        i.fa-solid.fa-ban
+                        | Xác nhận hủy
 
         //- Sân yêu thích
         .booking-fields-grid.hidden
@@ -306,6 +476,63 @@ block content
                                     option(value="Hà Nội" selected = (user.address == "Hà Nội")) Hà Nội
                                     option(value="Hồ Chí Minh" selected = (user.address == "Hồ Chí Minh")) Hồ Chí Minh
 
+                .refund-card(data-bank=user.bankInfo.accountName)
+
+                    .card-header
+
+                        .header-title
+                            i.fa-solid.fa-building-columns
+                            span Thông tin nhận hoàn tiền
+
+                        button.save-btn(
+                            type="submit"
+                        )
+                            | Lưu thông tin
+
+                    .card-body
+
+                        .refund-alert
+                            i.fa-solid.fa-circle-info
+                            span
+                                | Thông tin này sẽ được sử dụng khi hoàn tiền các đơn đặt sân bị hủy.
+
+                        .form-grid
+
+                            .form-group
+                                        label TÊN CHỦ TÀI KHOẢN *
+
+                                        input(
+                                            type="text"
+                                            name="accountName"
+                                            value=(user.bankInfo && user.bankInfo.accountName) || user.bankAccountName || ""
+                                            placeholder="NGUYEN VAN A"
+                                        )
+
+                            .form-group
+                                label SỐ TÀI KHOẢN *
+
+                                input(
+                                    type="text"
+                                    name="accountNumber"
+                                    value=(user.bankInfo && user.bankInfo.accountNumber) || user.bankAccountNumber || ""
+                                    placeholder="0123456789"
+                                )
+
+                            .form-group
+                                label NGÂN HÀNG *
+
+                                select(name="bankName")
+                                    - const selBank = (user.bankInfo && user.bankInfo.bankName) || user.bankName || ''
+                                    option(value="" selected = (selBank == "")) Chọn ngân hàng
+                                    option(value="Vietcombank" selected = (selBank == "Vietcombank")) Vietcombank
+                                    option(value="BIDV" selected = (selBank == "BIDV")) BIDV
+                                    option(value="Techcombank" selected = (selBank == "Techcombank")) Techcombank
+                                    option(value="MB Bank" selected = (selBank == "MB Bank")) MB Bank
+                                    option(value="ACB" selected = (selBank == "ACB")) ACB
+                                    option(value="VPBank" selected = (selBank == "VPBank")) VPBank
+                                    option(value="TPBank" selected = (selBank == "TPBank")) TPBank
+                                    option(value="Agribank" selected = (selBank == "Agribank")) Agribank
+
 
             // RIGHT
 
@@ -343,8 +570,8 @@ block content
                     span Đánh giá của tôi (#{review.length})
 
                 a.view-all(href="#")
-                    | Xem tất cả
-                    i.fa-solid.fa-arrow-right
+
+    
 
             .review-body
 

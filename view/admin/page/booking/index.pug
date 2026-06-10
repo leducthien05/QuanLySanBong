@@ -26,7 +26,7 @@ block content
                 .row
                     .col-8 
                         if(accountRole.permission.includes("bookings_edit"))
-                            +change(`${prefixAdmin}/services/change-multi-status?_method=PATCH`)
+                            +change(`${prefixAdmin}/booking/change-multi-status?_method=PATCH`)
     .field-table
         table(table-view)
             thead
@@ -37,31 +37,67 @@ block content
                     th KHUNG GIỜ
                     th DỊCH VỤ
                     th TỔNG TIỀN
-                    th NỘI DUNG
-                    th THAO TÁC
+                    th TRẠNG THÁI 
+                    th HÀNH ĐỘNG
             tbody
                 each item in booking
                     tr
                         td #{item._id}
-                        td #{item.user_id}
-                        td #{item.field_id}
-                        td #{item.slot_id}
-                        td #{item.service_id}
-                        td #{item.totalPrice}
-                        td #{item.node}
+                        td #{item.userInfo.userName}
+                        td #{item.fieldInfo.name}
                         td
-                            if(item.status == "active")
+                            if item.pricing && item.pricing.length > 0
+                                each pricing in item.pricing
+                                    div= pricing.time
+                            else
+                                | Không có
+                        td
+                            if item.service && item.service.length > 0
+                                each service in item.service
+                                    div= service.name
+                            else
+                                | Không có
+                        td #{item.totalPrice}
+                        td
+                            if(item.status == "paid")
                                 span(
                                     status = item.status
                                     data-status = item._id
                                     class="status open"
-                                ) ● Hoạt động
-                            else 
+                                ) ● Thanh toán/Cọc
+                            else if(item.status == "canceled")
                                 span(
                                     status = item.status
                                     data-status = item._id
-                                    class="status"
-                                ) ● Vô hiệu
+                                    class="status closed"
+                                ) ● Đã hủy 
+                            else if(item.status == "completed")
+                                span(
+                                    status = item.status
+                                    data-status = item._id
+                                    class="status open"
+                                ) ● Đã hoàn thành
+                        td 
+                            if(accountRole.permission.includes("bookings_edit"))
+                                a(
+                                    class="action-btn"
+                                    href=`${prefixAdmin}/bookings/edit/${item._id}`
+                                ) Sửa
+                            if(accountRole.permission.includes("bookings_delete"))
+                                button(
+                                    btn-delete
+                                    data-id = item._id
+                                    class="action-btn"
+                                ) Xóa
+                            if(accountRole.permission.includes("bookings_view"))
+                                a(
+                                    href=`${prefixAdmin}/bookings/detail/${item._id}`
+                                    class="action-btn"
+                                ) Chi tiết
         +pagination(pagination)
     form(action = `${prefixAdmin}/bookings/delete` form-delete)
+    form(
+        action = `${prefixAdmin}/bookings`
+        form-change-status
+    )
     script(src="/admin/JS/script.js")
