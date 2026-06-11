@@ -1,0 +1,384 @@
+extends ../../layout/default
+include ../../mixin/convertTime.pug
+
+block content
+    .sb-admin-dashboard
+
+        //- // Header Filter
+        //- .sb-admin-filter
+        //-     .sb-admin-filter__left
+        //-         span.sb-admin-filter__label Kỳ báo cáo:
+        //-         button.sb-admin-filter__btn Hôm nay
+        //-         button.sb-admin-filter__btn 7 ngày
+        //-         button.sb-admin-filter__btn.active Tháng này
+        //-         button.sb-admin-filter__btn Quý
+        //-         button.sb-admin-filter__btn Năm
+        //-         button.sb-admin-filter__btn Tùy chỉnh
+
+        //-     .sb-admin-filter__right
+        //-         label
+        //-             input(type="checkbox")
+        //-             | So sánh kỳ trước
+
+        // Statistic Cards
+        .sb-admin-stats
+
+            .sb-admin-stat-card
+                .sb-admin-stat-card__title DOANH THU THÁNG
+
+                .sb-admin-stat-card__value
+                    = (statistic.currentRevenue || 0).toLocaleString("vi-VN") + "đ"
+
+                .sb-admin-stat-card__compare
+                    = statistic.revenuePercent + "%"
+
+            .sb-admin-stat-card
+                .sb-admin-stat-card__title LƯỢT ĐẶT SÂN
+
+                .sb-admin-stat-card__value
+                    = statistic.bookingCount
+
+            .sb-admin-stat-card
+                .sb-admin-stat-card__title NGƯỜI DÙNG MỚI
+
+                .sb-admin-stat-card__value
+                    = statistic.newUsers
+
+            .sb-admin-stat-card
+                .sb-admin-stat-card__title GIÁ TRỊ TB/ĐƠN
+
+                .sb-admin-stat-card__value
+                    = statistic.avgOrderValue.toLocaleString("vi-VN") + "đ"
+
+            .sb-admin-stat-card
+                .sb-admin-stat-card__title TỈ LỆ HỦY
+
+                .sb-admin-stat-card__value
+                    = statistic.cancelRate + "%"
+
+        // Main Content
+        .sb-admin-content
+
+            // Revenue Chart
+            .sb-admin-chart-card
+
+                .sb-admin-card-header
+                    .sb-admin-card-title
+                        i.fa-solid.fa-chart-line
+                        span Biểu đồ doanh thu
+
+                    .sb-admin-tab-group
+                        button.active Doanh thu
+                        button Đặt sân
+                        button Người dùng
+
+                .sb-admin-card-body
+
+                    .sb-admin-chart-summary
+
+                        .sb-admin-chart-summary__value
+                            = statistic.currentRevenue.toLocaleString("vi-VN")
+
+                        .sb-admin-chart-summary__text đ tổng tháng này
+
+                        .sb-admin-chart-summary__compare
+                            = statistic.revenuePercent + "%"
+
+                    .sb-admin-chart-placeholder
+                        canvas(
+                            id="revenueChart"
+                            data-chart=`${JSON.stringify(revenueChart)}`
+                        )
+
+            // Sidebar
+            .sb-admin-sidebar
+
+                .sb-admin-side-card
+
+                    .sb-admin-card-header
+                        .sb-admin-card-title
+                            span Thể loại sân
+
+                    .sb-admin-donut-wrapper
+                        .sb-admin-donut-circle
+
+                        .sb-admin-donut-info
+
+                            .sb-admin-donut-item
+                                span.color-green
+                                span Sân 5 người
+                                strong 40%
+
+                            .sb-admin-donut-item
+                                span.color-blue
+                                span Sân 7 người
+                                strong 25%
+
+                            .sb-admin-donut-item
+                                span.color-yellow
+                                span Sân 11 người
+                                strong 16%
+
+                .sb-admin-side-card
+
+                    .sb-admin-card-header
+                        .sb-admin-card-title
+                            span Tiến độ mục tiêu
+
+                    .sb-admin-goal
+
+                        .sb-admin-goal-circle
+                            span 74%
+
+                        .sb-admin-goal-revenue
+                            strong 86.4M
+                            span /116M
+
+                        p Còn 29.6M để đạt mục tiêu tháng
+
+        // Bottom
+        .sb-admin-bottom
+
+            .sb-admin-bottom-card
+
+                .sb-admin-card-header
+                    .sb-admin-card-title Doanh thu theo sân
+
+                    a(href="#") Xuất PNG
+
+                .sb-admin-card-body
+
+            .sb-admin-bottom-card
+
+                .sb-admin-card-header
+                    .sb-admin-card-title Mật độ đặt sân theo giờ
+
+                    a(href="#") Xem chi tiết
+
+                .sb-admin-card-body
+
+                    .sb-admin-heatmap
+                        if(topFields && topFields.length > 0)
+                            each item,index in topFields
+                                .sb-admin-ranking
+
+                                    .sb-admin-ranking__name
+                                        span #{index + 1}
+                                        | #{item.field.name || "Không xác định"}
+
+                                    .sb-admin-ranking__value
+                                        = item.revenue.toLocaleString("vi-VN") + "đ"
+
+        // Revenue Analytics
+        .sb-admin-revenue-extra
+
+            .sb-admin-revenue-extra__top
+
+                // Payment Method
+                .sb-admin-revenue-card
+
+                    .sb-admin-card-header
+                        .sb-admin-card-title
+                            span Phương thức TT
+
+                    .sb-admin-card-body
+
+                        .sb-admin-progress-item
+                            .sb-admin-progress-item__top
+                                span VíPay
+                                span 42%
+
+                            .sb-admin-progress
+                                .sb-admin-progress__bar(style="width:42%")
+
+                        .sb-admin-progress-item
+                            .sb-admin-progress-item__top
+                                span Ví Momo
+                                span 29%
+
+                            .sb-admin-progress
+                                .sb-admin-progress__bar.red(style="width:29%")
+
+                        .sb-admin-progress-item
+                            .sb-admin-progress-item__top
+                                span Chuyển khoản
+                                span 18%
+
+                            .sb-admin-progress
+                                .sb-admin-progress__bar.green(style="width:18%")
+
+                        .sb-admin-progress-item
+                            .sb-admin-progress-item__top
+                                span Tiền mặt
+                                span 12%
+
+                            .sb-admin-progress
+                                .sb-admin-progress__bar.yellow(style="width:12%")
+
+
+                // Top Revenue
+                .sb-admin-revenue-card
+
+                    .sb-admin-card-header
+                        .sb-admin-card-title
+                            span Top sân doanh thu
+
+                    .sb-admin-card-body
+
+                        each item,index in topFields
+
+                            .sb-admin-ranking
+
+                                .sb-admin-ranking__name
+                                    span #{index + 1}
+                                    | #{item.field.name || "Không xác định"}
+
+                                .sb-admin-ranking__value
+                                    = item.revenue.toLocaleString("vi-VN") + "đ"
+
+                            .sb-admin-ranking-bar
+                                .sb-admin-ranking-bar__fill(
+                                    style=`width:${Math.min(item.revenue / topFields[0].revenue * 100,100)}%`
+                                )
+
+                // Forecast
+                .sb-admin-revenue-card
+
+                    .sb-admin-card-header
+                        .sb-admin-card-title
+                            span Dự báo tháng tới
+
+                    .sb-admin-card-body
+
+                        .sb-admin-forecast-box
+                            p Dự báo dựa trên AI phân tích xu hướng.
+
+                        .sb-admin-forecast-item
+                            .sb-admin-forecast-item__head
+                                span Tháng 6/2026
+                                span 92-98M
+
+                            .sb-admin-progress
+                                .sb-admin-progress__bar(style="width:80%")
+
+                        .sb-admin-forecast-item
+                            .sb-admin-forecast-item__head
+                                span Tháng 7/2026
+                                span 89-95M
+
+                            .sb-admin-progress
+                                .sb-admin-progress__bar(style="width:70%")
+
+                        .sb-admin-forecast-item
+                            .sb-admin-forecast-item__head
+                                span Tháng 8/2026
+                                span 82-89M
+
+                            .sb-admin-progress
+                                .sb-admin-progress__bar.blue(style="width:55%")
+
+
+            // Transaction Table
+            .sb-admin-transaction
+
+                .sb-admin-card-header
+
+                    .sb-admin-card-title
+                        span Chi tiết giao dịch
+
+                    .sb-admin-table-tools
+
+                        input(
+                            type="text"
+                            placeholder="Tìm giao dịch..."
+                        )
+
+                        select
+                            option Tất cả
+
+                        select
+                            option Hôm nay
+
+                .sb-admin-transaction__body
+
+                    table.sb-admin-table
+
+                        thead
+                            tr
+                                th Mã GD
+                                th Khách hàng
+                                th Sân bóng
+                                th Thời gian
+                                th Số tiền
+                                th Hình thức
+                                th Trạng thái
+                                th Thao tác
+
+                        tbody
+
+                            if(transactions && transactions.length > 0)
+
+                                each item in transactions
+
+                                    tr
+
+                                        td
+                                            | #TT-
+                                            = item._id.toString().slice(-4)
+
+                                        td
+                                            if(item.user_id)
+                                                = item.user_id.fullName
+                                            else
+                                                | Không xác định
+
+                                        td
+                                            if(item.field_id)
+                                                = item.field_id.name
+                                            else
+                                                | Không xác định
+
+                                        td
+                                            +date(item.createdAt)
+
+                                        td
+                                            = (item.totalPrice || 0).toLocaleString("vi-VN")
+                                            | đ
+
+                                        td
+                                            span.sb-admin-badge.blue
+                                                = item.paymentMethod || "MoMo"
+
+                                        td
+
+                                            if(item.status == "completed")
+
+                                                span.sb-admin-badge.green
+                                                    | Thành công
+
+                                            else if(item.status == "canceled")
+
+                                                span.sb-admin-badge.red
+                                                    | Đã hủy
+
+                                            else
+
+                                                span.sb-admin-badge.yellow
+                                                    = item.status
+
+                                        td
+                                            a(
+                                                href=`/admin/bookings/detail/${item._id}`
+                                            ) Chi tiết
+
+                            else
+
+                                tr
+                                    td(
+                                        colspan="8"
+                                        style="text-align:center"
+                                    )
+                                        | Chưa có giao dịch nào
+    
+block foolter    
+    script(src="/admin/JS/revenue.js") 

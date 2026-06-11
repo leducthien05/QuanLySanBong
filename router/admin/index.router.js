@@ -9,6 +9,7 @@ const authRouter = require("./auth.router");
 const myaccountRouter = require("./myaccount.router");
 const settingRouter = require("./setting.router");
 const refundRouter = require("./refund.router");
+const revenueRouter = require("./revenue.router");
 
 const authMiddleware = require("../../middleware/admin/auth.middleware");
 const adminMiddleware = require("../../middleware/admin/admin.middleware");
@@ -29,6 +30,7 @@ module.exports = (app) =>{
     app.use(prefixAdmin + "/myaccount", authMiddleware.requireAuth, myaccountRouter);
     app.use(prefixAdmin + "/settings", authMiddleware.requireAuth, settingRouter);
     app.use(prefixAdmin + "/refunds", authMiddleware.requireAuth, refundRouter);
+    app.use(prefixAdmin + "/revenues", authMiddleware.requireAuth, revenueRouter);
     app.use(prefixAdmin + "/auth", authRouter);
 
 }

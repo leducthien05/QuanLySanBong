@@ -6,6 +6,7 @@ const systemConfig = require("../../config/system");
 const paginationHelper = require("../../helper/pagination.helper");
 const searchHelper = require("../../helper/search.helper");
 const filterStatusHelper = require("../../helper/filterStatus.helper");
+const Booking = require("../../model/booking.model");
 
 // [GET] /admin/refunds
 module.exports.index = async (req, res) => {
@@ -112,6 +113,7 @@ module.exports.changeStatus = async (req, res) => {
                 completedAt: new Date()
             }
         });
+
 
         res.json({
             code: 200,

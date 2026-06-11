@@ -21,13 +21,13 @@ const bookingSchema = new mongoose.Schema({
         default: "pending"
     },
     service: Array,
-    createdAt: Date, 
-    updatedAt: Date,
     deleted: {
         type: Boolean,
         default: false
     },
     expiredAt: Date
+}, {
+    timestamps: true
 });
 // index để cron tìm nhanh
 bookingSchema.index({

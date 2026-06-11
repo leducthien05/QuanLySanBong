@@ -96,16 +96,7 @@ if (btnChangeStatus.length > 0) {
             })
                 .then(res => res.json())
                 .then(data => {
-                    btn.setAttribute("status", data.status);
-                    if (data.status == "active") {
-                        btn.textContent = "● Mở cửa";
-                        btn.classList.add("open");
-                        btn.classList.remove("closed");
-                    } else if (data.status == "inactive") {
-                        btn.textContent = "● Đóng cửa";
-                        btn.classList.remove("open")
-                        btn.classList.add("closed");
-                    }
+                    console.log(data)
                 });
         });
     });

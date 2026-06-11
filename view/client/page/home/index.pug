@@ -44,139 +44,172 @@ block content
                 //-         h3 98%
                 //-         p Hài lòng
 
-            .gf-hero__card
+        // SECTION 1
+        section.sb-home-featured
 
-                .gf-hero__image
-                    if(fields.length > 0)
-                        img(src=fields[0].image alt="Sân bóng")
+            .sb-home-container
 
-                .gf-hero__info
+                .sb-home-heading
 
-                    .gf-hero__meta
-                        if(fields.length > 0)
-                            h3 #{fields[0].name}
-                        if(fields.length > 0)
-                            p 
-                                each item in fields[0].rating.totalRating
-                                    |★
-                                | (#{fields[0].rating.totalReviews} đánh giá)
+                    span.sb-home-subtitle
+                        | ── Sân nổi bật
 
-                    span.gf-badge Còn trống
+                    h2
+                        | Sân nổi bật
+                        span  hôm nay
 
-    
+                    p
+                        | Chọn từ hơn 50 sân được kiểm duyệt chất lượng
 
-    // FIELD
-    section.gf-fields
-        .gf-container
+                    a.sb-home-view-all(href="#")
+                        | Xem tất cả sân →
 
-            .gf-section-head.gf-section-head--between
+                .sb-home-filter
 
-                h2
-                    | Sân Nổi
-                    span  Bật
+                    button Tất cả
+                    button Sân 5 người
+                    button Sân 7 người
+                    button.active Sân nổi bật
+                    button Có mái che
 
-                a.gf-see-all(href="#")
-                    | Xem tất cả →
+                .sb-home-featured-list
 
-            .gf-fields-grid
+                    each item in [1,2,3]
 
-                each item in fields
+                        .sb-home-field-card
 
-                    .gf-field-card
+                            .sb-home-field-card__image
 
-                        .gf-field-thumb
-                            img(src=item.image alt="Sân bóng")
+                                .sb-home-badge VIP
 
-                            .gf-field-tags
-                                span Sân #{item.type}
-                                span #{item.grasstype}
+                                .sb-home-badge.hot Nổi bật
 
-                            .gf-field-status
-                                | Còn trống
+                            .sb-home-field-card__body
 
-                        .gf-field-body
+                                h3 Đồng Đa Premium
 
-                            h3 #{item.name}
+                                p Khu vực Hà Nội
 
-                            p.gf-field-location
-                                | 📍 #{item.address.titleAddress}
+                                .sb-home-tags
+                                    span Cỏ nhân tạo
+                                    span 5 người
+                                    span VIP
 
-                            .gf-field-bottom
+                                .sb-home-price
+                                    strong 350k
+                                    span / giờ
 
-                                .gf-price
-                                    | #{item.price.price.toLocaleString("vi-VN")}
-                                    span  / giờ
+                                button Đặt ngay
 
-                                button.gf-book-btn
-                                    | Đặt ngay
-    // SERVICES
-    section.gf-service-slot
+                .sb-home-more
+                    a(href="#") Xem thêm sân bóng →
 
-        .gf-container
 
-            .gf-section-head
+        // SECTION 2
+        section.sb-home-steps
 
-                h2.gf-section-title
-                    | Dịch Vụ
-                    span  Đi Kèm
+            .sb-home-container
 
-                p.gf-section-desc
-                    | Các tiện ích hỗ trợ dành cho người chơi tại GreenField.
+                .sb-home-heading.center
 
-            .gf-service-slot__grid
+                    span.sb-home-subtitle
+                        | ── Quy trình
 
-                each item in services
+                    h2
+                        | Đặt sân trong 3
+                        span  bước
 
-                    .gf-service-item
+                    p
+                        | Không cần gọi điện. Không cần chờ xác nhận.
 
-                        .gf-service-item__icon
-                            if item.icon
-                                img(
-                                    src=item.image
-                                    alt=item.name
-                                )
-                            else
-                                span ⚽
+                .sb-home-step-list
 
-                        .gf-service-item__title
-                            | #{item.name}
+                    .sb-home-step
+                        .sb-home-step-number 1
+                        h3 Tìm sân phù hợp
+                        p Lọc theo khu vực, loại sân, giờ chơi.
 
-                        .gf-service-item__desc
-                            | #{item.description}
+                    .sb-home-step
+                        .sb-home-step-number 2
+                        h3 Chọn ngày & giờ
+                        p Xem lịch trống thời gian thực.
 
-                        .gf-service-item__bottom
+                    .sb-home-step
+                        .sb-home-step-number 3
+                        h3 Thanh toán
+                        p Ví điện tử hoặc chuyển khoản.
 
-                            if item.price > 0
+                    .sb-home-step
+                        .sb-home-step-number 4
+                        h3 Ra sân thi đấu
+                        p Nhận mã đặt sân và check-in.
 
-                                .gf-service-item__price
-                                    | #{item.price.toLocaleString("vi-VN")}
-                                    span đ
 
-                            else
+        // SECTION 3
+        section.sb-home-location
 
-                                .gf-service-item__free
-                                    | Miễn phí
+            .sb-home-container
 
-    // SLOT
-    section.gf-slots
-        .gf-container
+                .sb-home-heading
 
-            .gf-section-head.gf-section-head--between
+                    span.sb-home-subtitle
+                        | ── Khu vực
 
-                h2
-                    | Chọn
-                    span  Khung Giờ
+                    h2
+                        | Sân bóng khắp
+                        span  Hà Nội
 
-                a.gf-see-all(href="#")
-                    | ← Quay lại
+                    p
+                        | Dễ dàng quản lý, luôn có sân GreenField gần đó.
 
-            .gf-slot-grid
+                .sb-home-districts
 
-                each item in ['06:00','07:00','08:00','09:00','10:00','11:00','13:00','14:00','15:00','16:00','17:00','18:00']
+                    each district in ['Cầu Giấy','Đống Đa','Tây Hồ','Long Biên','Thanh Xuân','Hoàn Kiếm','Hai Bà Trưng','Hoàng Mai','Xem tất cả']
 
-                    .gf-slot
-                        h4= item
-                        p 1 giờ
+                        .sb-home-district-card
+                            .sb-home-district-icon
+                            h4= district
+                            span 12 sân
+        // TESTIMONIAL
+        section.sb-home-testimonial
 
-    // FOOTER SPACE
-    .gf-space
+            .sb-home-container
+
+                .sb-home-heading.center
+
+                    span.sb-home-subtitle
+                        | ── Đánh giá
+
+                    h2
+                        | Người chơi
+                        span  nói gì
+
+                .sb-home-testimonial-list
+
+                    each item in [1,2,3]
+
+                        .sb-home-testimonial-card
+
+                            .sb-home-quote
+                                | "
+
+                            p.sb-home-testimonial-content
+                                | Từ khi dùng GreenField tôi không còn phải gọi điện hỏi còn sân không nữa. Đặt lịch 10 giây là xong ngay, rất tiện.
+
+                            .sb-home-testimonial-footer
+
+                                .sb-home-testimonial-user
+
+                                    .sb-home-testimonial-avatar
+                                        span NA
+
+                                    .sb-home-testimonial-info
+                                        h4 Nguyễn Văn A
+                                        span Cầu Giấy, Hà Nội
+
+                                .sb-home-testimonial-rating
+                                    i.fa-solid.fa-star
+                                    i.fa-solid.fa-star
+                                    i.fa-solid.fa-star
+                                    i.fa-solid.fa-star
+                                    i.fa-solid.fa-star

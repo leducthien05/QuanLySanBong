@@ -59,30 +59,25 @@ block content
                                 | Không có
                         td #{item.totalPrice}
                         td
-                            if(item.status == "paid")
-                                span(
-                                    status = item.status
-                                    data-status = item._id
-                                    class="status open"
-                                ) ● Thanh toán/Cọc
-                            else if(item.status == "canceled")
-                                span(
-                                    status = item.status
-                                    data-status = item._id
-                                    class="status closed"
-                                ) ● Đã hủy 
-                            else if(item.status == "completed")
-                                span(
-                                    status = item.status
-                                    data-status = item._id
-                                    class="status open"
-                                ) ● Đã hoàn thành
+                            select(
+                                data-id=item._id
+                                class=`form-select change-status ${item.status}`
+                            )
+                                option(
+                                    value="paid"
+                                    selected=item.status == "paid"
+                                ) Thanh toán/Cọc
+
+                                option(
+                                    value="completed"
+                                    selected=item.status == "completed"
+                                ) Đã hoàn thành
+
+                                option(
+                                    value="canceled"
+                                    selected=item.status == "canceled"
+                                ) Đã hủy
                         td 
-                            if(accountRole.permission.includes("bookings_edit"))
-                                a(
-                                    class="action-btn"
-                                    href=`${prefixAdmin}/bookings/edit/${item._id}`
-                                ) Sửa
                             if(accountRole.permission.includes("bookings_delete"))
                                 button(
                                     btn-delete
@@ -100,4 +95,4 @@ block content
         action = `${prefixAdmin}/bookings`
         form-change-status
     )
-    script(src="/admin/JS/script.js")
+    script(src="/admin/JS/booking.js") 

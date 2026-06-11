@@ -5,6 +5,7 @@ const controller = require("../../controller/admin/booking.controller");
 const permission = require("../../middleware/admin/permission.middleware");
 
 router.get("/", permission.checkPermission("bookings_view"), controller.index);
+router.patch("/change-status/:status/:id", permission.checkPermission("bookings_edit"), controller.changeStatus);
 router.get("/detail/:id", permission.checkPermission("bookings_view"), controller.detail);
 router.delete("/delete/:id", permission.checkPermission("bookings_delete"), controller.deleteBooking);
 

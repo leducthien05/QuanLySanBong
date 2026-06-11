@@ -164,3 +164,36 @@ module.exports.deleteBooking = async (req, res) => {
         id: id
     });
 };
+
+// [PATCH] /admin/bookings/change-status/:id
+module.exports.changeStatus = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const status = req.params.status;
+        
+        await Booking.findOneAndUpdate(
+            {
+                _id: id,
+                deleted: false
+            },
+            {
+                $set: {
+                    status: status
+                }
+            }
+        );
+
+        res.status(200).json({
+            code: 200,
+            id,
+            status
+        });
+    } catch (error) {
+        console.log(error);
+
+        res.status(500).json({
+            code: 500,
+            message: "Cập nhật trạng thái thất bại"
+        });
+    }
+};
