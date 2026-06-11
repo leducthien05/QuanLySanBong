@@ -30,19 +30,19 @@ block content
                     button.gf-btn.gf-btn--outline
                         | Xem sân trống
 
-                //- .gf-stats
+                .gf-stats
 
-                //-     .gf-stat
-                //-         h3 50+
-                //-         p Sân bóng
+                    .gf-stat
+                        h3= statistics.totalFields + "+"
+                        p Sân bóng
 
-                //-     .gf-stat
-                //-         h3 2K+
-                //-         p Người dùng
+                    .gf-stat
+                        h3= statistics.totalUsers + "+"
+                        p Người dùng
 
-                //-     .gf-stat
-                //-         h3 98%
-                //-         p Hài lòng
+                    .gf-stat
+                        h3= statistics.totalBookings + "+"
+                        p Lượt đặt sân
 
         // SECTION 1
         section.sb-home-featured
@@ -61,24 +61,23 @@ block content
                     p
                         | Chọn từ hơn 50 sân được kiểm duyệt chất lượng
 
-                    a.sb-home-view-all(href="#")
+                    a.sb-home-view-all(href="/fields")
                         | Xem tất cả sân →
 
-                .sb-home-filter
-
-                    button Tất cả
-                    button Sân 5 người
-                    button Sân 7 người
-                    button.active Sân nổi bật
-                    button Có mái che
 
                 .sb-home-featured-list
 
-                    each item in [1,2,3]
+                    each field in featuredFields
 
                         .sb-home-field-card
 
                             .sb-home-field-card__image
+
+                                if field.image
+                                    img(
+                                        src=field.image[0]
+                                        alt=field.name
+                                    )
 
                                 .sb-home-badge VIP
 
@@ -86,23 +85,28 @@ block content
 
                             .sb-home-field-card__body
 
-                                h3 Đồng Đa Premium
+                                h3= field.name
 
-                                p Khu vực Hà Nội
+                                p= field.address.titleAddress || "Hà Nội"
 
                                 .sb-home-tags
-                                    span Cỏ nhân tạo
-                                    span 5 người
+
+                                    if field.grassType
+                                        span= field.grassType
+
+                                    if field.fieldType
+                                        span= field.type + " người"
+
                                     span VIP
 
                                 .sb-home-price
-                                    strong 350k
+                                    strong #{field.priceFormat}đ
                                     span / giờ
 
-                                button Đặt ngay
-
-                .sb-home-more
-                    a(href="#") Xem thêm sân bóng →
+                                a(
+                                    href=`/fields/detail/${field.slug}`
+                                )
+                                    button Đặt ngay
 
 
         // SECTION 2
@@ -164,12 +168,16 @@ block content
 
                 .sb-home-districts
 
-                    each district in ['Cầu Giấy','Đống Đa','Tây Hồ','Long Biên','Thanh Xuân','Hoàn Kiếm','Hai Bà Trưng','Hoàng Mai','Xem tất cả']
+                    each area in areas
 
                         .sb-home-district-card
+
                             .sb-home-district-icon
-                            h4= district
-                            span 12 sân
+                                i.fa-solid.fa-location-dot
+
+                            h4= area._id
+
+                            span= area.totalFields + " sân"
         // TESTIMONIAL
         section.sb-home-testimonial
 
@@ -186,7 +194,7 @@ block content
 
                 .sb-home-testimonial-list
 
-                    each item in [1,2,3]
+                    each item in reviewRating
 
                         .sb-home-testimonial-card
 
@@ -194,7 +202,7 @@ block content
                                 | "
 
                             p.sb-home-testimonial-content
-                                | Từ khi dùng GreenField tôi không còn phải gọi điện hỏi còn sân không nữa. Đặt lịch 10 giây là xong ngay, rất tiện.
+                                | #{item.comment}
 
                             .sb-home-testimonial-footer
 
@@ -204,8 +212,7 @@ block content
                                         span NA
 
                                     .sb-home-testimonial-info
-                                        h4 Nguyễn Văn A
-                                        span Cầu Giấy, Hà Nội
+                                        h4 #{item.user.userName}
 
                                 .sb-home-testimonial-rating
                                     i.fa-solid.fa-star

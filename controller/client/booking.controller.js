@@ -3,12 +3,14 @@ const Field = require("../../model/field.model");
 const Service = require("../../model/service.model");
 const Pricing = require("../../model/pricing.model");
 const Payment = require("../../model/payment.model");
-
+const Notification = require("../../model/notification.model");
 const Refund = require("../../model/refund.model");
 const User = require("../../model/user.model");
+const Account = require("../../model/account.model");
 
 const paymentHelper = require("../../helper/payment.helper");
 const prcingHelper = require("../../helper/getPricing.helper");
+const sendMailHelper = require("../../helper/sendMailer.helper");
 
 // [GET] /booking
 module.exports.index = async (req, res) => {
@@ -320,13 +322,89 @@ module.exports.vnpay = async (req, res) => {
             );
         }
 
-        // ✅ update trạng thái
+        // Update trạng thái booking
         const dataBooking = await Booking.findOneAndUpdate(
             { _id: booking_id },
-            { status: "paid" }
+            { status: "paid" },
+            { new: true }
         );
 
-        const idPricing = dataBooking.pricing.map(item => item.id);
+        // Lấy thông tin người dùng
+        const dataUser = await User.findById(dataBooking.user_id)
+            .select("userName email");
+
+        // Lấy thông tin sân
+        const dataField = await Field.findById(dataBooking.field_id)
+            .select("name address");
+
+        // Danh sách khung giờ
+        const pricingInfo = dataBooking.pricing.map(item => {
+            return `
+                <tr>
+                    <td>${item.time}</td>
+                    <td>${item.price.toLocaleString("vi-VN")} VNĐ</td>
+                </tr>
+            `;
+        }).join("");
+
+        // ================= EMAIL USER =================
+
+        const html = `
+            <h2>Đặt sân thành công</h2>
+
+            <p>Xin chào <b>${dataUser.userName}</b>,</p>
+
+            <p>Bạn đã thanh toán thành công đơn đặt sân.</p>
+
+            <ul>
+                <li><b>Mã đơn:</b> ${dataBooking._id}</li>
+                <li><b>Sân:</b> ${dataField.name}</li>
+                <li><b>Ngày đá:</b> ${new Date(dataBooking.date).toLocaleDateString("vi-VN")}</li>
+            </ul>
+
+            <table border="1" cellpadding="8" cellspacing="0">
+                <tr>
+                    <th>Khung giờ</th>
+                    <th>Giá</th>
+                </tr>
+                ${pricingInfo}
+            </table>
+
+            <h3>Tổng tiền: ${dataBooking.totalPrice.toLocaleString("vi-VN")} VNĐ</h3>
+
+            <p>Cảm ơn bạn đã sử dụng dịch vụ.</p>
+        `;
+
+        sendMailHelper.sendMailer(
+            dataUser.email,
+            "Xác nhận đặt sân thành công",
+            html
+        );
+
+        await Notification.create({
+            user_id: dataUser._id,
+            title: "Đặt sân thành công",
+            content: `Bạn đã đặt sân ${dataField.name} thành công cho ngày ${new Date(dataBooking.date).toLocaleDateString("vi-VN")}`,
+            side: "client",
+            type: "booking",
+            read: false
+        });
+
+        const admins = await Account.find({
+            status: "active",
+            deleted: false
+        }).select("_id");
+
+        await Notification.insertMany(
+            admins.map(admin => ({
+                user_id: admin._id,
+                title: "Có đơn đặt sân mới",
+                content: `${dataUser.userName} vừa thanh toán đơn đặt sân ${dataField.title}`,
+                side: "admin",
+                type: "booking",
+                read: false
+            }))
+        );
         return res.redirect(`/booking?status=success&booking_id=${booking_id}`);
     } else {
         await Booking.deleteOne(
@@ -405,7 +483,7 @@ module.exports.cancelBooking = async (req, res) => {
 
         // Get user's bank info (prefer saved bankInfo, otherwise accept payload)
         const user = await User.findOne({ _id: userId });
-        const bankInfo =user.bankInfo
+        const bankInfo = user.bankInfo
 
         if (!bankInfo || !bankInfo.accountName || !bankInfo.accountNumber || !bankInfo.bankName) {
             return res.status(400).json({ message: "Thiếu thông tin ngân hàng để hoàn tiền." });

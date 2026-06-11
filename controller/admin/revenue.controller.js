@@ -1,6 +1,7 @@
 const Booking = require("../../model/booking.model");
 const User = require("../../model/user.model");
 const Field = require("../../model/field.model");
+const Payment = require("../../model/payment.model");
 
 module.exports.index = async (req, res) => {
     try {
@@ -59,31 +60,17 @@ module.exports.index = async (req, res) => {
         // DOANH THU
         // ==========================
 
-        const currentRevenue = currentBookings.reduce(
-            (sum, item) => sum + (item.totalPrice || 0),
-            0
-        );
+        const currentRevenue = currentBookings.reduce((sum, item) => sum + (item.totalPrice || 0), 0);
 
-        const prevRevenue = prevBookings.reduce(
-            (sum, item) => sum + (item.totalPrice || 0),
-            0
-        );
+        const prevRevenue = prevBookings.reduce((sum, item) => sum + (item.totalPrice || 0), 0);
 
-        const revenuePercent =
-            prevRevenue > 0
-                ? (
-                    ((currentRevenue - prevRevenue) /
-                        prevRevenue) *
-                    100
-                ).toFixed(1)
-                : 0;
+        const revenuePercent = prevRevenue > 0 ? (((currentRevenue - prevRevenue) / prevRevenue) * 100).toFixed(1) : 0;
 
         // ==========================
         // LƯỢT ĐẶT SÂN
         // ==========================
 
-        const bookingCount =
-            currentBookings.length;
+        const bookingCount = currentBookings.length;
 
         // ==========================
         // USER MỚI
@@ -229,47 +216,78 @@ module.exports.index = async (req, res) => {
             status: {
                 $in: ["completed", "canceled"]
             }
-        })
-            .populate("user_id")
-            .populate("field_id")
-            .sort({
-                createdAt: -1
-            })
-            .limit(20);
+        }).sort({ createdAt: -1 }).limit(20);
+
+
+        // ID 
+        const paymentIds = transactions.map(item => item.paymentMethod);
+        const userIds = transactions.map(item => item.user_id);
+        const fieldIds = transactions.map(item => item.field_id);
+
+        // Dữ liệu trong DB
+        const payments = await Payment.find({
+            _id: { $in: paymentIds }
+        }).select("title");
+        const fields = await Field.find({
+            _id: { $in: fieldIds }
+        }).select("name");
+
+        const users = await User.find({
+            _id: { $in: userIds }
+        }).select("userName");
+
+        // Map dữ liệu
+        const userMap = {};
+        const fieldMap = {};
+        const paymentMap = {};
+
+        users.forEach(user => {
+            userMap[user._id.toString()] = user;
+        });
+
+        fields.forEach(field => {
+            fieldMap[field._id.toString()] = field;
+        });
+
+        payments.forEach(payment => {
+            paymentMap[payment._id.toString()] = payment;
+        });
+
+        // Gán dữ liệu
+        transactions.forEach(item => {
+            item.userInfo = userMap[item.user_id] || null;
+            item.fieldInfo = fieldMap[item.field_id] || null;
+            item.paymentInfo = paymentMap[item.paymentMethod] || null;
+        });
 
         // ==========================
         // RENDER
         // ==========================
 
-        res.render(
-            "admin/page/revenue/index",
-            {
-                pageTitle:
-                    "Báo cáo doanh thu",
+        res.render("admin/page/revenue/index", {
+            titlePage: "Báo cáo doanh thu",
 
-                statistic: {
-                    currentRevenue,
-                    prevRevenue,
-                    revenuePercent,
-                    bookingCount,
-                    newUsers,
-                    avgOrderValue,
-                    cancelRate
-                },
+            statistic: {
+                currentRevenue: currentRevenue,
+                prevRevenue: prevRevenue,
+                revenuePercent: revenuePercent,
+                bookingCount: bookingCount,
+                newUsers: newUsers,
+                avgOrderValue: avgOrderValue,
+                cancelRate: cancelRate
+            },
 
-                revenueChart,
+            revenueChart: revenueChart,
 
-                topFields,
+            topFields: topFields,
 
-                transactions
-            }
+            transactions: transactions
+        }
         );
 
     } catch (error) {
         console.log(error);
 
-        res.redirect(
-            "/admin/dashboard"
-        );
+        res.redirect("/admin/dashboard");
     }
 };

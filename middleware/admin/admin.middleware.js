@@ -15,7 +15,9 @@ module.exports.settingMiddleware = async (req, res, next) => {
 module.exports.notificationMiddleware = async (req, res, next) => {
     try {
         const notification = await Notification.find({
-            deleted: false
+            deleted: false,
+            side: "admin",
+            type: {$in: ["booking", "refund"]},
         }).limit(6).sort({createdAt: -1 });
         res.locals.notification = notification;
     } catch (error) {

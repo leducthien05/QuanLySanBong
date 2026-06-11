@@ -238,6 +238,19 @@ const notificationBox = document.querySelector(".notification-box");
 if (toggleBtn && notificationBox) {
     toggleBtn.addEventListener("click", () => {
         notificationBox.classList.toggle("active");
+        if (notificationBox.classList.contains("active")) {
+            try {
+                const prefix = toggleBtn.getAttribute("prefixAdmin");
+                await fetch(`${prefix}/notifications/read-all`, {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+            } catch (error) {
+                console.error("Lỗi cập nhật thông báo:", error);
+            }
+        }
     });
     /* Click outside */
     document.addEventListener("click", (e) => {
@@ -265,13 +278,12 @@ const weekdays = [
 const weekday = weekdays[today.getDay()];
 
 // Lấy ngày tháng năm
-const fullDate = `${weekday}, ${today.getDate()}/${
-    today.getMonth() + 1
-}/${today.getFullYear()}`;
+const fullDate = `${weekday}, ${today.getDate()}/${today.getMonth() + 1
+    }/${today.getFullYear()}`;
 
 const dateElement = document.querySelector(".header .date");
 console.log(dateElement)
-if(dateElement){
+if (dateElement) {
     dateElement.textContent = fullDate;
 }
 
@@ -290,7 +302,7 @@ if (imageInput) {
 
             const reader = new FileReader();
 
-            reader.onload = function(event) {
+            reader.onload = function (event) {
                 const div = document.createElement("div");
                 div.classList.add("preview-item");
 

@@ -100,41 +100,17 @@ block content
                             span Thể loại sân
 
                     .sb-admin-donut-wrapper
-                        .sb-admin-donut-circle
 
                         .sb-admin-donut-info
 
                             .sb-admin-donut-item
-                                span.color-green
                                 span Sân 5 người
-                                strong 40%
 
                             .sb-admin-donut-item
-                                span.color-blue
                                 span Sân 7 người
-                                strong 25%
 
                             .sb-admin-donut-item
-                                span.color-yellow
                                 span Sân 11 người
-                                strong 16%
-
-                .sb-admin-side-card
-
-                    .sb-admin-card-header
-                        .sb-admin-card-title
-                            span Tiến độ mục tiêu
-
-                    .sb-admin-goal
-
-                        .sb-admin-goal-circle
-                            span 74%
-
-                        .sb-admin-goal-revenue
-                            strong 86.4M
-                            span /116M
-
-                        p Còn 29.6M để đạt mục tiêu tháng
 
         // Bottom
         .sb-admin-bottom
@@ -147,16 +123,6 @@ block content
                     a(href="#") Xuất PNG
 
                 .sb-admin-card-body
-
-            .sb-admin-bottom-card
-
-                .sb-admin-card-header
-                    .sb-admin-card-title Mật độ đặt sân theo giờ
-
-                    a(href="#") Xem chi tiết
-
-                .sb-admin-card-body
-
                     .sb-admin-heatmap
                         if(topFields && topFields.length > 0)
                             each item,index in topFields
@@ -168,116 +134,35 @@ block content
 
                                     .sb-admin-ranking__value
                                         = item.revenue.toLocaleString("vi-VN") + "đ"
+            .sb-admin-bottom-card
 
+                .sb-admin-card-header
+                    .sb-admin-card-title Top sân có doanh thu
+
+                    a(href="#") Xuất PNG
+
+                .sb-admin-card-body
+                    .sb-admin-heatmap
+                        if(topFields && topFields.length > 0)
+                            each item,index in topFields
+
+                                .sb-admin-ranking
+
+                                    .sb-admin-ranking__name
+                                        span #{index + 1}
+                                        | #{item.field.name || "Không xác định"}
+
+                                    .sb-admin-ranking__value
+                                        = item.revenue.toLocaleString("vi-VN") + "đ"
+
+                                .sb-admin-ranking-bar
+                                    .sb-admin-ranking-bar__fill(
+                                        style=`width:${Math.min(item.revenue / topFields[0].revenue * 100,100)}%`
+                                    )
+                    
         // Revenue Analytics
         .sb-admin-revenue-extra
-
-            .sb-admin-revenue-extra__top
-
-                // Payment Method
-                .sb-admin-revenue-card
-
-                    .sb-admin-card-header
-                        .sb-admin-card-title
-                            span Phương thức TT
-
-                    .sb-admin-card-body
-
-                        .sb-admin-progress-item
-                            .sb-admin-progress-item__top
-                                span VíPay
-                                span 42%
-
-                            .sb-admin-progress
-                                .sb-admin-progress__bar(style="width:42%")
-
-                        .sb-admin-progress-item
-                            .sb-admin-progress-item__top
-                                span Ví Momo
-                                span 29%
-
-                            .sb-admin-progress
-                                .sb-admin-progress__bar.red(style="width:29%")
-
-                        .sb-admin-progress-item
-                            .sb-admin-progress-item__top
-                                span Chuyển khoản
-                                span 18%
-
-                            .sb-admin-progress
-                                .sb-admin-progress__bar.green(style="width:18%")
-
-                        .sb-admin-progress-item
-                            .sb-admin-progress-item__top
-                                span Tiền mặt
-                                span 12%
-
-                            .sb-admin-progress
-                                .sb-admin-progress__bar.yellow(style="width:12%")
-
-
-                // Top Revenue
-                .sb-admin-revenue-card
-
-                    .sb-admin-card-header
-                        .sb-admin-card-title
-                            span Top sân doanh thu
-
-                    .sb-admin-card-body
-
-                        each item,index in topFields
-
-                            .sb-admin-ranking
-
-                                .sb-admin-ranking__name
-                                    span #{index + 1}
-                                    | #{item.field.name || "Không xác định"}
-
-                                .sb-admin-ranking__value
-                                    = item.revenue.toLocaleString("vi-VN") + "đ"
-
-                            .sb-admin-ranking-bar
-                                .sb-admin-ranking-bar__fill(
-                                    style=`width:${Math.min(item.revenue / topFields[0].revenue * 100,100)}%`
-                                )
-
-                // Forecast
-                .sb-admin-revenue-card
-
-                    .sb-admin-card-header
-                        .sb-admin-card-title
-                            span Dự báo tháng tới
-
-                    .sb-admin-card-body
-
-                        .sb-admin-forecast-box
-                            p Dự báo dựa trên AI phân tích xu hướng.
-
-                        .sb-admin-forecast-item
-                            .sb-admin-forecast-item__head
-                                span Tháng 6/2026
-                                span 92-98M
-
-                            .sb-admin-progress
-                                .sb-admin-progress__bar(style="width:80%")
-
-                        .sb-admin-forecast-item
-                            .sb-admin-forecast-item__head
-                                span Tháng 7/2026
-                                span 89-95M
-
-                            .sb-admin-progress
-                                .sb-admin-progress__bar(style="width:70%")
-
-                        .sb-admin-forecast-item
-                            .sb-admin-forecast-item__head
-                                span Tháng 8/2026
-                                span 82-89M
-
-                            .sb-admin-progress
-                                .sb-admin-progress__bar.blue(style="width:55%")
-
-
+                        
             // Transaction Table
             .sb-admin-transaction
 
@@ -288,16 +173,16 @@ block content
 
                     .sb-admin-table-tools
 
-                        input(
-                            type="text"
-                            placeholder="Tìm giao dịch..."
-                        )
+                        //- input(
+                        //-     type="text"
+                        //-     placeholder="Tìm giao dịch..."
+                        //- )
 
-                        select
-                            option Tất cả
+                        //- select
+                        //-     option Tất cả
 
-                        select
-                            option Hôm nay
+                        //- select
+                        //-     option Hôm nay
 
                 .sb-admin-transaction__body
 
@@ -312,7 +197,6 @@ block content
                                 th Số tiền
                                 th Hình thức
                                 th Trạng thái
-                                th Thao tác
 
                         tbody
 
@@ -328,13 +212,13 @@ block content
 
                                         td
                                             if(item.user_id)
-                                                = item.user_id.fullName
+                                                = item.userInfo.userName
                                             else
                                                 | Không xác định
 
                                         td
                                             if(item.field_id)
-                                                = item.field_id.name
+                                                = item.fieldInfo.name
                                             else
                                                 | Không xác định
 
@@ -347,7 +231,7 @@ block content
 
                                         td
                                             span.sb-admin-badge.blue
-                                                = item.paymentMethod || "MoMo"
+                                                = item.paymentInfo.title || "MoMo"
 
                                         td
 
@@ -366,10 +250,7 @@ block content
                                                 span.sb-admin-badge.yellow
                                                     = item.status
 
-                                        td
-                                            a(
-                                                href=`/admin/bookings/detail/${item._id}`
-                                            ) Chi tiết
+                                        
 
                             else
 
