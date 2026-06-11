@@ -2964,6 +2964,27 @@ img {
     cursor:pointer;
 }
 
+/* Đã yêu thích */
+.btn-save.active {
+    background: linear-gradient(135deg, #ff4d4f, #ff7875);
+    color: #fff;
+    border-color: #ff4d4f;
+    box-shadow: 0 4px 15px rgba(255, 77, 79, 0.3);
+}
+
+.btn-save.active i {
+    color: #fff;
+}
+
+/* Hover */
+.btn-save:hover {
+    transform: translateY(-2px);
+}
+
+.btn-save.active:hover {
+    box-shadow: 0 6px 20px rgba(255, 77, 79, 0.4);
+}
+
 .gallery-main{
     height:420px;
     overflow:hidden;

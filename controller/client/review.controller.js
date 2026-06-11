@@ -2,6 +2,8 @@ const User = require("../../model/user.model");
 const Field = require("../../model/field.model");
 const Review = require("../../model/review.model");
 
+const ratingHelper = require("../../helper/rating.helper");
+
 module.exports.create = async (req, res) => {
     try {
         // Thông tin sân
@@ -10,15 +12,15 @@ module.exports.create = async (req, res) => {
             deleted: false,
             status: "active"
         });
-    
+
         // Số sao đánh giá
         let rating = 0;
-        if(req.body.rating){
+        if (req.body.rating) {
             rating = parseInt(req.body.rating);
-        }else {
+        } else {
             rating = "";
         }
-    
+
         // Ngày đánh giá
         const now = new Date();
         const today =
@@ -45,9 +47,23 @@ module.exports.create = async (req, res) => {
             comment: req.body.comment,
             date: dateVN,
         }
-    
-        await Review.create(data);
 
+        await Review.create(data);
+        const dataRatingField = await Rating.find({
+            field_id: req.params.id 
+        });
+        const ratingHelper = ratingHelper.rating(dataRatingField);
+        const ratingField = {
+            totalRating: dataRatingField.avgRating,
+            totalReviews: dataRatingField.totalReviews
+        }
+        await Field.updateOne({
+            _id: req.params.id
+        }, {
+            $set: {
+                rating: ratingField
+            }
+        });
         // Người đánh giá
         const user = await User.findOne({
             _id: req.user.id,

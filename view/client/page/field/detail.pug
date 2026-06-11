@@ -58,9 +58,13 @@ block content
                             href=`/booking/${field._id}`
                         ) Đặt sân ngay
 
-                        button.btn-save
+                        button(
+                            class=`btn-save ${favorite == true ? "active" : ""}`
+                            data-id= field._id
+                            data-favorite = (favorite == true ? "active" : "inactive")
+                        )
                             i.fa-regular.fa-heart
-                            |  Lưu sân
+                            |  Yêu thích
 
                 // RIGHT
                 .field-gallery
@@ -341,11 +345,11 @@ block content
             .review-summary
 
                 .summary-score
-                    h3 #{avgRating}
+                    h3 #{ratingField.avgRating}
 
                     .stars ⭐⭐⭐⭐⭐
 
-                    p #{totalReview} đánh giá
+                    p #{ratingField.totalReview} đánh giá
 
                 .summary-bars
                     each star in [5, 4, 3, 2, 1]
@@ -354,10 +358,10 @@ block content
 
                             .progress
                                 .progress-fill(
-                                    style=`width: ${percent[star]}%`
+                                    style=`width: ${ratingField.percent[star]}%`
                                 )
 
-                            span= stats[star]
+                            span= ratingField.stats[star]
 
 
             .review-form-card

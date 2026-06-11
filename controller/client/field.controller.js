@@ -5,9 +5,11 @@ const Booking = require("../../model/booking.model");
 const Payment = require("../../model/payment.model");
 const Review = require("../../model/review.model");
 const User = require("../../model/user.model");
+const Favorite = require("../../model/field-favorite.model");
 
 const paginationHelper = require("../../helper/pagination.helper");
 const pricingHelper = require("../../helper/getPricing.helper");
+const ratingHelper = require("../../helper/rating.helper");
 
 // [GET] /field
 module.exports.index = async (req, res) => {
@@ -191,29 +193,21 @@ module.exports.detail = async (req, res) => {
             item.user = userMap[item.user_id];
         });
 
-        // Đánh giá số sao
-        const stats = {
-            1: 0,
-            2: 0,
-            3: 0,
-            4: 0,
-            5: 0
-        };
+        // Bảng đánh giá của người dùng
+        const ratingField = ratingHelper.rating(review);
 
-        review.forEach(item => {
-            stats[item.rating]++;
+        // Sân yêu thích
+        const fieldFavorite = await Favorite.findOne({
+            deleted: false,
+            user_id: req.user.id,
+            field_id: field.id
         });
-
-        const totalReview = review.length;
-
-        const percent = {
-            1: totalReview ? (stats[1] / totalReview) * 100 : 0,
-            2: totalReview ? (stats[2] / totalReview) * 100 : 0,
-            3: totalReview ? (stats[3] / totalReview) * 100 : 0,
-            4: totalReview ? (stats[4] / totalReview) * 100 : 0,
-            5: totalReview ? (stats[5] / totalReview) * 100 : 0,
-        };
-        const avgRating = totalReview ? (review.reduce((sum, item) => sum + item.rating, 0) / totalReview).toFixed(1) : "0.0";
+        let record = false;
+        if(fieldFavorite){
+            record = true;
+        } else{
+            record = false
+        }
         // Render the detail page
         res.render('client/page/field/detail', {
             pageTitle: `${field.name} | Đặt Sân Bóng`,
@@ -222,10 +216,8 @@ module.exports.detail = async (req, res) => {
             pricing: pricing.pricing,
             payment: payment,
             reviews: review,
-            totalReview: totalReview,
-            stats: stats,
-            percent: percent,
-            avgRating: avgRating
+            ratingField: ratingField,
+            favorite: record
         });
 
     } catch (error) {
@@ -253,4 +245,38 @@ module.exports.pricing = async (req, res) => {
         const pricing = await pricingHelper.getPricing(date, field.id);
         return res.json(pricing);
     }
+}
+
+// [GET] /field/favorite/:status/:id
+module.exports.favorite = async (req, res) => {
+    const id = req.params.id;
+    let status = req.params.status;
+    const field = await Field.findOne({
+        deleted: false,
+        _id: id
+    });
+    if (!field) {
+        res.status(404).json({
+            message: "Sân không tồn tại hoặc đang bảo trì"
+        });
+    }
+    if (status == "inactive") {
+        status = "active";
+        const data = {
+            user_id: req.user.id,
+            field_id: id
+        };
+        await Favorite.create(data);
+    } else if (status == "active") {
+        status = "inactive"
+        await Favorite.findOneAndDelete({
+            user_id: req.user.id,
+            field_id: id
+        });
+    }
+
+    res.status(200).json({
+        message: "Thành công",
+        status: status
+    });
 }

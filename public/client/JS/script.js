@@ -1397,6 +1397,26 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // Yêu thích sân
+    const btnFavoriteField = document.querySelector(".field-detail__content .field-actions .btn-save");
+    if (btnFavoriteField) {
+        btnFavoriteField.addEventListener("click", (e) => {
+            const idField = btnFavoriteField.getAttribute("data-id");
+            const dataFavorite = btnFavoriteField.getAttribute("data-favorite");
+            const link = `/field/favorite/${dataFavorite}/${idField}`;
+            fetch(link, {
+                method: "POST"
+            })
+                .then(res => res.json())
+                .then(data => {
+                    btnFavoriteField.classList.toggle("active");
+
+                    // cập nhật trạng thái favorite cho lần click tiếp theo
+                    btnFavoriteField.setAttribute("data-favorite", data.status);
+                })
+        });
+    }
+
 });
 
 
