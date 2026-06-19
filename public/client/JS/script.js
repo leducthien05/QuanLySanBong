@@ -70,7 +70,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     .then(data => {
                         timeText.textContent = data.date ? `${data.date}` : "Chưa chọn khung giờ";
                         let html = "";
-                        console.log(data.pricings)
                         data.pricings.forEach(item => {
                             if (item.feature == "1") {
                                 if (item.booked == "1" || item.disable == "1") {
@@ -292,7 +291,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 fetch(link)
                     .then(res => res.json())
                     .then(data => {
-                        console.log(data);
                         const fields = data;
                         if (!fields || fields.length === 0) {
                             searchResultList.innerHTML = `<div class="search-result-empty">Không tìm thấy sân phù hợp</div>`;

@@ -51,14 +51,12 @@ module.exports.info = async (req, res) => {
     const roles = await Role.find({
         permission: "refund_manage"
     });
-    console.log(roles)
-    const idRole = roles.map(item => item.id);
+    const idRole = roles.map(item => item._id);
     const accountRefund = await Account.find({
         deleted: false,
         status: "active",
         role_id: {$in: idRole}
     }).select("fullName displayName");
-    console.log(accountRefund)
     res.render("client/page/user/info", {
         titlePage: "Thông tin",
         booking: bookingHistory,

@@ -2,8 +2,6 @@ const User = require("../../model/user.model");
 const Field = require("../../model/field.model");
 const Review = require("../../model/review.model");
 
-const ratingHelper = require("../../helper/rating.helper");
-
 module.exports.create = async (req, res) => {
     try {
         // Thông tin sân
@@ -29,14 +27,8 @@ module.exports.create = async (req, res) => {
             String(now.getMonth() + 1).padStart(2, "0") +
             "-" +
             String(now.getDate()).padStart(2, "0");
-        const dateVN = new Date(today).toLocaleString(
-            "vi-VN",
-            {
-                timeZone: "Asia/Ho_Chi_Minh"
-            }
-        );
+        const dateVN = new Date(today);
 
-        console.log(rating);
         // Dữ liệu đánh giá
         const data = {
             user_id: req.user.id,
@@ -49,21 +41,7 @@ module.exports.create = async (req, res) => {
         }
 
         await Review.create(data);
-        const dataRatingField = await Rating.find({
-            field_id: req.params.id 
-        });
-        const ratingHelper = ratingHelper.rating(dataRatingField);
-        const ratingField = {
-            totalRating: dataRatingField.avgRating,
-            totalReviews: dataRatingField.totalReviews
-        }
-        await Field.updateOne({
-            _id: req.params.id
-        }, {
-            $set: {
-                rating: ratingField
-            }
-        });
+
         // Người đánh giá
         const user = await User.findOne({
             _id: req.user.id,
@@ -82,4 +60,4 @@ module.exports.create = async (req, res) => {
             error: error
         })
     }
-};
+}

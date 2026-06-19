@@ -277,8 +277,10 @@ block content
             .amenities-list
 
                 each item in service
-                    .amenity-item
-                        span.icon= item.image
+                    .service-item
+                        image.icon(
+                            src = item.image
+                        )
                         span.text= item.name
 
     section.field-rules

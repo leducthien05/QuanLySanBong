@@ -24,7 +24,7 @@ block content
                 )
                     .step-number 2
                     .step-text
-                        .step-title Hình ảnh & Tiện ích
+                        .step-title Hình ảnh
 
             .main-content
                 .info-card
@@ -239,18 +239,22 @@ block content
                                                         value="1" 
                                                         checked = (field.feature == "1" ? true : false)
                                                     )
-                                .service-box
-                                    .service-header
-                                        .service-icon ✨
-                                        div
-                                            h2 Tiện ích & Dịch vụ
-                                            p Chọn các tiện ích có tại sân
+                                //- .service-box
+                                //-     .service-header
+                                //-         .service-icon ✨
+                                //-         div
+                                //-             h2 Tiện ích & Dịch vụ
+                                //-             p Chọn các tiện ích có tại sân
 
-                                    .service-list
-                                        each item in ["💡 Đèn cao áp","🏠 Có mái che","🧥 Phòng thay đồ","🚗 Bãi giữ xe","☕ Căng tin","📹 Camera an ninh","⚽ Cho thuê bóng","👟 Cho thuê giày","🛁 Phòng tắm","📶 Wi-Fi miễn phí","🩹 Tủ thuốc sơ cứu","🎵 Loa âm thanh"]
-                                            label.service-item
-                                                input(type="checkbox" name="service" value=item)
-                                                span #{item}
+                                //-     //- .service-list
+                                //-     //-     each item in service
+                                //-     //-         input(
+                                //-     //-             type="checkbox" 
+                                //-     //-             name="service" 
+                                //-     //-             value=item._id
+                                //-     //-             checked = (field.service.includes(item._id))
+                                //-     //-         )
+                                //-     //-         span #{item.name}
                             // footer submit
                             .form-footer
                                 button(type="button" class="btn-back") Quay lại

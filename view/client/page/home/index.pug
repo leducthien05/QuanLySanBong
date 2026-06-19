@@ -61,9 +61,8 @@ block content
                     p
                         | Chọn từ hơn 50 sân được kiểm duyệt chất lượng
 
-                    a.sb-home-view-all(href="/fields")
+                    a.sb-home-view-all(href="/field")
                         | Xem tất cả sân →
-
 
                 .sb-home-featured-list
 
@@ -91,10 +90,10 @@ block content
 
                                 .sb-home-tags
 
-                                    if field.grassType
-                                        span= field.grassType
+                                    if field.grasstype
+                                        span= field.grasstype
 
-                                    if field.fieldType
+                                    if field.type
                                         span= field.type + " người"
 
                                     span VIP
@@ -104,7 +103,7 @@ block content
                                     span / giờ
 
                                 a(
-                                    href=`/fields/detail/${field.slug}`
+                                    href=`/field/detail/${field.slug}`
                                 )
                                     button Đặt ngay
 
@@ -120,7 +119,7 @@ block content
                         | ── Quy trình
 
                     h2
-                        | Đặt sân trong 3
+                        | Đặt sân trong 4
                         span  bước
 
                     p
@@ -175,7 +174,7 @@ block content
                             .sb-home-district-icon
                                 i.fa-solid.fa-location-dot
 
-                            h4= area._id
+                            h4= area._id.titleAddress.split(", ").at(-2)
 
                             span= area.totalFields + " sân"
         // TESTIMONIAL

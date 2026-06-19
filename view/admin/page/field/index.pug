@@ -96,10 +96,10 @@ block content
                                     span(
                                         status = item.status
                                         data-status = item._id
-                                        class="status"
+                                        class="status closed"
                                         ) ● Đóng cửa
                                 else
-                                    span(class="status") ● Đóng cửa
+                                    span(class="status closed") ● Đóng cửa
                         td
                             if(accountRole.permission.includes("fields_edit"))
                                 a(

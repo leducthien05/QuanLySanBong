@@ -1,4 +1,5 @@
 // Bước thêm sân
+console.log("OK")
 const steps = document.querySelectorAll(".step");
 if (steps.length > 0) {
     const step1Content = document.querySelector(".div-step1");
@@ -96,7 +97,19 @@ if (btnChangeStatus.length > 0) {
             })
                 .then(res => res.json())
                 .then(data => {
-                    console.log(data)
+                    if (data.status == "inactive") {
+                        btn.classList.add("closed");
+                        btn.classList.remove("open")
+                        btn.textContent = "● Đóng cửa";
+                        // cập nhật attribute
+                        btn.setAttribute("status", "inactive");
+                    } else if (data.status == "active") {
+                        btn.classList.add("open");
+                        btn.classList.remove("closed")
+                        btn.textContent = "● Mở cửa";
+                        // cập nhật attribute
+                        btn.setAttribute("status", "active");
+                    }
                 });
         });
     });
@@ -241,7 +254,7 @@ if (toggleBtn && notificationBox) {
         if (notificationBox.classList.contains("active")) {
             try {
                 const prefix = toggleBtn.getAttribute("prefixAdmin");
-                await fetch(`${prefix}/notifications/read-all`, {
+                fetch(`${prefix}/notifications/read-all`, {
                     method: "PATCH",
                     headers: {
                         "Content-Type": "application/json"

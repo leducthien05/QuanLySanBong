@@ -7,6 +7,7 @@ const Notification = require("../../model/notification.model");
 const Refund = require("../../model/refund.model");
 const User = require("../../model/user.model");
 const Account = require("../../model/account.model");
+const Transaction = require("../../model/transaction.model");
 
 const paymentHelper = require("../../helper/payment.helper");
 const prcingHelper = require("../../helper/getPricing.helper");
@@ -128,7 +129,6 @@ module.exports.payment = async (req, res) => {
     // Chuyển data sang Object
     const data = JSON.parse(req.body.bookingData);
     // Lấy danh sách id và update trạng thái của pricing
-    console.log(data)
     const idPricing = data.pricing;
     const dataPricing = await Pricing.find({
         deleted: false,
@@ -180,7 +180,6 @@ module.exports.payment = async (req, res) => {
         }
 
     });
-
     // Lấy id và danh sách dịch vụ kèm theo
     const idService = data.service.map(item => item.service_id);
     const dataService = await Service.find({
@@ -209,13 +208,11 @@ module.exports.payment = async (req, res) => {
     const existingOrder = await Booking.findOne({
         field_id: data.field_id,
         user_id: user_id,
-        pricing: pricing,
         date: data.date,
-        totalPrice: totalPrice,
-        node: data.node,
-        paymentMethod: data.payment,
-        service: service,
-        status: "pending"
+        status: "pending",
+        "pricing.id": {
+            $in: idPricing
+        }
     });
 
     if (existingOrder) {
@@ -250,7 +247,6 @@ module.exports.payment = async (req, res) => {
         return toMinute(item.start_time) > toMinute(max.start_time) ? item : max;
     });
     const expired_at = new Date(`${data.date}T${maxPricing.start_time}:00`);
-
     const dataBooking = new Booking({
         field_id: data.field_id,
         user_id: user_id,
@@ -308,7 +304,9 @@ module.exports.vnpay = async (req, res) => {
     const booking_id = req.query.vnp_OrderInfo
     if (responseCode === "00" && transactionStatus === "00") {
         const booking = await Booking.findOne({ _id: booking_id });
-
+        if (!booking) {
+            return res.redirect("/booking");
+        }
         // trừ kho
         for (const service of booking.service) {
             await Service.updateOne(
@@ -328,7 +326,15 @@ module.exports.vnpay = async (req, res) => {
             { status: "paid" },
             { new: true }
         );
-
+        await Transaction.create({
+            booking_id: dataBooking._id,
+            user_id: dataBooking.user_id,
+            amount: dataBooking.totalPrice,
+            payment_method: "vnpay",
+            transaction_code: req.query.vnp_TransactionNo,
+            status: "success",
+            payment_time: new Date()
+        });
         // Lấy thông tin người dùng
         const dataUser = await User.findById(dataBooking.user_id)
             .select("userName email");
@@ -407,10 +413,19 @@ module.exports.vnpay = async (req, res) => {
         );
         return res.redirect(`/booking?status=success&booking_id=${booking_id}`);
     } else {
-        await Booking.deleteOne(
+        await Booking.updateOne(
             { _id: booking_id },
             { status: "failed" }
         );
+
+        await Transaction.create({
+            booking_id,
+            amount: 0,
+            payment_method: "vnpay",
+            transaction_code: req.query.vnp_TransactionNo,
+            status: "failed",
+            payment_time: new Date()
+        });
         return res.redirect("/booking");
     }
 }

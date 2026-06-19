@@ -32,11 +32,16 @@ const fieldSchema = new mongoose.Schema({
         // link sẵn (optional)
         googleMapUrl: String
     },
-    service: Array,
+    service: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Service"
+        }
+    ],
     rating: {
         totalRating: {
             type: Number,
-            default: 0 
+            default: 0
         },
         totalReviews: {
             type: Number,

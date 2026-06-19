@@ -49,7 +49,7 @@ module.exports.index = async (req, res) => {
             },
             {
                 $group: {
-                    _id: "$district",
+                    _id: "$address",
                     totalFields: {
                         $sum: 1
                     }
@@ -61,7 +61,6 @@ module.exports.index = async (req, res) => {
                 }
             }
         ]);
-
         // ======================
         // REVIEW
         // ======================

@@ -24,7 +24,7 @@ block content
                 )
                     .step-number 2
                     .step-text
-                        .step-title Hình ảnh & Tiện ích
+                        .step-title Hình ảnh
 
             .main-content
                 .info-card
@@ -36,7 +36,7 @@ block content
                             method="POST"
                             aciton=`${prefixAdmin}/fields/create`
                         )
-                            .div-step1
+                            .div-step1.active
                                 .card-header
                                     img(
                                         src="https://img.icons8.com/ios-filled/50/9fff57/stadium.png"
@@ -209,18 +209,18 @@ block content
                                                             h4 Sân nổi bật
                                                             p Sân có doanh thu cao sẽ được đề xuất nhiều hơn
                                                     input(type="radio" name="feature" value="1")
-                                .service-box
-                                    .service-header
-                                        .service-icon ✨
-                                        div
-                                            h2 Tiện ích & Dịch vụ
-                                            p Chọn các tiện ích có tại sân
+                                //- .service-box
+                                //-     .service-header
+                                //-         .service-icon ✨
+                                //-         div
+                                //-             h2 Tiện ích & Dịch vụ
+                                //-             p Chọn các tiện ích có tại sân
 
-                                    .service-list
-                                        each item in ["💡 Đèn cao áp","🏠 Có mái che","🧥 Phòng thay đồ","🚗 Bãi giữ xe","☕ Căng tin","📹 Camera an ninh","⚽ Cho thuê bóng","👟 Cho thuê giày","🛁 Phòng tắm","📶 Wi-Fi miễn phí","🩹 Tủ thuốc sơ cứu","🎵 Loa âm thanh"]
-                                            label.service-item
-                                                input(type="checkbox" name="service" value=item)
-                                                span #{item}
+                                //-     .service-list
+                                //-         each item in service
+                                //-             label.service-item
+                                //-                 input(type="checkbox" name="service" value=item._id)
+                                //-                 span #{item.name}
                             // footer submit
                             .form-footer
                                 button(type="button" class="btn-back") Quay lại

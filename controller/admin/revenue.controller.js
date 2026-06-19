@@ -2,6 +2,7 @@ const Booking = require("../../model/booking.model");
 const User = require("../../model/user.model");
 const Field = require("../../model/field.model");
 const Payment = require("../../model/payment.model");
+const Transaction = require("../../model/transaction.model");
 
 module.exports.index = async (req, res) => {
     try {
@@ -207,63 +208,31 @@ module.exports.index = async (req, res) => {
                 item._id
             );
         }
-
         // ==========================
         // CHI TIẾT GIAO DỊCH
         // ==========================
 
-        const transactions = await Booking.find({
-            status: {
-                $in: ["completed", "canceled"]
-            }
-        }).sort({ createdAt: -1 }).limit(20);
-
-
-        // ID 
-        const paymentIds = transactions.map(item => item.paymentMethod);
-        const userIds = transactions.map(item => item.user_id);
-        const fieldIds = transactions.map(item => item.field_id);
-
-        // Dữ liệu trong DB
-        const payments = await Payment.find({
-            _id: { $in: paymentIds }
-        }).select("title");
-        const fields = await Field.find({
-            _id: { $in: fieldIds }
-        }).select("name");
-
-        const users = await User.find({
-            _id: { $in: userIds }
-        }).select("userName");
-
-        // Map dữ liệu
-        const userMap = {};
-        const fieldMap = {};
-        const paymentMap = {};
-
-        users.forEach(user => {
-            userMap[user._id.toString()] = user;
-        });
-
-        fields.forEach(field => {
-            fieldMap[field._id.toString()] = field;
-        });
-
-        payments.forEach(payment => {
-            paymentMap[payment._id.toString()] = payment;
-        });
-
-        // Gán dữ liệu
-        transactions.forEach(item => {
-            item.userInfo = userMap[item.user_id] || null;
-            item.fieldInfo = fieldMap[item.field_id] || null;
-            item.paymentInfo = paymentMap[item.paymentMethod] || null;
-        });
+        const transactions = await Transaction.find({
+            deleted: false
+        })
+            .populate({
+                path: "user_id",
+                select: "userName email"
+            })
+            .populate({
+                path: "booking_id",
+                select: "field_id date totalPrice status",
+                populate: {
+                    path: "field_id",
+                    select: "name"
+                }
+            })
+            .sort({ createdAt: -1 })
+            .lean();
 
         // ==========================
         // RENDER
         // ==========================
-
         res.render("admin/page/revenue/index", {
             titlePage: "Báo cáo doanh thu",
 

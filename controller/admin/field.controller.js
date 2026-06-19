@@ -1,5 +1,6 @@
 const Field = require("../../model/field.model");
 const Pricing = require("../../model/pricing.model");
+const Service = require("../../model/service.model");
 
 const systemConfig = require("../../config/system");
 const paginationHelper = require("../../helper/pagination.helper");
@@ -42,8 +43,13 @@ module.exports.index = async (req, res) => {
 }
 // [GET] /admin/fields/create
 module.exports.create = async (req, res) => {
+    const service = await Service.find({
+        status: "active",
+        deleted: false
+    });
     res.render("admin/page/field/create", {
         titlePage: "Thêm sân bóng mới",
+        service: service
     });
 }
 // [POST] /admin/fields/create
@@ -262,13 +268,18 @@ module.exports.deleteField = async (req, res) => {
 }
 // [GET] /admin/fields/edit/:id
 module.exports.edit = async (req, res) => {
+    const service = await Service.find({
+        deleted: false,
+        status: "active"
+    });
     const field = await Field.findOne({
         _id: req.params.id,
         deleted: false
     });
     res.render("admin/page/field/edit", {
         titlePage: "Chỉnh sửa sân bóng",
-        field: field
+        field: field,
+        service: service
     });
 }
 // [PATCH] /admin/fields/edit/:id
@@ -317,7 +328,6 @@ module.exports.editPatch = async (req, res) => {
                         nextHour += Math.floor(nextMinute / 60);
                         nextMinute = nextMinute % 60;
                     }
-                    console.log(field.timeactive.slotDuration)
                     currentTime = `${nextHour.toString().padStart(2, "0")}:${nextMinute.toString().padStart(2, "0")}`;
                 }
                 // Lưu thông tin giá cho từng slot thời gian

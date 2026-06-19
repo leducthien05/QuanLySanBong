@@ -206,19 +206,17 @@ block content
 
                                     tr
 
-                                        td
-                                            | #TT-
-                                            = item._id.toString().slice(-4)
+                                        td #{item.transaction_code}
 
                                         td
                                             if(item.user_id)
-                                                = item.userInfo.userName
+                                                = item.user_id.userName
                                             else
                                                 | Không xác định
 
                                         td
                                             if(item.field_id)
-                                                = item.fieldInfo.name
+                                                = item.field_id.name
                                             else
                                                 | Không xác định
 
@@ -226,12 +224,12 @@ block content
                                             +date(item.createdAt)
 
                                         td
-                                            = (item.totalPrice || 0).toLocaleString("vi-VN")
+                                            = (item.amount || 0).toLocaleString("vi-VN")
                                             | đ
 
                                         td
                                             span.sb-admin-badge.blue
-                                                = item.paymentInfo.title || "MoMo"
+                                                = item.payment_method.title || "MoMo"
 
                                         td
 

@@ -1,10 +1,16 @@
 const mongoose = require('mongoose');
 
 const refundSchema = new mongoose.Schema({
-    booking_id: String,
+    booking_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Booking"
+    },
     amount: Number,
     priceRefund: Number,
-    user_id: String,
+    user_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    },
     bankName: String,
 
     accountNumber: String,
@@ -21,7 +27,10 @@ const refundSchema = new mongoose.Schema({
     },
 
     createdAt: Date,
-    processingBy: String,
+    processingBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Account" 
+    },
     processingAt: Date,
     completedBy: String,
     completedAt: Date,

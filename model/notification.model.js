@@ -2,7 +2,10 @@ const mongoose = require("mongoose");
 
 const notificationSchema = new mongoose.Schema({
     content: String,
-    user_id: String,
+    user_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    },
     title: String,
     side: String,
     type: String,
@@ -13,7 +16,7 @@ const notificationSchema = new mongoose.Schema({
     deleted: {
         type: Boolean,
         default: false
-    }   
+    }
 }, {
     timestamps: true
 });

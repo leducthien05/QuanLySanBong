@@ -154,13 +154,10 @@ module.exports.detail = async (req, res) => {
         }
 
         // Dịch vụ
-        const idService = field.service.map(item => item);
         const service = await Service.find({
             deleted: false,
-            status: "status",
-            _id: { $in: idService }
+            status: "active"
         });
-
         // Lịch giờ
         const date = new Date().toISOString().split("T")[0]
         const pricing = await pricingHelper.getPricing(date, field.id);

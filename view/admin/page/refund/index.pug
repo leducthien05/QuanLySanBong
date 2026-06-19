@@ -36,12 +36,12 @@ block content
                 each item in refunds
                     tr
                         td #{item.booking_id}
-                        td #{item.user.userName}
-                        td #{item.user.phone}
+                        td #{item.user_id.userName}
+                        td #{item.user_id.phone}
                         td #{item.bankName}
                         td #{item.accountName} 
                         td #{item.accountNumber} 
-                        td #{item.processingByName}
+                        td #{item.processingBy.fullName}
                         td #{item.amount}
                         td #{item.priceRefund}
                         td

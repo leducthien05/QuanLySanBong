@@ -15,57 +15,25 @@ module.exports.index = async (req, res) => {
             deleted: false
         }
         const filter = filterStatusHelper.filterStatus(req.query);
-            if (req.query.status) {
-                if(req.query.status == "active"){
-                    find.status = "pending";
-                } else if(req.query.status == "inactive"){
-                    find.status = "completed"
-                }
+        if (req.query.status) {
+            if (req.query.status == "active") {
+                find.status = "pending";
+            } else if (req.query.status == "inactive") {
+                find.status = "completed"
             }
-        const refunds = await Refund.find(find);
+        }
+        const refunds = await Refund.find(find)
+            .populate({
+                path: "processingBy"
+            })
+            .populate({
+                path: "user_id",
+                select: "userName phone"
+            });
 
-        // ===== Lấy Admin =====
-        const accountIds = [];
-
-        refunds.forEach(item => {
-            if(item.processingBy) accountIds.push(item.processingBy);
-            if(item.completedBy) accountIds.push(item.completedBy);
+        refunds.forEach(item =>{
+            item.priceRefund = item.amount * 0.7;
         });
-
-        const accounts = await Account.find({
-            _id: { $in: accountIds }
-        }).select("fullName");
-
-        const accountMap = {};
-
-        accounts.forEach(item => {
-            accountMap[item.id] = item;
-        });
-
-        // ===== Lấy User =====
-        const userIds = refunds.map(item => item.user_id);
-
-        const users = await User.find({
-            _id: { $in: userIds }
-        }).select("userName phone");
-
-        const userMap = {};
-
-        users.forEach(item => {
-            userMap[item.id] = item;
-        });
-
-        // ===== Gắn dữ liệu =====
-        refunds.forEach(item => {
-            item.user = userMap[item.user_id];
-
-            item.processingByName =
-                accountMap[item.processingBy]?.fullName || "";
-
-            item.completedByName =
-                accountMap[item.completedBy]?.fullName || "";
-        });
-
         res.render("admin/page/refund/index", {
             pageTitle: "Quản lý hoàn tiền",
             refunds: refunds,

@@ -1,11 +1,18 @@
 const mongoose = require('mongoose');
 
 const reviewSchema = new mongoose.Schema({
-    user_id: String,
-    field_id: String,
-    fieldName: String,
-    address: String,
-    booking_id: String,
+    user_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    },
+    field_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Field"
+    },
+    booking_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Booking"
+    },
     rating: Number,
     comment: String,
     date: Date,
@@ -14,5 +21,5 @@ const reviewSchema = new mongoose.Schema({
         default: false
     }
 });
-const Review =  mongoose.model('Review', reviewSchema, 'review');
+const Review = mongoose.model('Review', reviewSchema, 'review');
 module.exports = Review;

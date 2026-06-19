@@ -3,11 +3,11 @@ const crypto = require("crypto");
 
 // Thanh toán qua VNPAY
 const vnpay = new VNPay({
-    tmnCode: 'AEU74WEN',
-    secureSecret: 'WHD7MMC3PN7HQRYPGDYUXLQ25J2JRKBF',
-    vnpayHost: 'https://sandbox.vnpayment.vn',
+    tmnCode: process.env.tmnCode,
+    secureSecret: process.env.secureSecret,
+    vnpayHost: process.env.vnpayHost,
     testMode: true, // tùy chọn
-    hashAlgorithm: 'SHA512', // tùy chọn
+    hashAlgorithm: process.env.hashAlgorithm, // tùy chọn
     loggerFn: ignoreLogger, // tùy chọn
 });
 module.exports.vnpay = async (booking_id, totalPrice) => {
