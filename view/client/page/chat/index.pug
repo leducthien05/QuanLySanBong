@@ -1,0 +1,23 @@
+extends ../../layout/default
+
+block content
+    .chatbot
+        .chatbot__header
+            h2 AI Tư Vấn Đặt Sân
+
+        .chatbot__body#chatBody
+            .message.message--bot
+                .message__content
+                    | Xin chào! Tôi có thể giúp bạn tìm sân bóng phù hợp.
+
+        .chatbot__footer
+            form#chatForm
+                input(
+                    type="text"
+                    name="message"
+                    placeholder="Nhập câu hỏi của bạn..."
+                    autocomplete="off"
+                    required
+                )
+                button(type="submit")
+                    i.fa-solid.fa-paper-plane
