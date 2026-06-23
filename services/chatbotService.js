@@ -11,7 +11,6 @@ const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
  */
 async function buildContext(userId) {
   const fields = await Field.find({ status: "active", deleted: false })
-    .select("name type size price address")
     .limit(20)
     .lean();
 
@@ -20,7 +19,6 @@ async function buildContext(userId) {
     userBookings = await Booking.find({ user_id: userId, deleted: false })
       .sort({ createdAt: -1 })
       .limit(5)
-      .select("date status totalPrice field_id")
       .lean();
   }
 

@@ -1,105 +1,64 @@
 extends ../../layout/default.pug
 
 block content
+    .sb-admin-home
 
-    .top-grid
+        .sb-admin-overview
 
-        .big-card
+            .sb-admin-overview-card
+                .sb-admin-overview-label Sân bóng
+                .sb-admin-overview-value= statistic.totalFields
 
-        .ranking-card
-            hr
-            .ranking-item
-                h1 3
+            .sb-admin-overview-card
+                .sb-admin-overview-label Đặt sân
+                .sb-admin-overview-value= statistic.totalBookings
 
-                .ranking-info
-                    h3 FC
-                    p 28 lượt / tháng
+            .sb-admin-overview-card
+                .sb-admin-overview-label Người dùng
+                .sb-admin-overview-value= statistic.totalUsers
 
-                .progress
-                    .progress-bar(style="width:70%")
+            .sb-admin-overview-card
+                .sb-admin-overview-label Doanh thu
+                .sb-admin-overview-value #{statistic.totalRevenue}đ
 
-                h2 11.4M
+            .sb-admin-overview-card
+                .sb-admin-overview-label Hoàn tiền
+                .sb-admin-overview-value= statistic.totalRefund
 
-            .ranking-item
-                h1 4
+        .sb-admin-home-grid
 
-                .ranking-info
-                    h3 Hai Bà Trưng
-                    p 22 lượt / tháng
+            .sb-admin-chart-card
 
-                .progress
-                    .progress-bar(style="width:50%")
+                .sb-admin-card-header
+                    .sb-admin-card-title Hoạt động gần đây
 
-                h2 8.1M
+                .sb-admin-card-body
 
-    .bottom-grid
+                    each item in latestBookings
 
-        .activity-card
+                        .sb-admin-activity-item
 
-            h2 Hoạt động gần đây
-            hr
-            .activity-list
+                            .sb-admin-activity-icon
+                                i.fa-solid.fa-futbol
 
-                .activity-item
-                    .icon.success
-                        i.fa-solid.fa-check
+                            div
+                                .sb-admin-activity-title
+                                    = item.user_id.userName
 
-                    .text
-                        h3 Nguyễn Văn A đặt Sân Cầu Giấy FC — 18:00–19:00
-                        p 2 phút trước
+                                .sb-admin-activity-time
+                                    | Đặt sân #{item.field_id.name}
 
-                .activity-item
-                    .icon.cancel
-                        i.fa-solid.fa-xmark
+            .sb-admin-side-card
 
-                    .text
-                        h3 Lê Minh C hủy đặt sân #BK-089
-                        p 18 phút trước
+                .sb-admin-card-header
+                    .sb-admin-card-title Trạng thái hệ thống
 
-                .activity-item
-                    .icon.user
-                        i.fa-solid.fa-user
+                .sb-admin-card-body
 
-                    .text
-                        h3 Trần Thị B đăng ký tài khoản mới
-                        p 45 phút trước
+                    .sb-admin-system-row
+                        span.sb-admin-system-label Sân hoạt động
+                        span.sb-admin-system-value= statistic.activeFields
 
-        .right-column
-
-            .chart-card
-
-                h2 Phân bố loại sân
-
-                .chart-content
-
-                    .fake-donut
-
-                    .chart-info
-
-                        .legend
-                            span.green
-                            p Sân 5 người
-
-                        .legend
-                            span.blue
-                            p Sân 7 người
-
-                        .legend
-                            span.yellow
-                            p Sân 11 người
-
-            .calendar-card
-
-                .calendar-header
-
-                    h2 Tháng 5 2026
-
-                    .calendar-buttons
-
-                        button <
-                        button >
-
-                .calendar-grid
-
-                    each day in ['T2','T3','T4','T5','T6','T7','CN']
-                        div.day= day
+                    .sb-admin-system-row
+                        span.sb-admin-system-label Đặt sân hôm nay
+                        span.sb-admin-system-value= statistic.todayBookings

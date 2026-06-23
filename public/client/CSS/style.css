@@ -5537,3 +5537,170 @@ img {
     background: white;
     border: 1px solid #ddd;
 }
+
+/* Trang dashboard */
+.sb-dashboard{
+    padding:20px;
+}
+
+.sb-page-header{
+    margin-bottom:25px;
+
+    h1{
+        color:#fff;
+        font-size:32px;
+        font-weight:700;
+    }
+
+    p{
+        color:#8aa190;
+    }
+}
+
+.sb-dashboard-stats{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:20px;
+    margin-bottom:25px;
+}
+
+.sb-dashboard-stat{
+    background:#071b12;
+    border:1px solid #1c3c29;
+    border-radius:16px;
+    padding:20px;
+
+    display:flex;
+    gap:15px;
+    align-items:center;
+
+    &__icon{
+        width:55px;
+        height:55px;
+        border-radius:12px;
+        background:#102117;
+
+        display:flex;
+        align-items:center;
+        justify-content:center;
+
+        color:#9ef74d;
+        font-size:20px;
+    }
+
+    &__content{
+
+        span{
+            color:#7d9685;
+            font-size:13px;
+        }
+
+        h3{
+            color:#9ef74d;
+            margin-top:5px;
+            font-size:28px;
+        }
+    }
+}
+
+.sb-dashboard-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    margin-bottom:20px;
+}
+
+.sb-dashboard-card{
+    background:#071b12;
+    border:1px solid #1c3c29;
+    border-radius:16px;
+    overflow:hidden;
+}
+
+.sb-card-header{
+    padding:16px 20px;
+    border-bottom:1px solid #163020;
+
+    h3{
+        color:white;
+        margin:0;
+        font-size:16px;
+    }
+}
+
+.sb-card-body{
+    padding:20px;
+}
+
+.sb-activity-item{
+    padding:10px 0;
+    border-bottom:1px solid rgba(255,255,255,.05);
+
+    &__title{
+        color:#fff;
+    }
+
+    &__desc{
+        color:#7d9685;
+        font-size:13px;
+    }
+}
+
+.sb-status-row{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:15px;
+
+    span{
+        color:#8aa190;
+    }
+
+    strong{
+        color:#9ef74d;
+    }
+}
+
+.sb-top-field{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:15px;
+
+    span{
+        color:#fff;
+    }
+
+    strong{
+        color:#9ef74d;
+    }
+}
+
+.sb-big-number{
+    font-size:70px;
+    color:#9ef74d;
+    font-weight:700;
+}
+
+.sb-overview{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:20px;
+}
+
+.sb-overview-item{
+    background:#0c2116;
+    border-radius:12px;
+    padding:15px;
+
+    span{
+        display:block;
+        color:#7d9685;
+    }
+
+    strong{
+        display:block;
+        color:#9ef74d;
+        margin-top:8px;
+        font-size:24px;
+    }
+}
+
