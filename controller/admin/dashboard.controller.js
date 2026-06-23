@@ -78,7 +78,7 @@ module.exports.index = async (req, res) => {
         const revenueResult = await Booking.aggregate([
             {
                 $match: {
-                    paymentStatus: "complete"
+                    status: "completed"
                 }
             },
             {
