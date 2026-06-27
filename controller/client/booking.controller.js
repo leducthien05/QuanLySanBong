@@ -258,6 +258,7 @@ module.exports.payment = async (req, res) => {
         return toMinute(item.start_time) > toMinute(max.start_time) ? item : max;
     });
     const expired_at = new Date(`${data.date}T${maxPricing.start_time}:00`);
+    console.log(expired_at);
     const dataBooking = new Booking({
         field_id: data.field_id,
         user_id: user_id,
@@ -268,9 +269,10 @@ module.exports.payment = async (req, res) => {
         paymentMethod: data.payment,
         service: service,
         status: "pending",
-        expireAt: expired_at
+        expiredAt: expired_at
     });
     await dataBooking.save();
+    console.log(dataBooking.expireAt)
     // ==============================
     // 💳 THANH TOÁN VNPAY
     // ==============================
@@ -491,7 +493,7 @@ module.exports.notify = async (req, res) => {
     res.status(200).json({ message: "OK" });
 }
 
-// [POST] /booking/cancel/:id (AJAX)
+// [PATCH] /booking/cancel/:id/:idAccount (AJAX)
 module.exports.cancelBooking = async (req, res) => {
     try {
         const bookingId = req.params.id;
@@ -531,8 +533,59 @@ module.exports.cancelBooking = async (req, res) => {
             createdAt: new Date()
         });
         await refund.save();
+        const field = await Field.findOne({ _id: booking.field_id });
 
-        return res.status(200).json({ message: "Hủy lịch thành công. Yêu cầu hoàn tiền đã được tạo." });
+        const pricingRows = (booking.pricing || []).map(slot => `
+            <tr>
+                <td>${slot.time}</td>
+                <td>${slot.price?.toLocaleString("vi-VN") ?? 0} VNĐ</td>
+            </tr>
+        `).join("");
+        console.log(user.email)
+        const html = `
+            <h2>Hủy lịch thành công</h2>
+
+            <p>Xin chào <b>${user.userName}</b>,</p>
+
+            <p>Bạn đã hủy thành công lịch đặt sân. Yêu cầu hoàn tiền của bạn đang được xử lý.</p>
+
+            <ul>
+                <li><b>Mã đơn:</b> ${booking._id}</li>
+                <li><b>Sân:</b> ${field ? field.name : "N/A"}</li>
+                <li><b>Ngày đá:</b> ${booking.date}</li>
+            </ul>
+
+            <table border="1" cellpadding="8" cellspacing="0">
+                <tr>
+                    <th>Khung giờ</th>
+                    <th>Giá</th>
+                </tr>
+                ${pricingRows}
+            </table>
+
+            <h3>Tổng tiền hoàn: ${(booking.totalPrice || 0).toLocaleString("vi-VN")} VNĐ</h3>
+
+            <h4>Thông tin tài khoản hoàn tiền:</h4>
+            <ul>
+                <li><b>Ngân hàng:</b> ${bankInfo.bankName}</li>
+                <li><b>Số tài khoản:</b> ${bankInfo.accountNumber}</li>
+                <li><b>Chủ tài khoản:</b> ${bankInfo.accountName}</li>
+            </ul>
+
+            <p>Vui lòng chờ trong 1-3 ngày làm việc để được hoàn tiền.</p>
+
+            <p>Cảm ơn bạn đã sử dụng dịch vụ.</p>
+        `;
+
+        try {
+            await sendMailHelper.sendMailer(user.email, "Xác nhận hủy lịch đặt sân", html);
+        } catch (mailError) {
+            console.error("❌ Lỗi gửi mail hủy lịch:", mailError.message);
+        }
+        return res.json({
+            message: "Hủy lịch thành công. Yêu cầu hoàn tiền đã được tạo.",
+            code: 200
+        });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Có lỗi khi hủy booking." });

@@ -3,13 +3,13 @@ const cron = require("node-cron");
 const Booking = require("../model/booking.model");
 
 // chạy mỗi phút
-cron.schedule("0 * * * *", async () => {
+cron.schedule("* * * * *", async () => {
     try {
         const now = new Date();
 
         const result = await Booking.updateMany(
             {
-                status: "pending",
+                status: { $in: ["pending", "paid"] },
                 expiredAt: { $lte: now }
             },
             {

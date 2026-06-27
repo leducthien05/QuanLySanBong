@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function () {
         inputs.forEach(input => {
 
             input.addEventListener("change", async () => {
-                
+
 
                 // Lấy giá trị loại sân
                 const type = searchBox.querySelector("select[name='type']").value;
@@ -888,28 +888,48 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
-    // Đặt lịch
-    const formPricingDetail = document.querySelector(".booking-sidebar .booking-form");
-    if (formPricingDetail) {
+    // ==================== BOOKING ====================
+    function initBooking() {
+        const formPricingDetail = document.querySelector(".booking-sidebar .booking-form");
+        if (!formPricingDetail) return;
+
         const inputPricing = formPricingDetail.querySelector("input[name='bookingData']");
-        const dataPricingDetail = {};
-        const selectDate = document.querySelector(".date-pricing");
-        if (selectDate) {
-            const listBtnPricing = document.querySelectorAll(".time-slots .time-slot")
-            selectDate.addEventListener("change", (e) => {
+        const dataPricingDetail = { pricing: [] };
+
+        // ── 1. Gắn event cho các slot đã render sẵn (SSR) ──
+        function bindSlotEvents(buttons) {
+            buttons.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const id = btn.getAttribute("data-pricing");
+                    if (btn.classList.contains("selected")) {
+                        btn.classList.remove("selected");
+                        dataPricingDetail.pricing = dataPricingDetail.pricing.filter(p => p !== id);
+                    } else {
+                        btn.classList.add("selected");
+                        dataPricingDetail.pricing.push(id);
+                    }
+                });
+            });
+        }
+
+        bindSlotEvents(document.querySelectorAll(".time-slots .time-slot"));
+
+        // ── 2. Fetch pricing khi đổi ngày ──
+        function initDateSelect() {
+            const selectDate = document.querySelector(".date-pricing");
+            if (!selectDate) return;
+
+            selectDate.addEventListener("change", () => {
                 const date = selectDate.value;
                 const slug = selectDate.getAttribute("data-slug");
-                const link = `/field/pricing/${slug}?date=${date}`;
-                console.log(link)
-                fetch(link)
+
+                fetch(`/field/pricing/${slug}?date=${date}`)
                     .then(res => res.json())
                     .then(data => {
-                        const divPricing = document.querySelector(".time-slots")
-                        let html = "";
-                        data.pricing.forEach(slot => {
+                        const divPricing = document.querySelector(".time-slots");
+                        divPricing.innerHTML = data.pricing.map(slot => {
                             const isDisabled = slot.booked === "1" || slot.disable === "1";
-
-                            html += `
+                            return `
                             <button
                                 type="button"
                                 class="time-slot ${isDisabled ? "booked" : ""}"
@@ -917,168 +937,129 @@ document.addEventListener('DOMContentLoaded', function () {
                                 ${isDisabled ? "disabled" : ""}
                             >
                                 ${slot.start_time}
-                                ${slot.feature === "1"
-                                    ? "<small>Cao điểm</small>"
-                                    : ""
-                                }
+                                ${slot.feature === "1" ? "<small>Cao điểm</small>" : ""}
                             </button>
                         `;
-                        });
+                        }).join("");
 
-                        divPricing.innerHTML = html;
+                        // Reset pricing khi đổi ngày
+                        dataPricingDetail.pricing = [];
+                        bindSlotEvents(document.querySelectorAll(".time-slots .time-slot"));
                     });
             });
         }
-        const listBtnPricing = document.querySelectorAll(".time-slots .time-slot")
-        if (listBtnPricing.length > 0) {
-            dataPricingDetail.pricing = [];
-            listBtnPricing.forEach(btn => {
-                btn.addEventListener("click", (e) => {
-                    if (btn.classList.contains("selected")) {
-                        btn.classList.remove("selected");
-                    } else {
-                        btn.classList.add("selected");
-                    }
-                    const id = btn.getAttribute("data-pricing");
-                    if (dataPricingDetail.pricing.includes(id)) {
-                        const index = dataPricingDetail.indexOf(id);
-                        dataPricingDetail.pricing.splice(index, 1);
-                    } else {
-                        dataPricingDetail.pricing.push(id);
-                    }
 
-                });
-            });
-        }
+        // ── 3. Modal service → payment → confirm ──
+        function initModals() {
+            const btnShow = formPricingDetail.querySelector(".btn-book-full");
+            if (!btnShow) return;
 
-        // Chọn Dịch vụ và Thanh toán
-        const btnShow = formPricingDetail.querySelector(".btn-book-full");
-        if (btnShow) {
             const modalService = document.querySelector(".modal-service");
             const modalPayment = document.querySelector(".modal-payment");
             const modalConfirm = document.querySelector(".modal-confirm");
 
-            const btnService = modalService.querySelector(".btn-next-service");
-            const btnPayment = modalPayment.querySelectorAll(".payment-item");
-
+            // Mở modal service
             btnShow.addEventListener("click", () => {
-                if (!dataPricingDetail.pricing || dataPricingDetail.pricing.length === 0) {
-                    return;
-                }
+                if (!dataPricingDetail.pricing.length) return;
                 modalService.classList.add("show");
             });
 
-            btnService.addEventListener("click", () => {
+            // Chọn service → mở modal payment
+            modalService.querySelector(".btn-next-service").addEventListener("click", () => {
                 dataPricingDetail.service = [];
-                const inputService = modalService.querySelectorAll("input:checked");
-                inputService.forEach(input => {
-                    const value = input.value;
-                    const price = parseInt(input.getAttribute("data-price"));
-                    const data = {
-                        id: value,
-                        price: price,
+                modalService.querySelectorAll("input:checked").forEach(input => {
+                    dataPricingDetail.service.push({
+                        id: input.value,
+                        price: parseInt(input.getAttribute("data-price")),
                         title: input.getAttribute("data-title")
-                    };
-                    dataPricingDetail.service.push(data)
+                    });
                 });
                 modalService.classList.remove("show");
                 modalPayment.classList.add("show");
             });
 
-            btnPayment.forEach(btn => {
+            // Chọn payment → mở modal confirm
+            modalPayment.querySelectorAll(".payment-item").forEach(btn => {
                 btn.addEventListener("click", () => {
                     dataPricingDetail.namePayment = btn.getAttribute("data-method");
                     dataPricingDetail.payment = btn.getAttribute("data-method-id");
                     modalPayment.classList.remove("show");
+                    renderConfirm(modalConfirm);
                     modalConfirm.classList.add("show");
-                    let time = "";
-                    let totalPrice = 0;
-                    if (dataPricingDetail.pricing || dataPricingDetail.pricing.length > 0) {
-                        const dataPricingPrice = document.querySelectorAll(".time-slots .time-slot");
-
-                        if (dataPricingPrice.length > 0) {
-                            dataPricingPrice.forEach(item => {
-                                const id = item.getAttribute("data-pricing");
-                                if (dataPricingDetail.pricing.includes(id)) {
-                                    const price = item.getAttribute("data-price");
-                                    totalPrice += parseInt(price);
-                                    time += item.getAttribute("data-time");
-                                }
-
-                            });
-                            modalConfirm.querySelector(".slot-result").textContent = time;
-                            modalConfirm.querySelector(".total-price").textContent = `${totalPrice}Đ`;
-                        }
-                    }
-                    if (dataPricingDetail.service && dataPricingDetail.service.length > 0) {
-                        let textService = ""
-                        dataPricingDetail.service.forEach(service => {
-                            totalPrice += service.price;
-                            textService += service.name
-
-                        });
-                        modalConfirm.querySelector(".service-result").textContent = textService;
-                    }
-
                 });
             });
         }
 
-        // Thanh toán
-        const btnConfirm = document.querySelector(".modal-confirm .btn-payment");
-        if (btnConfirm) {
+        // ── 4. Render thông tin xác nhận ──
+        function renderConfirm(modalConfirm) {
+            let time = "";
+            let totalPrice = 0;
+
+            document.querySelectorAll(".time-slots .time-slot").forEach(item => {
+                const id = item.getAttribute("data-pricing");
+                if (dataPricingDetail.pricing.includes(id)) {
+                    totalPrice += parseInt(item.getAttribute("data-price")) || 0;
+                    time += (item.getAttribute("data-time") || "") + " ";
+                }
+            });
+
+            if (dataPricingDetail.service?.length) {
+                let textService = "";
+                dataPricingDetail.service.forEach(s => {
+                    totalPrice += s.price;
+                    textService += s.title + " ";
+                });
+                modalConfirm.querySelector(".service-result").textContent = textService.trim();
+            }
+
+            modalConfirm.querySelector(".slot-result").textContent = time.trim();
+            modalConfirm.querySelector(".total-price").textContent = `${totalPrice.toLocaleString("vi-VN")}đ`;
+        }
+
+        // ── 5. Xác nhận thanh toán ──
+        function initConfirmPayment() {
+            const btnConfirm = document.querySelector(".modal-confirm .btn-payment");
+            if (!btnConfirm) return;
+
             const dataField = JSON.parse(formPricingDetail.getAttribute("data-field"));
+
             btnConfirm.addEventListener("click", () => {
-                if (!dataPricingDetail.field_id) {
-                    dataPricingDetail.field_id = dataField._id;
-                }
-
-                if (!dataPricingDetail.pricing || dataPricingDetail.pricing.length <= 0) {
-                    alert('Vui lòng chọn slot đặt sân');
+                if (!dataPricingDetail.pricing.length) {
+                    alert("Vui lòng chọn slot đặt sân");
                     return;
-                } else {
-                    const dataPricingPrice = document.querySelectorAll(".time-slots .time-slot");
-                    let time = "";
-                    let totalPrice = 0;
-                    if (dataPricingPrice.length > 0) {
-                        dataPricingPrice.forEach(item => {
-                            const id = item.getAttribute("data-pricing");
-                            if (dataPricingDetail.pricing.includes(id)) {
-                                const price = item.getAttribute("data-price");
-                                totalPrice += parseInt(price);
-                                time += item.getAttribute("data-time");
-                            }
-
-                        });
-
-                    }
                 }
-
                 if (!dataPricingDetail.namePayment) {
-                    alert('Vui lòng chọn phương thức thanh toán');
+                    alert("Vui lòng chọn phương thức thanh toán");
                     return;
                 }
-                const date = formPricingDetail.querySelector("input[name='date']").value;
-                if (date) {
-                    dataPricingDetail.date = date;
+
+                dataPricingDetail.field_id = dataField._id;
+
+                const dateInput = formPricingDetail.querySelector("input[name='date']").value;
+                if (dateInput) {
+                    dataPricingDetail.date = dateInput;
                 } else {
                     const now = new Date();
-                    const today =
+                    dataPricingDetail.date =
                         now.getFullYear() +
                         "-" +
                         String(now.getMonth() + 1).padStart(2, "0") +
                         "-" +
                         String(now.getDate()).padStart(2, "0");
-                    dataPricingDetail.date = today
                 }
-                console.log(dataPricingDetail)
-                const dataPostBooking = JSON.stringify(dataPricingDetail);
-                inputPricing.value = dataPostBooking;
+
+                inputPricing.value = JSON.stringify(dataPricingDetail);
                 formPricingDetail.submit();
             });
         }
 
+        // ── Init ──
+        initDateSelect();
+        initModals();
+        initConfirmPayment();
     }
+
+    initBooking();
 
     // ===============================================Info========================================
     const btnTabInfo = document.querySelectorAll(".tab-btn");
@@ -1283,7 +1264,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Hủy lịch
     // ========== CANCEL BOOKING + BANK INFO MODALS ==========
     // Handlers for user bookings page cancel buttons
-    const cancelButtons = document.querySelector('.booking-list .btn-cancel');
+    const cancelButtons = document.querySelectorAll('.booking-list .btn-cancel');
 
     function openModal(id) {
         document.getElementById(id).classList.add("show");
@@ -1298,102 +1279,124 @@ document.addEventListener('DOMContentLoaded', function () {
             btn.closest(".refund-modal").classList.remove("show");
         });
     });
-    if (cancelButtons) {
-        cancelButtons.addEventListener("click", () => {
-            const userInfoBank = document.querySelector("#refundBankModal").getAttribute("data-bank");
-            if (userInfoBank) {
+    if (cancelButtons.length > 0) {
+        cancelButtons.forEach(btn => {
+            btn.addEventListener("click", () => {
+                const userInfoBank = document.querySelector("#refundBankModal").getAttribute("data-bank");
                 const dataBankRefund = JSON.parse(userInfoBank);
-                const price = cancelButtons.getAttribute("data-price");
-                const idBooking = cancelButtons.getAttribute("data-id");
-                document.getElementById("refundAmount").textContent =
-                    `${price}Đ`;
+                if (dataBankRefund.accountName && dataBankRefund.accountNumber && dataBankRefund.bankName) {
+                    const price = btn.getAttribute("data-price");
+                    const idBooking = btn.getAttribute("data-id");
+                    document.getElementById("refundAmount").textContent =
+                        `${price}Đ`;
 
-                document.getElementById("refundBank").textContent =
-                    dataBankRefund.bankName;
+                    document.getElementById("refundBank").textContent =
+                        dataBankRefund.bankName;
 
-                document.getElementById("refundAccount").textContent =
-                    dataBankRefund.accountNumber;
+                    document.getElementById("refundAccount").textContent =
+                        dataBankRefund.accountNumber;
 
-                document.getElementById("refundOwner").textContent =
-                    dataBankRefund.accountName;
+                    document.getElementById("refundOwner").textContent =
+                        dataBankRefund.accountName;
 
-                openModal("cancelBookingModal");
-                const btnComfirmCacel = document.getElementById("btnConfirmCancel");
-                if (btnComfirmCacel) {
-                    btnComfirmCacel.addEventListener("click", (e) => {
-                        const idAccountRefund = document.querySelector("#cancelBookingModal .refund-modal-content select[name='adminNameRefund']").value;
-                        console.log(idAccountRefund);
-                        const link = `/booking/cancel/${idBooking}/${idAccountRefund}`;
-                        fetch(link, {
-                            method: "PATCH"
-                        })
-                            .then(async (res) => {
-                                const data = await res.json();
-
-                                if (res.status === 300) {
-                                    console.log("Status 300");
-                                    console.log(data);
-                                }
-
-                                return data;
+                    openModal("cancelBookingModal");
+                    const btnComfirmCacel = document.getElementById("btnConfirmCancel");
+                    if (btnComfirmCacel) {
+                        btnComfirmCacel.addEventListener("click", (e) => {
+                            const idAccountRefund = document.querySelector("#cancelBookingModal .refund-modal-content select[name='adminNameRefund']").value;
+                            console.log(idAccountRefund);
+                            const link = `/booking/cancel/${idBooking}/${idAccountRefund}`;
+                            fetch(link, {
+                                method: "PATCH"
                             })
-                            .then(data => {
-                                if (data.code === 200) {
-                                    closeModal(cancelBookingModal);
-                                    const btnCancel = document.querySelector(
-                                        `.btn-cancel[data-id="${bookingId}"]`
-                                    );
+                                .then(async (res) => {
+                                    console.log(res.status);
 
-                                    btnCancel.outerHTML = `
-                                        <button
-                                            type="button"
-                                            class="btn-booking btn-reschedule"
-                                        >
-                                            <i class="fa-solid fa-rotate-right"></i>
-                                            Đặt lại
-                                        </button>
-                                    `;
-                                }
-                            });
-                    });
-                }
-            } else {
+                                    const data = await res.json();
+                                    if (res.status === 200) {
+                                        closeModal("cancelBookingModal");
+                                        const btnCancel = document.querySelector(
+                                            `.btn-cancel[data-id="${idBooking}"]`
+                                        );
 
-                openModal("refundBankModal");
-                const accountNameInput = document.querySelector(".refund-modal .refund-modal-body input[name='accountName']");
-                const accountNumberInput = document.querySelector(".refund-modal .refund-modal-body input[name='accountNumber']");
-                const bankNameSelect = document.querySelector(".refund-modal .refund-modal-body select[name='bankName']");
+                                        btnCancel.outerHTML = `
+                                            <button
+                                                type="button"
+                                                class="btn-booking btn-reschedule"
+                                            >
+                                                <i class="fa-solid fa-rotate-right"></i>
+                                                Đặt lại
+                                            </button>
+                                        `;
+                                    }
+                                });
 
-                const btnSave = document.getElementById("btnSaveBankInfo");
-                if (btnSave) {
-                    btnSave.addEventListener("click", (e) => {
-                        const accountName = accountNameInput.value;
-                        const accountNumber = accountNumberInput.value;
-                        const bankName = bankNameSelect.value;
-                        const link = `/user/bank-refund/edit`;
-                        fetch(link, {
-                            method: "PATCH",
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify({
-                                bankInfo: {
-                                    accountName,
-                                    accountNumber,
-                                    bankName: bankName
-                                }
+                        });
+                    }
+                } else {
 
+                    openModal("refundBankModal");
+                    const accountNameInput = document.querySelector(".refund-modal .refund-modal-body input[name='accountName']");
+                    const accountNumberInput = document.querySelector(".refund-modal .refund-modal-body input[name='accountNumber']");
+                    const bankNameSelect = document.querySelector(".refund-modal .refund-modal-body select[name='bankName']");
+
+                    const btnSave = document.getElementById("btnSaveBankInfo");
+                    if (btnSave) {
+                        btnSave.addEventListener("click", (e) => {
+                            const accountName = accountNameInput.value;
+                            const accountNumber = accountNumberInput.value;
+                            const bankName = bankNameSelect.value;
+                            const link = `/user/bank-refund/edit`;
+                            fetch(link, {
+                                method: "PATCH",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify({
+                                    bankInfo: {
+                                        accountName,
+                                        accountNumber,
+                                        bankName: bankName
+                                    }
+
+                                })
                             })
-                        })
-                            .then(res => res.json())
-                            .then(data => {
-                                console.log(data)
-                            });
-                    });
-                }
-            }
+                                .then(res => res.json())
+                                .then(data => {
+                                    if (data.code == 200) {
+                                        const idAccountRefund = document.querySelector("#cancelBookingModal .refund-modal-content select[name='adminNameRefund']").value;
+                                        const link = `/booking/cancel/${idBooking}/${idAccountRefund}`;
+                                        fetch(link, {
+                                            method: "PATCH"
+                                        })
+                                            .then(res => res.json())
+                                            .then(data => {
+                                                if (data.code === 200) {
+                                                    closeModal("cancelBookingModal");
+                                                    const btnCancel = document.querySelector(
+                                                        `.btn-cancel[data-id="${idBooking}"]`
+                                                    );
 
+                                                    btnCancel.outerHTML = `
+                                                        <button
+                                                            type="button"
+                                                            class="btn-booking btn-reschedule"
+                                                        >
+                                                            <i class="fa-solid fa-rotate-right"></i>
+                                                            Đặt lại
+                                                        </button>
+                                                    `;
+                                                }
+                                            });
+                                    }
+                                });
+                        });
+                    }
+                }
+
+            });
         });
+
     }
 
     // Yêu thích sân
