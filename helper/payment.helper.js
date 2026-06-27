@@ -19,7 +19,8 @@ module.exports.vnpay = async (booking_id, totalPrice) => {
         vnp_TxnRef: booking_id,
         vnp_OrderInfo: booking_id,
         vnp_OrderType: ProductCode.Other,
-        vnp_ReturnUrl: `https://quan-ly-san-bong.vercel.app/booking/payment-vnpay`,
+        vnp_ReturnUrl: `http://localhost:3000/booking/payment-vnpay`,
+        // vnp_ReturnUrl: `https://quan-ly-san-bong.vercel.app/booking/payment-vnpay`,
         // vnp_IpnUrl: "http://localhost:5080/booking/payment-vnpay-ipn",
         vnp_Locale: VnpLocale.VN, // 'vn' hoặc 'en'
         vnp_CreateDate: dateFormat(new Date()), // tùy chọn, mặc định là hiện tại

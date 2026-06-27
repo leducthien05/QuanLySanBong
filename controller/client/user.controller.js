@@ -12,7 +12,7 @@ module.exports.info = async (req, res) => {
     const bookingHistory = await Booking.find({
         deleted: false,
         status: { $ne: "pending" }
-    });
+    }).sort({ createdAt: -1 });
     const totalAmount = bookingHistory.reduce((sum, item) => {
         return sum + item.totalPrice;
     }, 0);

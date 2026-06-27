@@ -126,6 +126,7 @@ module.exports.getField = async (req, res) => {
 
 // [POST] /booking/payment
 module.exports.payment = async (req, res) => {
+    console.log("OK")
     // Chuyển data sang Object
     const data = JSON.parse(req.body.bookingData);
     // Lấy danh sách id và update trạng thái của pricing
@@ -159,27 +160,42 @@ module.exports.payment = async (req, res) => {
 
         return (Number(h) * 60 + Number(m));
     };
+
+    // Thời gian hiện tại
     const nowTime = new Date();
     const hour = nowTime.getHours();
     const minute = nowTime.getMinutes();
+    const now = `${hour}:${String(minute).padStart(2, "0")}`;
+
+    // Thời gian gửi
+    const todayStr =
+        nowTime.getFullYear() +
+        "-" +
+        String(nowTime.getMonth() + 1).padStart(2, "0") +
+        "-" +
+        String(nowTime.getDate()).padStart(2, "0");
+
     let pricing = [];
-    dataPricing.forEach(item => {
-        const now = `${hour}:${minute}`;
-        if (toMinute(item.start_time) > toMinute(now) && toMinute(item.start_time) - toMinute(now) > 30) {
-            const record = {
-                id: item.id,
-                time: item.start_time,
-                type: item.feature,
-                price: item.price
+
+    for (const item of dataPricing) {
+        const startMin = toMinute(item.start_time);
+        const nowMin = toMinute(now);
+        if (data.date === todayStr) {
+            if (startMin <= nowMin || startMin - nowMin <= 30) {
+                return res.status(400).json({
+                    message: "Không thể đặt sân trong vòng 30 phút tới hoặc đã quá giờ đặt sân"
+                });
             }
-            pricing.push(record);
-        } else {
-            return res.status(400).json({
-                message: "Không thể đặt sân trong vòng 30 phút tới vì có đã quá giờ đặt sân"
-            });
         }
 
-    });
+        pricing.push({
+            id: item.id,
+            time: item.start_time,
+            type: item.feature,
+            price: item.price
+        });
+    }
+
     // Lấy id và danh sách dịch vụ kèm theo
     const idService = data.service.map(item => item.service_id);
     const dataService = await Service.find({
@@ -187,19 +203,14 @@ module.exports.payment = async (req, res) => {
         status: "active",
         deleted: false
     });
-    const totalPriceService = dataService.reduce((sum, item) => {
-        return sum + item.price;
-    }, 0);
-    let service = [];
-    dataService.map(item => {
-        const record = {
-            id: item._id,
-            name: item.name,
-            price: item.price
-        }
-        service.push(record);
-    });
 
+    const totalPriceService = dataService.reduce((sum, item) => sum + item.price, 0);
+
+    const service = dataService.map(item => ({
+        id: item._id,
+        name: item.name,
+        price: item.price
+    }));
     // Tổng tiền booking 
     const totalPrice = totalPricePricing + totalPriceService;
 

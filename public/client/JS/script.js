@@ -51,8 +51,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 let link = `${url.pathname}/field/${id}`;
 
                 // Get date
+                const searchBox = document.querySelector(".gf-search-box");
                 let date = searchBox.querySelector("input[name='date']").value;
-
                 // Default today
                 if (!date) {
                     date = new Date().toISOString().split('T')[0];
@@ -60,7 +60,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     bookingData.date = date;
                 }
-
                 // Add query
                 link += `?date=${date}`;
 
@@ -70,6 +69,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     .then(data => {
                         timeText.textContent = data.date ? `${data.date}` : "Chưa chọn khung giờ";
                         let html = "";
+                        console.log(data)
                         data.pricings.forEach(item => {
                             if (item.feature == "1") {
                                 if (item.booked == "1" || item.disable == "1") {
@@ -175,6 +175,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     initFieldSelection();
 
+
+    // Cấu hình thời gian tối thiểu cho input date
+    const dataInput = document.querySelector("input[name='date']");
+    if (dataInput) {
+        const today = new Date().toISOString().split('T')[0];
+        dataInput.setAttribute("min", today);
+    }
+
     // Tìm kiếm sân theo select
     const searchBox = document.querySelector(".gf-search-box");
 
@@ -187,8 +195,7 @@ document.addEventListener('DOMContentLoaded', function () {
         inputs.forEach(input => {
 
             input.addEventListener("change", async () => {
-                // Lấy giá trị ngày
-                const date = searchBox.querySelector("input[name='date']").value;
+                
 
                 // Lấy giá trị loại sân
                 const type = searchBox.querySelector("select[name='type']").value;
@@ -196,6 +203,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Lấy địa chỉ
                 const address = searchBox.querySelector("select[name='address']").value;
 
+                // Lấy ngày đặt
+                let date = searchBox.querySelector("input[name='date']").value;
                 dataQuery = {};
                 if (date) {
                     dataQuery.date = date;
@@ -330,13 +339,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     };
-
-    // Cấu hình thời gian tối thiểu cho input date
-    const dataInput = document.querySelector("input[name='date']");
-    if (dataInput) {
-        const today = new Date().toISOString().split('T')[0];
-        dataInput.setAttribute("min", today);
-    }
 
     // Chọn sân
     const fieldList = document.querySelectorAll(".booking-field-card");
@@ -682,8 +684,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         <div class="booking-field-price">
                             <span class="booking-price-number">
-                                ${Number(item.price.price)
-                .toLocaleString("vi-VN")}
+                                ${Number(item.price.price).toLocaleString("vi-VN")}
                             </span>
 
                             <span class="booking-price-unit">
