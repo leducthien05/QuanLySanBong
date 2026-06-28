@@ -76,8 +76,6 @@ module.exports.login = async (req, res) => {
         req.flash("error", "Email không tồn tại hoặc đã bị khóa!");
         return res.redirect(req.get("referer") || "/");
     }
-    console.log(req.body.password)
-    console.log(existEmail)
     const password = await passwordHelper.comparePassword(req.body.password, existEmail.password);
 
     if (!password) {

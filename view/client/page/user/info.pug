@@ -16,7 +16,7 @@ block content
                     )
                 .user-info
 
-                    h1 Nguyễn Văn A
+                    h1 #{user.userName}
 
                     .user-meta
 
@@ -101,14 +101,14 @@ block content
             button.active
                 | Tất cả (#{booking.length})
 
-            button
-                | ⏳ Sắp tới (2)
+            //- button
+            //-     | ⏳ Sắp tới (2)
 
-            button
-                | ✅ Đã hoàn thành (18)
+            //- button
+            //-     | ✅ Đã hoàn thành (18)
 
-            button
-                | ❌ Đã hủy (4)
+            //- button
+            //-     | ❌ Đã hủy (4)
 
 
         // BOOKING ITEM
@@ -483,11 +483,6 @@ block content
                         .header-title
                             i.fa-solid.fa-building-columns
                             span Thông tin nhận hoàn tiền
-
-                        button.save-btn(
-                            type="submit"
-                        )
-                            | Lưu thông tin
 
                     .card-body
 

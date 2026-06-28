@@ -309,7 +309,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         let html = "";
                         fields.forEach(field => {
                             html += `
-                                <a href="/fields/${field.slug}" class="search-result-item">
+                                <a href="/field/detail/${field.slug}" class="search-result-item">
                                     <div class="search-result-item-thumbnail">
                                         <img src="${field.thumbnail}" alt="${field.title}">
                                     </div>
@@ -850,7 +850,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         let html = "";
                         fields.forEach(field => {
                             html += `
-                                <a href="/field/${field.slug}" class="search-result-item">
+                                <a href="/field/detail/${field.slug}" class="search-result-item">
                                     <div class="search-result-item-thumbnail">
                                         <img src="${field.image}" alt="${field.name}">
                                     </div>

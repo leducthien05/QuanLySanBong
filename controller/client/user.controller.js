@@ -11,6 +11,7 @@ module.exports.info = async (req, res) => {
     // Lịch sử đặt sân
     const bookingHistory = await Booking.find({
         deleted: false,
+        user_id: req.user.id,
         status: { $ne: "pending" }
     }).sort({ createdAt: -1 });
     const totalAmount = bookingHistory.reduce((sum, item) => {
