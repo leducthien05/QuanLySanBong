@@ -2818,6 +2818,7 @@ img {
     display:flex;
     gap:60px;
     align-items:center;
+    flex-wrap: wrap; /* Cho phép xuống hàng */
 }
 .field-hero::before{
     content:"";
@@ -2835,11 +2836,13 @@ img {
     pointer-events:none;
 }
 .field-detail__content{
-    flex:1;
+    flex: 1 1 500px;
+    min-width: 300px;
 }
 
 .field-gallery{
-    flex:1;
+    flex: 1 1 400px;
+    min-width: 300px;
 }
 
 .field-tags{
@@ -2897,19 +2900,13 @@ img {
 }
 
 .price-box{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:20px;
-
-    background:rgba(0,0,0,.35);
-    border:1px solid rgba(140,255,140,.15);
-
-    border-radius:28px;
-
-    padding:30px;
-    margin-bottom:35px;
-
-    backdrop-filter:blur(10px);
+    display: flex;
+    flex-wrap: wrap;          /* cho phép xuống dòng khi hẹp */
+    gap: 24px;
+    padding: 24px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
 }
 
 .label{
@@ -2917,21 +2914,48 @@ img {
     margin-bottom:10px;
 }
 
+.price-item{
+    flex: 1 1 140px;          /* mỗi item co giãn, không bị đẩy ra ngoài */
+    min-width: 140px;
+    max-width: 100%;
+}
+
+.price-item .label{
+    color: #9aa3a0;
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
 .price-item h3{
-    color:#bfffbf;
-    font-size:42px;
-    margin:0;
+    font-size: clamp(16px, 2.2vw, 26px); /* tự co chữ theo độ rộng, không tràn */
+    line-height: 1.2;
+    word-break: break-word;   /* số quá dài thì xuống dòng thay vì tràn */
+    overflow-wrap: anywhere;
+    color: #fff;
+    margin: 0;
 }
 
-.price-item h3 span{
-    font-size:18px;
-    color:#7d8b7d;
+.price-item h3.highlight{
+    color: #f5a623;
 }
 
-.highlight{
-    color:#ffcb59 !important;
+.price-item span{
+    font-size: 13px;
+    font-weight: 400;
+    color: #9aa3a0;
+    margin-left: 4px;
 }
 
+/* Gallery ảnh phụ không bị tràn chữ "/ giờ" của price box đè lên */
+.field-gallery{
+    position: relative;
+}
+
+.gallery-main img{
+    width: 100%;
+    border-radius: 16px;
+    display: block;
+}
 .field-actions{
     display:flex;
     gap:20px;

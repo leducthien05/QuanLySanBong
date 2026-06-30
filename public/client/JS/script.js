@@ -512,6 +512,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             const dataPostBooking = JSON.stringify(bookingData);
             inputBooking.value = dataPostBooking;
+            
             formBooking.submit();
         });
     }

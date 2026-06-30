@@ -40,17 +40,17 @@ block content
 
                         .price-item
                             p.label Giờ thường
-                            h3 #{field.price.price.toLocaleString("vi-VN")}
+                            h3 #{(field.price.price / 1000).toLocaleString("vi-VN") + "K"}
                                 span đ / giờ
 
                         .price-item
-                            p.label Cao điểm (17-22H)
-                            h3.highlight #{field.price.priceVip.toLocaleString("vi-VN")}
+                            p.label Cao điểm (18:00-#{field.timeactive.closeTime})
+                            h3.highlight #{(field.price.priceVip / 1000).toLocaleString("vi-VN") + "K"}
                                 span đ / giờ
 
                         .price-item
                             p.label Cuối tuần
-                            h3 #{field.price.priceVip.toLocaleString("vi-VN")}
+                            h3 #{(field.price.priceVip / 1000).toLocaleString("vi-VN") + "K"}
                                 span đ / giờ
 
                     .field-actions
