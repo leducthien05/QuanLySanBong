@@ -108,7 +108,6 @@ module.exports.createPost = async (req, res) => {
                     nextHour += Math.floor(nextMinute / 60);
                     nextMinute = nextMinute % 60;
                 }
-                console.log(field.timeactive.slotDuration)
                 currentTime = `${nextHour.toString().padStart(2, "0")}:${nextMinute.toString().padStart(2, "0")}`;
             }
             // Lưu thông tin giá cho từng slot thời gian
